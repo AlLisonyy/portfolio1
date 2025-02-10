@@ -1,0 +1,50 @@
+---
+title: "Portfolio 1"
+author: "Allison Li"
+date: "02102025"
+output: github_document
+---
+
+> The projects should be numbered consecutively (i.e., in the order in which you began them), and should include for each project a description of the goal, the product (computer program, hand graph, computer graph, etc.), the data, and some interpretation. Reports must be reproducible and of high quality in terms of writing, grammar, presentation, etc.
+
+###load packages
+```{r load-packages, message=FALSE}
+##install.packages("tidytuesdayR")
+tuesdata <- tidytuesdayR::tt_load('2025-02-04')
+simpsons_characters <- tuesdata$simpsons_characters
+simpsons_episodes <- tuesdata$simpsons_episodes
+simpsons_locations <- tuesdata$simpsons_locations
+simpsons_script_lines <- tuesdata$simpsons_script_lines
+```
+
+I get the simpsons dataset from the Tidy Tuesday Github (https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-02-04/readme.md)! My research question in general is to understand how the simpsons family is generally depicted in the episodes.
+
+```{r}
+# Create a barplot of the number of fish encounters by species
+ggplot(data = fish_encounters, aes(x = station, y = seen)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Species", y = "Number of Fish Encounters")
+  
+```
+
+Sed
+
+```{r}
+# Create a barplot of the number of fish encounters by species
+ggplot(data = fish_encounters, aes(x = station, y = seen)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Species", y = "Number of Fish Encounters")
+  
+```
+
+Mauris
+
+```{r}
+# Create a barplot of the number of fish encounters by species
+ggplot(data = fish_encounters, aes(x = station, y = seen)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Species", y = "Number of Fish Encounters")
+  
+```
+
+Donec
