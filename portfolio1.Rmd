@@ -1,5 +1,8 @@
 ---
 title: "Portfolio 2"
+author: "Allison Li"
+date: "02102025"
+output: github_document
 ---
 
 ```{r load-packages, message=FALSE}
@@ -17,7 +20,7 @@ I get the haunted houses dataset from the Tidy Tuesday Github (https://github.co
 NC_haunted_places <- haunted_places %>% 
   filter(state == "North Carolina")
 ```
-Now I know that there are `r nrow(NC_haunted_places)` haunted houses in North Caronlina, which is a litte scary. Now I wanted to know how they are located within North Caronlina. 
+Now I know that there are `r nrow(NC_haunted_places)` haunted houses in North Caronlina, which is a litte scary. Next, I wanted to know how they are located within North Caronlina. 
 
 ```{r location within NC}
 ##After taking a look at the dataset, I want to merge Winston-Salem to Winston because they refer to the same location. 
@@ -27,21 +30,17 @@ mutate(
     city == "Winston-Salem" ~ "Winston",
     TRUE ~ city
   ))
-```
 
-
-```{r visualization of haunted houses locations in NC}
+##I want to see which city has the most and least haunted houses in NC. 
 haunted_counts_NC <- NC_haunted_places %>%
   count(city, name = "num_haunted_houses") %>% 
   arrange(desc(num_haunted_houses))
 print(haunted_counts_NC)
-##I also want to see a bar graph of which city has the most haunted houses.
-ggplot(data = NC_haunted_places, aes(x = city)) +
-  geom_bar() +
-  coord_flip() +
-  labs(x = "City", y = "Number of haunted houses")
+```
+Before looking at the houses location visualization, I merged Winston-Salem to Winston. After that, I wanted to check which cities in NC has the most or least haunted houses. Asheville appeared to have the most 
 
-##I want to see how these haunted houses are located within NC.
+```{r visualization of haunted houses locations in NC}
+##Next, I want to see how these haunted houses are located within NC.
 ggplot(NC_haunted_places, mapping = aes(
   x = longitude,
   y = latitude,
@@ -54,3 +53,25 @@ ggplot(NC_haunted_places, mapping = aes(
     y = "Latitude"
     )
 ```
+Based on the graph, I can see that most of the haunted houses are located near (-80, 36)
+
+```{r top 5 citie sthat has the most/least haunted houses in NC}
+##I also want to see a bar graph of which city has the most haunted houses.
+top_haunted_cities <- NC_haunted_places %>%
+  count(city, name = "num_haunted_houses") %>%
+  arrange(desc(num_haunted_houses)) %>%
+  slice_head(n = 10)
+
+# Create the bar plot
+ggplot(top_haunted_cities, aes(x = city, y = num_haunted_houses, colour = city, fill = city)) +
+  geom_bar(stat = "identity") +  
+  labs(title = "Top 10 Most Haunted Cities in North Carolina",
+       x = "City",
+       y = "Number of Haunted Houses") +
+  coord_flip()
+```
+```{r top 10 cities in NC visualized location}
+
+```
+
+
