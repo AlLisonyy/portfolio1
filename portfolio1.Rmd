@@ -62,16 +62,11 @@ top_haunted_cities <- NC_haunted_places %>%
   arrange(desc(num_haunted_houses)) %>%
   slice_head(n = 10)
 
-# Create the bar plot
-ggplot(top_haunted_cities, aes(x = city, y = num_haunted_houses, colour = city, fill = city)) +
+# Create the bar plot for the top ten cities 
+ggplot(top_haunted_cities, aes(x = reorder(city, num_haunted_houses), y = num_haunted_houses, colour = city, fill = city)) +
   geom_bar(stat = "identity") +  
   labs(title = "Top 10 Most Haunted Cities in North Carolina",
        x = "City",
        y = "Number of Haunted Houses") +
-  coord_flip()
+       coord_flip()
 ```
-```{r top 10 cities in NC visualized location}
-
-```
-
-
