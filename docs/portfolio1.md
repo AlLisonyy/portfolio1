@@ -15,6 +15,8 @@ I get the haunted houses dataset from the Tidy Tuesday Github
 My research question in general is to see where are the haunted houses
 in the US!
 
+### Haunted houses in North Caronlina
+
 ``` r
 ##first I want to know where are the haunted houses in North Carolina.
 ##I would filter the dataset into only houses in NC.
@@ -25,6 +27,8 @@ NC_haunted_places <- haunted_places %>%
 Now I know that there are 211 haunted houses in North Caronlina, which
 is a litte scary. Next, I wanted to know how they are located within
 North Caronlina.
+
+### Most
 
 ``` r
 ##After taking a look at the dataset, I want to merge Winston-Salem to Winston because they refer to the same location. 
@@ -59,8 +63,9 @@ print(haunted_counts_NC)
 
 Before looking at the houses location visualization, I merged
 Winston-Salem to Winston. After that, I wanted to check which cities in
-NC has the most or least haunted houses. Asheville appeared to have the
-most
+NC has the most or least haunted houses. According to the dataset,
+Aheville appeared to have the most haunted houses, n = 1, while Lenoir,
+Jacksonville, and Havelock have the least haunted houses, n = 1
 
 ``` r
 ##Next, I want to see how these haunted houses are located within NC.
@@ -91,13 +96,13 @@ top_haunted_cities <- NC_haunted_places %>%
   arrange(desc(num_haunted_houses)) %>%
   slice_head(n = 10)
 
-# Create the bar plot
-ggplot(top_haunted_cities, aes(x = city, y = num_haunted_houses, colour = city, fill = city)) +
+# Create the bar plot for the top ten cities 
+ggplot(top_haunted_cities, aes(x = reorder(city, num_haunted_houses), y = num_haunted_houses, colour = city, fill = city)) +
   geom_bar(stat = "identity") +  
   labs(title = "Top 10 Most Haunted Cities in North Carolina",
        x = "City",
        y = "Number of Haunted Houses") +
-  coord_flip()
+       coord_flip()
 ```
 
 ![](portfolio1_files/figure-gfm/top%205%20citie%20sthat%20has%20the%20most/least%20haunted%20houses%20in%20NC-1.png)<!-- -->

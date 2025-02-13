@@ -14,6 +14,8 @@ haunted_places <- tuesdata$haunted_places
 
 I get the haunted houses dataset from the Tidy Tuesday Github (https://github.com/rfordatascience/tidytuesday/blob/main/data/2023/2023-10-10/readme.md). My research question in general is to see where are the haunted houses in the US! 
 
+### Haunted houses in North Caronlina
+
 ```{r NC haunted houses}
 ##first I want to know where are the haunted houses in North Carolina.
 ##I would filter the dataset into only houses in NC.
@@ -22,7 +24,9 @@ NC_haunted_places <- haunted_places %>%
 ```
 Now I know that there are `r nrow(NC_haunted_places)` haunted houses in North Caronlina, which is a litte scary. Next, I wanted to know how they are located within North Caronlina. 
 
-```{r location within NC}
+### Most 
+
+```{r most and least haunted houses in NC}
 ##After taking a look at the dataset, I want to merge Winston-Salem to Winston because they refer to the same location. 
 NC_haunted_places <- NC_haunted_places %>%
 mutate(
@@ -37,7 +41,7 @@ haunted_counts_NC <- NC_haunted_places %>%
   arrange(desc(num_haunted_houses))
 print(haunted_counts_NC)
 ```
-Before looking at the houses location visualization, I merged Winston-Salem to Winston. After that, I wanted to check which cities in NC has the most or least haunted houses. Asheville appeared to have the most 
+Before looking at the houses location visualization, I merged Winston-Salem to Winston. After that, I wanted to check which cities in NC has the most or least haunted houses. According to the dataset, Aheville appeared to have the most haunted houses, n = `r sort(haunted_counts_NC$num_haunted_houses)[1]`, while Lenoir, Jacksonville, and Havelock have the least haunted houses, n = `r sort(haunted_counts_NC$num_haunted_houses)[10]`
 
 ```{r visualization of haunted houses locations in NC}
 ##Next, I want to see how these haunted houses are located within NC.
