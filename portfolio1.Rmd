@@ -161,7 +161,7 @@ winston_haunted <- NC_haunted_places_filtered %>%
   filter(latitude > 35.96 & latitude < 36.25 & 
          longitude > -80.50 & longitude < -80.04)
 
-##Lastly, I am very interested in where are all the haunted houses located within Winston Salem.
+##I am very interested in where are all the haunted houses located within Winston Salem.
 winston_haunted <- winston_haunted %>%
   mutate(winstonsalem = ifelse(city == "Winston", "Winston", "Other"))
 
@@ -196,3 +196,4 @@ ggplot() +
   coord_sf()
 ```
 
+In general, we can see that Winston-salem is one of the top ten cities with the most haunted houses! To be more speicific, there are 8 haunted houses in Winston-salem.  
