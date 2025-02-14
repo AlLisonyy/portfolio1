@@ -375,11 +375,13 @@ div.tocify {
 
 
 <pre class="r"><code>##install.packages(&quot;tidytuesdayR&quot;)
-##install.packages(c(&quot;maps&quot;, &quot;ggplot2&quot;))
+##install.packages(c(&quot;sf&quot;, &quot;tigris&quot;, &quot;ggplot2&quot;, &quot;ggmap&quot;))
 
 library(maps)
 library(ggplot2)
 library(tidyverse)
+library(sf)
+library(tigris)
 
 tuesdata &lt;- tidytuesdayR::tt_load(&#39;2023-10-10&#39;)
 haunted_places &lt;- tuesdata$haunted_places</code></pre>
@@ -428,9 +430,9 @@ print(haunted_counts_NC)</code></pre>
 ##  9 Jacksonville                  4
 ## 10 Lenoir                        4
 ## # ℹ 118 more rows</code></pre>
-<pre class="r"><code>## Mean 
+<pre class="r"><code>##Mean 
 mean_hauntedhousesNC &lt;- mean(haunted_counts_NC$num_haunted_houses)
-## Standard deviation 
+##Standard deviation 
 sd_hauntedhousesNC &lt;- sd(haunted_counts_NC$num_haunted_houses)</code></pre>
 <p>Before looking at the houses location visualization, I merged
 Winston-Salem to Winston. After that, I wanted to check which cities in
@@ -447,7 +449,7 @@ top_haunted_cities &lt;- NC_haunted_places %&gt;%
   arrange(desc(num_haunted_houses)) %&gt;%
   slice_head(n = 10)
 
-# Create the bar plot for the top ten cities 
+## Create the bar plot for the top ten cities 
 ggplot(top_haunted_cities, aes(x = reorder(city, num_haunted_houses), y = num_haunted_houses, colour = city, fill = city)) +
   geom_bar(stat = &quot;identity&quot;) +  
   labs(title = &quot;Top 10 Cities with the Most Haunted Houses in North Carolina&quot;,
@@ -458,11 +460,11 @@ ggplot(top_haunted_cities, aes(x = reorder(city, num_haunted_houses), y = num_ha
 </div>
 <div id="visualized-map-of-nc" class="section level3">
 <h3>visualized map of NC</h3>
-<pre class="r"><code># get the basic North Carolina map data
+<pre class="r"><code>## get the basic North Carolina map data
 nc_map &lt;- map_data(&quot;state&quot;)
-# filter for North Carolina
+## filter for North Carolina
 nc_map &lt;- subset(nc_map, region == &quot;north carolina&quot;)
-# get the map plot
+## get the map plot
 ggplot()+
   geom_polygon(data = nc_map, aes(x = long, y = lat, group = group),
                fill = &quot;lightgray&quot;, color = &quot;black&quot;, alpha = 0.6) +
@@ -485,16 +487,17 @@ NC.</p>
 <div id="filter-out-the-outliers-and-refine-the-dataset"
 class="section level3">
 <h3>Filter out the outliers and refine the dataset</h3>
-<pre class="r"><code>##Looking at the graph, I want to filter out the data that are outside of the range of: 37&gt; latitude &gt; 35.
-NC_haunted_places &lt;- NC_haunted_places %&gt;%
-  filter(latitude &gt; 35 &amp; latitude &lt; 37)
+<pre class="r"><code>##Looking at the graph, I want to filter out the data that are outside of the range of: 37&gt; latitude &gt; 33.
+NC_haunted_places_filtered &lt;- NC_haunted_places %&gt;%
+  filter(!(latitude &lt; 35.5 &amp; longitude &gt; -76.25)) %&gt;%
+  filter(latitude &gt; 33 &amp; latitude &lt; 37)
 
 ##Now I will plot the graph again
 ggplot()+
   geom_polygon(data = nc_map, aes(x = long, y = lat, group = group),
-               fill = &quot;lightgray&quot;, color = &quot;black&quot;, alpha = 0.6) +
-  geom_point(data = NC_haunted_places, aes(x = longitude, y = latitude),
-             color = &quot;red&quot;, alpha = 0.5, size = 2.5) +
+               fill = &quot;lightyellow&quot;, color = &quot;black&quot;, alpha = 0.6) +
+  geom_point(data = NC_haunted_places_filtered, aes(x = longitude, y = latitude),
+             color = &quot;red&quot;, alpha = 0.5, size = 1.8) +
    labs(
     title = &quot;North Carolina Haunted House Locations&quot;,
     x = &quot;Longitude&quot;, 
@@ -502,6 +505,78 @@ ggplot()+
   ) +
   coord_fixed(1.3)</code></pre>
 <p><img src="portfolio1_files/figure-html/filter%20outliers-1.png" width="672" /></p>
+<p>Now this plot has shown how the haunted houses are located within NC,
+and we can also see how many of them are close to each other by looking
+at the overlap between the dots.</p>
+</div>
+<div id="winston-salem-haunted-houses" class="section level3">
+<h3>Winston Salem Haunted Houses</h3>
+<pre class="r"><code>##Lastly, I am very interested in where are all the haunted houses located within Winston Salem.
+NC_haunted_places_winston &lt;- NC_haunted_places_filtered %&gt;%
+  mutate(winstonsalem = ifelse(city == &quot;Winston&quot;, &quot;Winston&quot;, &quot;Other&quot;))
+
+##Plot with different colors for Winston-Salem vs. Other
+ggplot() +
+  geom_polygon(data = nc_map, aes(x = long, y = lat, group = group),
+               fill = &quot;lightyellow&quot;, color = &quot;black&quot;, alpha = 0.4) +
+  geom_point(data = NC_haunted_places_winston, 
+             aes(x = longitude, y = latitude, color = winstonsalem),
+             alpha = 0.5, size = 2) +
+  scale_color_manual(values = c(&quot;Winston&quot; = &quot;red&quot;, &quot;Other&quot; = &quot;pink&quot;)) +
+  labs(
+    title = &quot;North Carolina Haunted House Locations&quot;,
+    x = &quot;Longitude&quot;, 
+    y = &quot;Latitude&quot;,
+    color = &quot;Location&quot;
+  ) +
+  coord_fixed(1.3)</code></pre>
+<p><img src="portfolio1_files/figure-html/WS%20haunted%20houses%20graph-1.png" width="672" /></p>
+<pre class="r"><code>##I used ChatGPT to help me to get North Carolina counties data
+nc_counties &lt;- counties(state = &quot;NC&quot;, cb = TRUE, year = 2020)</code></pre>
+<pre><code>##   |                                                                              |                                                                      |   0%  |                                                                              |                                                                      |   1%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |===                                                                   |   4%  |                                                                              |===                                                                   |   5%  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   6%  |                                                                              |=====                                                                 |   7%  |                                                                              |=====                                                                 |   8%  |                                                                              |======                                                                |   8%  |                                                                              |=======                                                               |   9%  |                                                                              |=======                                                               |  10%  |                                                                              |=======                                                               |  11%  |                                                                              |========                                                              |  11%  |                                                                              |========                                                              |  12%  |                                                                              |=========                                                             |  12%  |                                                                              |=========                                                             |  13%  |                                                                              |==========                                                            |  14%  |                                                                              |===========                                                           |  15%  |                                                                              |===========                                                           |  16%  |                                                                              |============                                                          |  17%  |                                                                              |=============                                                         |  18%  |                                                                              |==============                                                        |  20%  |                                                                              |===============                                                       |  21%  |                                                                              |================                                                      |  23%  |                                                                              |=================                                                     |  25%  |                                                                              |==================                                                    |  26%  |                                                                              |===================                                                   |  27%  |                                                                              |====================                                                  |  29%  |                                                                              |=====================                                                 |  31%  |                                                                              |======================                                                |  32%  |                                                                              |=======================                                               |  33%  |                                                                              |========================                                              |  35%  |                                                                              |=========================                                             |  35%  |                                                                              |==========================                                            |  37%  |                                                                              |===========================                                           |  38%  |                                                                              |===========================                                           |  39%  |                                                                              |============================                                          |  40%  |                                                                              |=============================                                         |  42%  |                                                                              |==============================                                        |  43%  |                                                                              |===============================                                       |  45%  |                                                                              |================================                                      |  46%  |                                                                              |=================================                                     |  47%  |                                                                              |==================================                                    |  48%  |                                                                              |===================================                                   |  49%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================                                  |  52%  |                                                                              |=====================================                                 |  53%  |                                                                              |======================================                                |  54%  |                                                                              |======================================                                |  55%  |                                                                              |=======================================                               |  56%  |                                                                              |========================================                              |  57%  |                                                                              |========================================                              |  58%  |                                                                              |=========================================                             |  59%  |                                                                              |==========================================                            |  60%  |                                                                              |===========================================                           |  61%  |                                                                              |===========================================                           |  62%  |                                                                              |============================================                          |  62%  |                                                                              |============================================                          |  63%  |                                                                              |=============================================                         |  64%  |                                                                              |=============================================                         |  65%  |                                                                              |==============================================                        |  65%  |                                                                              |==============================================                        |  66%  |                                                                              |===============================================                       |  67%  |                                                                              |===============================================                       |  68%  |                                                                              |================================================                      |  68%  |                                                                              |================================================                      |  69%  |                                                                              |=================================================                     |  70%  |                                                                              |==================================================                    |  72%  |                                                                              |===================================================                   |  72%  |                                                                              |===================================================                   |  73%  |                                                                              |====================================================                  |  74%  |                                                                              |=====================================================                 |  75%  |                                                                              |=====================================================                 |  76%  |                                                                              |======================================================                |  77%  |                                                                              |=======================================================               |  79%  |                                                                              |========================================================              |  80%  |                                                                              |=========================================================             |  82%  |                                                                              |==========================================================            |  83%  |                                                                              |===========================================================           |  85%  |                                                                              |============================================================          |  86%  |                                                                              |=============================================================         |  87%  |                                                                              |=============================================================         |  88%  |                                                                              |==============================================================        |  89%  |                                                                              |===============================================================       |  90%  |                                                                              |================================================================      |  91%  |                                                                              |================================================================      |  92%  |                                                                              |=================================================================     |  93%  |                                                                              |==================================================================    |  94%  |                                                                              |==================================================================    |  95%  |                                                                              |===================================================================   |  95%  |                                                                              |===================================================================   |  96%  |                                                                              |====================================================================  |  97%  |                                                                              |====================================================================  |  98%  |                                                                              |===================================================================== |  98%  |                                                                              |===================================================================== |  99%  |                                                                              |======================================================================|  99%  |                                                                              |======================================================================| 100%</code></pre>
+<pre class="r"><code>##Then I want to filter the Forsyth County, which contains Winston-Salem
+forsyth_county &lt;- nc_counties %&gt;% filter(NAME == &quot;Forsyth&quot;)
+
+
+##I googled the location information of Forsyth County and want to filter the haunted locations inside Forsyth County
+winston_haunted &lt;- NC_haunted_places_filtered %&gt;%
+  filter(latitude &gt; 35.96 &amp; latitude &lt; 36.25 &amp; 
+         longitude &gt; -80.50 &amp; longitude &lt; -80.04)
+
+##Lastly, I am very interested in where are all the haunted houses located within Winston Salem.
+winston_haunted &lt;- winston_haunted %&gt;%
+  mutate(winstonsalem = ifelse(city == &quot;Winston&quot;, &quot;Winston&quot;, &quot;Other&quot;))
+
+##I added Wake Forest location into the dataset because I also want to see how far these haunted houses are from our campus.
+winston_haunted &lt;- winston_haunted %&gt;%
+  add_row(city = &quot;Winston&quot;,
+  latitude = 36.13,
+  longitude = -80.28,
+  country = &quot;United States&quot;,
+  description = &quot;Wake Forest location&quot;,
+  location = &quot;Wake Forest University&quot;,
+  state = &quot;North Carolina&quot;,
+  state_abbrev = &quot;NC&quot;,
+  city_longitude = -80.25444,
+  city_latitude = 36.10396,
+  winstonsalem = &quot;Wake Forest&quot;
+  )
+
+##The plot showing where is Wake Forest campus and the surrounding haunted houses in winston salem and Forsyth county. 
+ggplot() +
+  geom_sf(data = forsyth_county, fill = &quot;lightyellow&quot;, color = &quot;black&quot;, alpha = .5) +
+  geom_point(data = winston_haunted, 
+             aes(x = longitude, y = latitude, color = winstonsalem),
+             alpha = 0.5, size = 4) +
+  scale_color_manual(values = c(&quot;Winston&quot; = &quot;red&quot;, &quot;Other&quot; = &quot;blue&quot;, &quot;Wake Forest&quot; = &quot;gold&quot;)) +
+  labs(
+    title = &quot;North Carolina Haunted House Locations&quot;,
+    x = &quot;Longitude&quot;, 
+    y = &quot;Latitude&quot;,
+    color = &quot;Location&quot;
+  ) +
+  coord_sf()</code></pre>
+<p><img src="portfolio1_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 </div>
 
 

@@ -51,9 +51,9 @@ haunted_counts_NC <- NC_haunted_places %>%
   arrange(desc(num_haunted_houses))
 print(haunted_counts_NC)
 
-## Mean 
+##Mean 
 mean_hauntedhousesNC <- mean(haunted_counts_NC$num_haunted_houses)
-## Standard deviation 
+##Standard deviation 
 sd_hauntedhousesNC <- sd(haunted_counts_NC$num_haunted_houses)
 ```
 
@@ -68,7 +68,7 @@ top_haunted_cities <- NC_haunted_places %>%
   arrange(desc(num_haunted_houses)) %>%
   slice_head(n = 10)
 
-# Create the bar plot for the top ten cities 
+## Create the bar plot for the top ten cities 
 ggplot(top_haunted_cities, aes(x = reorder(city, num_haunted_houses), y = num_haunted_houses, colour = city, fill = city)) +
   geom_bar(stat = "identity") +  
   labs(title = "Top 10 Cities with the Most Haunted Houses in North Carolina",
@@ -80,11 +80,11 @@ ggplot(top_haunted_cities, aes(x = reorder(city, num_haunted_houses), y = num_ha
 ### visualized map of NC
 
 ```{r basic map of NC}
-# get the basic North Carolina map data
+## get the basic North Carolina map data
 nc_map <- map_data("state")
-# filter for North Carolina
+## filter for North Carolina
 nc_map <- subset(nc_map, region == "north carolina")
-# get the map plot
+## get the map plot
 ggplot()+
   geom_polygon(data = nc_map, aes(x = long, y = lat, group = group),
                fill = "lightgray", color = "black", alpha = 0.6) +
@@ -131,7 +131,7 @@ Now this plot has shown how the haunted houses are located within NC, and we can
 NC_haunted_places_winston <- NC_haunted_places_filtered %>%
   mutate(winstonsalem = ifelse(city == "Winston", "Winston", "Other"))
 
-# Plot with different colors for Winston-Salem vs. Other
+##Plot with different colors for Winston-Salem vs. Other
 ggplot() +
   geom_polygon(data = nc_map, aes(x = long, y = lat, group = group),
                fill = "lightyellow", color = "black", alpha = 0.4) +
@@ -149,13 +149,14 @@ ggplot() +
 ```
 
 ```{r}
-# I used ChatGPT to help me to get North Carolina counties data
+##I used ChatGPT to help me to get North Carolina counties data
 nc_counties <- counties(state = "NC", cb = TRUE, year = 2020)
 
-# Than I want to filter the Forsyth County, which contains Winston-Salem
+##Then I want to filter the Forsyth County, which contains Winston-Salem
 forsyth_county <- nc_counties %>% filter(NAME == "Forsyth")
 
-# I googled the location information of Forsyth County and want to filter the haunted locations inside Forsyth County
+
+##I googled the location information of Forsyth County and want to filter the haunted locations inside Forsyth County
 winston_haunted <- NC_haunted_places_filtered %>%
   filter(latitude > 35.96 & latitude < 36.25 & 
          longitude > -80.50 & longitude < -80.04)
@@ -164,13 +165,28 @@ winston_haunted <- NC_haunted_places_filtered %>%
 winston_haunted <- winston_haunted %>%
   mutate(winstonsalem = ifelse(city == "Winston", "Winston", "Other"))
 
-# Plot with different colors for Winston-Salem vs. Other
+##I added Wake Forest location into the dataset because I also want to see how far these haunted houses are from our campus.
+winston_haunted <- winston_haunted %>%
+  add_row(city = "Winston",
+  latitude = 36.13,
+  longitude = -80.28,
+  country = "United States",
+  description = "Wake Forest location",
+  location = "Wake Forest University",
+  state = "North Carolina",
+  state_abbrev = "NC",
+  city_longitude = -80.25444,
+  city_latitude = 36.10396,
+  winstonsalem = "Wake Forest"
+  )
+
+##The plot showing where is Wake Forest campus and the surrounding haunted houses in winston salem and Forsyth county. 
 ggplot() +
   geom_sf(data = forsyth_county, fill = "lightyellow", color = "black", alpha = .5) +
   geom_point(data = winston_haunted, 
              aes(x = longitude, y = latitude, color = winstonsalem),
              alpha = 0.5, size = 4) +
-  scale_color_manual(values = c("Winston" = "red", "Other" = "blue")) +
+  scale_color_manual(values = c("Winston" = "red", "Other" = "blue", "Wake Forest" = "gold")) +
   labs(
     title = "North Carolina Haunted House Locations",
     x = "Longitude", 
