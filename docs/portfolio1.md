@@ -5,7 +5,12 @@ Allison Li
 
 ``` r
 ##install.packages("tidytuesdayR")
+##install.packages(c("maps", "ggplot2"))
+
+library(maps)
+library(ggplot2)
 library(tidyverse)
+
 tuesdata <- tidytuesdayR::tt_load('2023-10-10')
 haunted_places <- tuesdata$haunted_places
 ```
@@ -28,7 +33,7 @@ Now I know that there are 211 haunted houses in North Caronlina, which
 is a litte scary. Next, I wanted to know how they are located within
 North Caronlina.
 
-### Most
+### Most and Least Haunted houses in North Carolina
 
 ``` r
 ##After taking a look at the dataset, I want to merge Winston-Salem to Winston because they refer to the same location. 
@@ -61,33 +66,21 @@ print(haunted_counts_NC)
     ## 10 Lenoir                        4
     ## # ℹ 118 more rows
 
+``` r
+## Mean 
+mean_hauntedhousesNC <- mean(haunted_counts_NC$num_haunted_houses)
+## Standard deviation 
+sd_hauntedhousesNC <- sd(haunted_counts_NC$num_haunted_houses)
+```
+
 Before looking at the houses location visualization, I merged
 Winston-Salem to Winston. After that, I wanted to check which cities in
 NC has the most or least haunted houses. According to the dataset,
-Aheville appeared to have the most haunted houses, n = 1, while Lenoir,
-Jacksonville, and Havelock have the least haunted houses, n = 1
+Asheville appeared to have the most haunted houses, n = 1, while Lenoir,
+Jacksonville, and Havelock have the least haunted houses, n = 1. On
+average, each city in North Carolina seems to has 1.65 haunted houses.
 
-``` r
-##Next, I want to see how these haunted houses are located within NC.
-ggplot(NC_haunted_places, mapping = aes(
-  x = longitude,
-  y = latitude,
-  color = state
-)) +
-  geom_point(alpha = .5) +
-  labs(
-    title= "North Carolina haunted houses Locations",
-    x = "Longitude", 
-    y = "Latitude"
-    )
-```
-
-    ## Warning: Removed 23 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
-
-![](portfolio1_files/figure-gfm/visualization%20of%20haunted%20houses%20locations%20in%20NC-1.png)<!-- -->
-Based on the graph, I can see that most of the haunted houses are
-located near (-80, 36)
+### 
 
 ``` r
 ##I also want to see a bar graph of which city has the most haunted houses.
@@ -105,4 +98,41 @@ ggplot(top_haunted_cities, aes(x = reorder(city, num_haunted_houses), y = num_ha
        coord_flip()
 ```
 
-![](portfolio1_files/figure-gfm/top%205%20citie%20sthat%20has%20the%20most/least%20haunted%20houses%20in%20NC-1.png)<!-- -->
+![](portfolio1_files/figure-gfm/top%205%20citie%20sthat%20has%20the%20most%20or%20least%20haunted%20houses%20in%20NC-1.png)<!-- -->
+
+### visualized map of NC
+
+``` r
+# Get North Carolina map data
+nc_map <- map_data("state")
+
+# Filter for North Carolina
+nc_map <- subset(nc_map, region == "north carolina")
+
+# Plot the map
+ggplot(nc_map, aes(x = long, y = lat, group = group)) +
+  geom_polygon(fill = "lightgray", color = "black") +
+  coord_fixed(1.3) +
+  ggtitle("Map of North Carolina")
+```
+
+![](portfolio1_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+``` r
+ggplot(NC_haunted_places, mapping = aes(
+  x = longitude,
+  y = latitude,
+  color = state
+)) +
+  geom_point(alpha = .5, color = "red") +
+  labs(
+    title= "North Carolina haunted houses Locations",
+    x = "Longitude", 
+    y = "Latitude"
+    )
+```
+
+    ## Warning: Removed 23 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](portfolio1_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->

@@ -2,12 +2,22 @@
 title: "Portfolio 2"
 author: "Allison Li"
 date: "02102025"
-output: github_document
+output: 
+  html_document: 
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r load-packages, message=FALSE}
 ##install.packages("tidytuesdayR")
+##install.packages(c("sf", "tigris", "ggplot2", "ggmap"))
+
+library(maps)
+library(ggplot2)
 library(tidyverse)
+library(sf)
+library(tigris)
+
 tuesdata <- tidytuesdayR::tt_load('2023-10-10')
 haunted_places <- tuesdata$haunted_places
 ```
@@ -24,7 +34,7 @@ NC_haunted_places <- haunted_places %>%
 ```
 Now I know that there are `r nrow(NC_haunted_places)` haunted houses in North Caronlina, which is a litte scary. Next, I wanted to know how they are located within North Caronlina. 
 
-### Most 
+### Most and Least Haunted houses in North Carolina
 
 ```{r most and least haunted houses in NC}
 ##After taking a look at the dataset, I want to merge Winston-Salem to Winston because they refer to the same location. 
@@ -40,26 +50,18 @@ haunted_counts_NC <- NC_haunted_places %>%
   count(city, name = "num_haunted_houses") %>% 
   arrange(desc(num_haunted_houses))
 print(haunted_counts_NC)
-```
-Before looking at the houses location visualization, I merged Winston-Salem to Winston. After that, I wanted to check which cities in NC has the most or least haunted houses. According to the dataset, Aheville appeared to have the most haunted houses, n = `r sort(haunted_counts_NC$num_haunted_houses)[1]`, while Lenoir, Jacksonville, and Havelock have the least haunted houses, n = `r sort(haunted_counts_NC$num_haunted_houses)[10]`
 
-```{r visualization of haunted houses locations in NC}
-##Next, I want to see how these haunted houses are located within NC.
-ggplot(NC_haunted_places, mapping = aes(
-  x = longitude,
-  y = latitude,
-  color = state
-)) +
-  geom_point(alpha = .5) +
-  labs(
-    title= "North Carolina haunted houses Locations",
-    x = "Longitude", 
-    y = "Latitude"
-    )
+## Mean 
+mean_hauntedhousesNC <- mean(haunted_counts_NC$num_haunted_houses)
+## Standard deviation 
+sd_hauntedhousesNC <- sd(haunted_counts_NC$num_haunted_houses)
 ```
-Based on the graph, I can see that most of the haunted houses are located near (-80, 36)
 
-```{r top 5 citie sthat has the most/least haunted houses in NC}
+Before looking at the houses location visualization, I merged Winston-Salem to Winston. After that, I wanted to check which cities in NC has the most or least haunted houses. According to the dataset, Asheville appeared to have the most haunted houses, n = `r sort(haunted_counts_NC$num_haunted_houses)[128]`. On average, each city in North Carolina seems to has `r round(mean_hauntedhousesNC, 2)` haunted houses. 
+
+### Top ten cities with the most Haunted Houses in North Carolina
+
+```{r cities sthat have the most haunted houses in NC}
 ##I also want to see a bar graph of which city has the most haunted houses.
 top_haunted_cities <- NC_haunted_places %>%
   count(city, name = "num_haunted_houses") %>%
@@ -69,8 +71,112 @@ top_haunted_cities <- NC_haunted_places %>%
 # Create the bar plot for the top ten cities 
 ggplot(top_haunted_cities, aes(x = reorder(city, num_haunted_houses), y = num_haunted_houses, colour = city, fill = city)) +
   geom_bar(stat = "identity") +  
-  labs(title = "Top 10 Most Haunted Cities in North Carolina",
+  labs(title = "Top 10 Cities with the Most Haunted Houses in North Carolina",
        x = "City",
        y = "Number of Haunted Houses") +
        coord_flip()
 ```
+
+### visualized map of NC
+
+```{r basic map of NC}
+# get the basic North Carolina map data
+nc_map <- map_data("state")
+# filter for North Carolina
+nc_map <- subset(nc_map, region == "north carolina")
+# get the map plot
+ggplot()+
+  geom_polygon(data = nc_map, aes(x = long, y = lat, group = group),
+               fill = "lightgray", color = "black", alpha = 0.6) +
+  geom_point(data = NC_haunted_places, aes(x = longitude, y = latitude),
+             color = "red", alpha = 0.5, size = 1) +
+   labs(
+    title = "North Carolina Haunted House Locations",
+    x = "Longitude", 
+    y = "Latitude"
+  ) +
+  coord_fixed(1.3)
+```
+
+Based on the graph, we can see that some of the dots seemed to locate outside of North Carolina. I want these to be excluded from the data so the graph can look bigger and more accurately representing data within NC. 
+
+### Filter out the outliers and refine the dataset
+
+```{r filter outliers}
+##Looking at the graph, I want to filter out the data that are outside of the range of: 37> latitude > 33.
+NC_haunted_places_filtered <- NC_haunted_places %>%
+  filter(!(latitude < 35.5 & longitude > -76.25)) %>%
+  filter(latitude > 33 & latitude < 37)
+
+##Now I will plot the graph again
+ggplot()+
+  geom_polygon(data = nc_map, aes(x = long, y = lat, group = group),
+               fill = "lightyellow", color = "black", alpha = 0.6) +
+  geom_point(data = NC_haunted_places_filtered, aes(x = longitude, y = latitude),
+             color = "red", alpha = 0.5, size = 1.8) +
+   labs(
+    title = "North Carolina Haunted House Locations",
+    x = "Longitude", 
+    y = "Latitude"
+  ) +
+  coord_fixed(1.3)
+```
+
+Now this plot has shown how the haunted houses are located within NC, and we can also see how many of them are close to each other by looking at the overlap between the dots.
+
+### Winston Salem Haunted Houses
+
+```{r WS haunted houses graph}
+##Lastly, I am very interested in where are all the haunted houses located within Winston Salem.
+NC_haunted_places_winston <- NC_haunted_places_filtered %>%
+  mutate(winstonsalem = ifelse(city == "Winston", "Winston", "Other"))
+
+# Plot with different colors for Winston-Salem vs. Other
+ggplot() +
+  geom_polygon(data = nc_map, aes(x = long, y = lat, group = group),
+               fill = "lightyellow", color = "black", alpha = 0.4) +
+  geom_point(data = NC_haunted_places_winston, 
+             aes(x = longitude, y = latitude, color = winstonsalem),
+             alpha = 0.5, size = 2) +
+  scale_color_manual(values = c("Winston" = "red", "Other" = "pink")) +
+  labs(
+    title = "North Carolina Haunted House Locations",
+    x = "Longitude", 
+    y = "Latitude",
+    color = "Location"
+  ) +
+  coord_fixed(1.3)
+```
+
+```{r}
+# I used ChatGPT to help me to get North Carolina counties data
+nc_counties <- counties(state = "NC", cb = TRUE, year = 2020)
+
+# Than I want to filter the Forsyth County, which contains Winston-Salem
+forsyth_county <- nc_counties %>% filter(NAME == "Forsyth")
+
+# I googled the location information of Forsyth County and want to filter the haunted locations inside Forsyth County
+winston_haunted <- NC_haunted_places_filtered %>%
+  filter(latitude > 35.96 & latitude < 36.25 & 
+         longitude > -80.50 & longitude < -80.04)
+
+##Lastly, I am very interested in where are all the haunted houses located within Winston Salem.
+winston_haunted <- winston_haunted %>%
+  mutate(winstonsalem = ifelse(city == "Winston", "Winston", "Other"))
+
+# Plot with different colors for Winston-Salem vs. Other
+ggplot() +
+  geom_sf(data = forsyth_county, fill = "lightyellow", color = "black", alpha = .5) +
+  geom_point(data = winston_haunted, 
+             aes(x = longitude, y = latitude, color = winstonsalem),
+             alpha = 0.5, size = 4) +
+  scale_color_manual(values = c("Winston" = "red", "Other" = "blue")) +
+  labs(
+    title = "North Carolina Haunted House Locations",
+    x = "Longitude", 
+    y = "Latitude",
+    color = "Location"
+  ) +
+  coord_sf()
+```
+

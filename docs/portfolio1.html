@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Allison Li" />
+
+
+<title>Portfolio 2</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Portfolio</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="p01.html">Portfolio 1</a>
+</li>
+<li>
+  <a href="p02.html">Portfolio 2</a>
+</li>
+<li>
+  <a href="p03.html">Portfolio 3</a>
+</li>
+<li>
+  <a href="p04.html">Portfolio 4</a>
+</li>
+<li>
+  <a href="p05.html">Portfolio 5</a>
+</li>
+<li>
+  <a href="p06.html">Portfolio 6</a>
+</li>
+<li>
+  <a href="p07.html">Portfolio 7</a>
+</li>
+<li>
+  <a href="p08.html">Portfolio 8</a>
+</li>
+<li>
+  <a href="p09.html">Portfolio 9</a>
+</li>
+<li>
+  <a href="p10.html">Portfolio 10</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Portfolio 2</h1>
+<h4 class="author">Allison Li</h4>
+<h4 class="date">02102025</h4>
+
+</div>
+
+
+<pre class="r"><code>##install.packages(&quot;tidytuesdayR&quot;)
+##install.packages(c(&quot;maps&quot;, &quot;ggplot2&quot;))
+
+library(maps)
+library(ggplot2)
+library(tidyverse)
+
+tuesdata &lt;- tidytuesdayR::tt_load(&#39;2023-10-10&#39;)
+haunted_places &lt;- tuesdata$haunted_places</code></pre>
+<p>I get the haunted houses dataset from the Tidy Tuesday Github (<a
+href="https://github.com/rfordatascience/tidytuesday/blob/main/data/2023/2023-10-10/readme.md"
+class="uri">https://github.com/rfordatascience/tidytuesday/blob/main/data/2023/2023-10-10/readme.md</a>).
+My research question in general is to see where are the haunted houses
+in the US!</p>
+<div id="haunted-houses-in-north-caronlina" class="section level3">
+<h3>Haunted houses in North Caronlina</h3>
+<pre class="r"><code>##first I want to know where are the haunted houses in North Carolina.
+##I would filter the dataset into only houses in NC.
+NC_haunted_places &lt;- haunted_places %&gt;% 
+  filter(state == &quot;North Carolina&quot;)</code></pre>
+<p>Now I know that there are 211 haunted houses in North Caronlina,
+which is a litte scary. Next, I wanted to know how they are located
+within North Caronlina.</p>
+</div>
+<div id="most-and-least-haunted-houses-in-north-carolina"
+class="section level3">
+<h3>Most and Least Haunted houses in North Carolina</h3>
+<pre class="r"><code>##After taking a look at the dataset, I want to merge Winston-Salem to Winston because they refer to the same location. 
+NC_haunted_places &lt;- NC_haunted_places %&gt;%
+mutate(
+  city = case_when(
+    city == &quot;Winston-Salem&quot; ~ &quot;Winston&quot;,
+    TRUE ~ city
+  ))
+
+##I want to see which city has the most and least haunted houses in NC. 
+haunted_counts_NC &lt;- NC_haunted_places %&gt;%
+  count(city, name = &quot;num_haunted_houses&quot;) %&gt;% 
+  arrange(desc(num_haunted_houses))
+print(haunted_counts_NC)</code></pre>
+<pre><code>## # A tibble: 128 × 2
+##    city         num_haunted_houses
+##    &lt;chr&gt;                     &lt;int&gt;
+##  1 Asheville                    10
+##  2 Charlotte                     8
+##  3 Winston                       8
+##  4 Fayetteville                  6
+##  5 Concord                       5
+##  6 Morganton                     5
+##  7 Raleigh                       5
+##  8 Havelock                      4
+##  9 Jacksonville                  4
+## 10 Lenoir                        4
+## # ℹ 118 more rows</code></pre>
+<pre class="r"><code>## Mean 
+mean_hauntedhousesNC &lt;- mean(haunted_counts_NC$num_haunted_houses)
+## Standard deviation 
+sd_hauntedhousesNC &lt;- sd(haunted_counts_NC$num_haunted_houses)</code></pre>
+<p>Before looking at the houses location visualization, I merged
+Winston-Salem to Winston. After that, I wanted to check which cities in
+NC has the most or least haunted houses. According to the dataset,
+Asheville appeared to have the most haunted houses, n = 10. On average,
+each city in North Carolina seems to has 1.65 haunted houses.</p>
+</div>
+<div id="top-ten-cities-with-the-most-haunted-houses-in-north-carolina"
+class="section level3">
+<h3>Top ten cities with the most Haunted Houses in North Carolina</h3>
+<pre class="r"><code>##I also want to see a bar graph of which city has the most haunted houses.
+top_haunted_cities &lt;- NC_haunted_places %&gt;%
+  count(city, name = &quot;num_haunted_houses&quot;) %&gt;%
+  arrange(desc(num_haunted_houses)) %&gt;%
+  slice_head(n = 10)
+
+# Create the bar plot for the top ten cities 
+ggplot(top_haunted_cities, aes(x = reorder(city, num_haunted_houses), y = num_haunted_houses, colour = city, fill = city)) +
+  geom_bar(stat = &quot;identity&quot;) +  
+  labs(title = &quot;Top 10 Cities with the Most Haunted Houses in North Carolina&quot;,
+       x = &quot;City&quot;,
+       y = &quot;Number of Haunted Houses&quot;) +
+       coord_flip()</code></pre>
+<p><img src="portfolio1_files/figure-html/cities%20sthat%20have%20the%20most%20haunted%20houses%20in%20NC-1.png" width="672" /></p>
+</div>
+<div id="visualized-map-of-nc" class="section level3">
+<h3>visualized map of NC</h3>
+<pre class="r"><code># get the basic North Carolina map data
+nc_map &lt;- map_data(&quot;state&quot;)
+# filter for North Carolina
+nc_map &lt;- subset(nc_map, region == &quot;north carolina&quot;)
+# get the map plot
+ggplot()+
+  geom_polygon(data = nc_map, aes(x = long, y = lat, group = group),
+               fill = &quot;lightgray&quot;, color = &quot;black&quot;, alpha = 0.6) +
+  geom_point(data = NC_haunted_places, aes(x = longitude, y = latitude),
+             color = &quot;red&quot;, alpha = 0.5, size = 1) +
+   labs(
+    title = &quot;North Carolina Haunted House Locations&quot;,
+    x = &quot;Longitude&quot;, 
+    y = &quot;Latitude&quot;
+  ) +
+  coord_fixed(1.3)</code></pre>
+<pre><code>## Warning: Removed 23 rows containing missing values or values outside the scale range
+## (`geom_point()`).</code></pre>
+<p><img src="portfolio1_files/figure-html/basic%20map%20of%20NC-1.png" width="672" /></p>
+<p>Based on the graph, we can see that some of the dots seemed to locate
+outside of North Carolina. I want these to be excluded from the data so
+the graph can look bigger and more accurately representing data within
+NC.</p>
+</div>
+<div id="filter-out-the-outliers-and-refine-the-dataset"
+class="section level3">
+<h3>Filter out the outliers and refine the dataset</h3>
+<pre class="r"><code>##Looking at the graph, I want to filter out the data that are outside of the range of: 37&gt; latitude &gt; 35.
+NC_haunted_places &lt;- NC_haunted_places %&gt;%
+  filter(latitude &gt; 35 &amp; latitude &lt; 37)
+
+##Now I will plot the graph again
+ggplot()+
+  geom_polygon(data = nc_map, aes(x = long, y = lat, group = group),
+               fill = &quot;lightgray&quot;, color = &quot;black&quot;, alpha = 0.6) +
+  geom_point(data = NC_haunted_places, aes(x = longitude, y = latitude),
+             color = &quot;red&quot;, alpha = 0.5, size = 2.5) +
+   labs(
+    title = &quot;North Carolina Haunted House Locations&quot;,
+    x = &quot;Longitude&quot;, 
+    y = &quot;Latitude&quot;
+  ) +
+  coord_fixed(1.3)</code></pre>
+<p><img src="portfolio1_files/figure-html/filter%20outliers-1.png" width="672" /></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
