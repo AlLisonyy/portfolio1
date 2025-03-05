@@ -1,10 +1,32 @@
 ---
 title: "Portfolio 2"
 author: "Allison Li"
-date: "02142025"
+date: "03042025"
 output: 
   html_document: 
     toc: yes
     toc_float: yes
 ---
+
+```{r load-packages, message=FALSE}
+##install packages
+##For this portfolio, I would like to use the dataset from my thesis study.
+
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+Thesis <- Profiles_in_Communications_SONA_February_27_2025_12_57
+```
+
+### Step 1: clean data
+```{r clean data}
+##The first step is to clean data, and I started with getting rid of participants that did not finished the study, as well as deleting variable that does not have any data, such as recipient name.  
+Thesis <- Thesis %>% select(-RecipientLastName, -RecipientFirstName, -RecipientEmail, -ExternalReference, -DistributionChannel, -browser_info_Resolution)
+Thesis <- Thesis[-c(1), ]
+##Keep only participants with progress >= 50
+Thesis <- Thesis %>% 
+  filter(Progress >= 50)
+
+```
+
 
