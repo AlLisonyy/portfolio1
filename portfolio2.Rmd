@@ -128,21 +128,37 @@ psychosec <- Thesis_scale[, c("LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SP
                     "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10")]
 alpha(psychosec, check.keys = TRUE)
 ##Hypersensitive Narcissism scale and Narcissistic Personality Inventory
-narc <- Thesis_scale[, c("HNS_1", "HNS_2", "HNS_3", "HNS_4", "HNS_5", 
-               "HNS_6", "HNS_7", "HNS_8", "HNS_9", "HNS_10")]
-alpha(narc, check.keys = TRUE)
-npi <- Thesis_scale[, c("HNS_1", "HNS_2", "HNS_3", "HNS_4", "HNS_5", 
-               "HNS_6", "HNS_7", "HNS_8", "HNS_9", "HNS_10")]
+npi <- Thesis_scale[, c("NPI_1", "NPI_2", "NPI_3", "NPI_4", "NPI_5", "NPI_6", "NPI_7", "NPI_8", 
+               "NPI_9", "NPI_10", "NPI_11", "NPI_12", "NPI_13", "NPI_14", "NPI_15", "NPI_16")]
 alpha(npi, check.keys = TRUE)
 hns <- Thesis_scale[, c("HNS_1", "HNS_2", "HNS_3", "HNS_4", "HNS_5", 
                "HNS_6", "HNS_7", "HNS_8", "HNS_9", "HNS_10")]
 alpha(hns, check.keys = TRUE)
 
-##Need for Cognition Scale
-ncog <- Thesis_scale[, c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "ncog7",
-                     "ncog8", "ncog9", "ncog10", "ncog11", "ncog12", "ncog13", 
-                     "ncog14", "ncog15", "ncog16", "ncog17", "ncog18")]
-alpha(ncog, check.keys = TRUE) 
+##Honesty_humility
+hon <- Thesis_scale[, c("hex6", "hex12", "hex18", "hex24", "hex30", 
+               "hex36", "hex42", "hex48", "hex54", "hex60")]
+alpha(hon, check.keys = TRUE) 
+##EMOTIONALITY
+emo <- Thesis_scale[, c("hex5", "hex11", "hex17", "hex23", "hex29", 
+               "hex35", "hex41", "hex47", "hex53", "hex59")]
+alpha(emo, check.keys = TRUE) 
+##EXTRAVERSION
+extra <- Thesis_scale[, c("hex4", "hex10", "hex16", "hex22", "hex28", 
+               "hex34", "hex40", "hex46", "hex52", "hex58")]
+alpha(extra, check.keys = TRUE) 
+##AGREEABLENESS
+agree <- Thesis_scale[, c("hex3", "hex9", "hex15", "hex21", "hex27", 
+               "hex33", "hex39", "hex45", "hex51", "hex57")]
+alpha(agree, check.keys = TRUE) 
+##CONSCIENTIOUSNESS
+cons <- Thesis_scale[, c("hex2", "hex8", "hex14", "hex20", "hex26", 
+               "hex32", "hex38", "hex44", "hex50", "hex56")]
+alpha(cons, check.keys = TRUE) 
+##OPENNESS_TO_EXPERIENCE
+open <- Thesis_scale[, c("hex1", "hex7", "hex13", "hex19", "hex25", 
+               "hex31", "hex37", "hex43", "hex49", "hex55")]
+alpha(open, check.keys = TRUE) 
 
 ##Need for Closure scale
 nfclos <- Thesis_scale[, c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "nclos7", "nclos8", 
@@ -152,6 +168,11 @@ nfclos <- Thesis_scale[, c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nc
                  "nclos33", "nclos34", "nclos35", "nclos36", "nclos37", "nclos38", "nclos39", "nclos40", 
                  "nclos41", "nclos42")]
 alpha(nfclos, check.keys = TRUE) 
+##Need for Cognition Scale
+ncog <- Thesis_scale[, c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "ncog7",
+                     "ncog8", "ncog9", "ncog10", "ncog11", "ncog12", "ncog13", 
+                     "ncog14", "ncog15", "ncog16", "ncog17", "ncog18")]
+alpha(ncog, check.keys = TRUE) 
 
 ##Self-esteem Scale
 se <- Thesis_scale[, c("self_esteem_1", "self_esteem_2", "self_esteem_3", "self_esteem_4", 
@@ -171,6 +192,17 @@ alpha(intuitiveTS, check.keys = TRUE)
 ##prefer effortful Thinking Style
 effortTS <- Thesis_clean[, c("A4CTS_19", "A4CTS_20", "A4CTS_21", "A4CTS_22", "A4CTS_23", "A4CTS_24")]
 alpha(effortTS, check.keys = TRUE)
+
+##Actively Open-Minded Thinking about Evidence Scale 
+aopes <- Thesis_clean[, c("aopen1", "aopen2", "aopen3", "aopen4", "aopen5", "aopen6", "aopen7", "aopen8")]
+alpha(aopes, check.keys = TRUE)
+##Faith in Intuition Scale
+fi <- Thesis_clean[, c("fi1", "fi2", "fi3", "fi4", "fi5", "fi6", "fi7", "fi8", "fi9", "fi10", "fi11", "fi12")]
+alpha(fi, check.keys = TRUE)
+##Intellectual Humility Scale
+ihs <- Thesis_clean[, c("IHS_1", "IHS_2", "IHS_3", "IHS_4", "IHS_5", "IHS_6")]
+alpha(ihs, check.keys = TRUE)
+
 
 
 ##calculate the mean for each scale
