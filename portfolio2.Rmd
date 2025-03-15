@@ -10,8 +10,9 @@ output:
 
 ```{r load-packages, message=FALSE}
 ##install packages
+##install.packages("psych")
 ##For this portfolio, I would like to use the dataset from my thesis study.
-
+library(psych)
 library(ggplot2)
 library(tidyverse)
 library(dplyr)
@@ -21,15 +22,224 @@ Thesis <- read_sav("~/Downloads/Thesis.sav")
 ### Step 1: clean data
 ```{r clean data}
 ##The first step is to clean data, and I started with getting rid of participants that did not finished the study, as well as deleting variable that does not have any data, such as recipient name.  
-Thesis <- Thesis %>% select(-RecipientLastName, -RecipientFirstName, -RecipientEmail, -ExternalReference, -DistributionChannel, -browser_info_Resolution, -StartDate, -EndDate, -browser_info_Browser, -browser_info_Version, -IPAddress, -RecordedDate, -LocationLatitude, -LocationLongitude, -ResponseId, -UserLanguage, -browser_info_Operating_System, -robot_timer_First_Click, -robot_timer_Last_Click, -robot_timer_Page_Submit, -robot_timer_Click_Count)
-Thesis <- Thesis[-c(1), ]
+Thesis_clean <- Thesis %>% 
+  select(-RecipientLastName, -RecipientFirstName, -RecipientEmail, -ExternalReference, -DistributionChannel, -browser_info_Resolution, -StartDate, -EndDate, -browser_info_Browser, -browser_info_Version, -IPAddress, -RecordedDate, -LocationLatitude, -LocationLongitude, -ResponseId, -UserLanguage, -browser_info_Operating_System, -robot_timer_First_Click, -robot_timer_Last_Click, -robot_timer_Page_Submit, -robot_timer_Click_Count)
+Thesis_clean <- Thesis[-c(1), ]
 ##Keep only participants with progress >= 50
-Thesis <- Thesis %>% 
+Thesis_clean <- Thesis %>% 
   filter(Progress >= 50)
 ```
 
 
 ```{r scoring scales}
+##Reverse coding for BPS
+Thesis_clean <- Thesis_clean %>%
+  mutate(across(everything(), ~ as.numeric(.)))
+Thesis_scale <- Thesis_clean %>%
+  mutate(
+    across(c(BPS_1, BPS_2, BPS_3, BPS_6, BPS_9, BPS_11), ~ recode(., 
+      `1` = 5, `2` = 4, `4` = 2, `5` = 1)), ##Bullshit Propensity Scale
+
+    across(c(self_esteem_2, self_esteem_5, self_esteem_6, self_esteem_8, self_esteem_9), ~ recode(., 
+      `1` = 4, `11` = 3, `12` = 2, `13` = 1)), ##Rosenberg Self-esteem Scale
+
+    across(c(self_esteem_1, self_esteem_3, self_esteem_4, self_esteem_7, self_esteem_10), ~ recode(., 
+      `1` = 1, `11` = 2, `12` = 3, `13` = 4)), ##Rosenberg Self-esteem Scale
+    
+    across(c(ncog3, ncog4, ncog5, ncog7, ncog8, ncog9, ncog12, ncog16, ncog17), ~ recode(., 
+      `1` = 5, `2` = 4, `4` = 2, `5` = 1)), ##Need for Cognition
+    
+    across(c(DTS_Nar_2, DTS_Nar_6, DTS_Nar_8, DTS_Path_2, DTS_Path_7), ~ recode(., 
+      `1` = 5, `2` = 4, `4` = 2, `5` = 1)), ##The Short Dark Triad
+    
+    across(c(NPI_1, NPI_2, NPI_3, NPI_4, NPI_5, NPI_6, NPI_7, NPI_8, NPI_9, NPI_10, NPI_11, NPI_12, NPI_13, NPI_14, NPI_15, NPI_16), ~ recode(., 
+      `1` = 2, `2` = 1)), ##Narcissistic Personality Inventory–16
+    
+    across(c(A4CTS_1, A4CTS_2, A4CTS_3, A4CTS_4, A4CTS_5, A4CTS_6, A4CTS_19, A4CTS_20, A4CTS_21, A4CTS_22, A4CTS_23, A4CTS_24), ~ recode(.,
+      `1` = 6, `2` = 5, `3` = 4, `4` = 3, `5` = 2, `6` = 1)), ##4-Component Thinking Styles Questionnaire
+    
+    across(c(LSRP_SPS_3, LSRP_SPS_7, LSRP_PPS_10, LSRP_PPS_12, LSRP_PPS_14, LSRP_PPS_16), ~ recode(.,
+      `1` = 4, `2` = 3, `3` = 2, `4` = 1)), ##Levenson Self-Report Psychopathy Scale
+   
+    across(c(aopen3, aopen4, aopen5, aopen7, aopen8), ~ recode(.,
+      `1` = 6, `3` = 5, `4` = 4, `5` = 3, `6` = 2, `7` = 1)), ##Actively Open-Minded Thinking about Evidence Scale
+    across(c(aopen1, aopen2, aopen6), ~ recode(.,
+      `1` = 1, `3` = 2, `4` = 3, `5` = 4, `6` = 5, `7` = 6)),
+    
+    across(c(nclos2, nclos5, nclos15, nclos12, nclos17, nclos18, nclos19, nclos20, nclos22, nclos24, nclos27, nclos28, nclos34, nclos37, nclos38, nclos42), ~ recode(.,
+      `1` = 6, `2` = 5, `3` = 4, `4` = 3, `5` = 2, `6` = 1)), ##Need for closure
+    
+    across(c(hex1, hex9, hex10, hex12, hex14, hex15, hex19, hex20, hex21, hex24, hex26, hex28, hex30, hex31, hex32, hex35, hex41, hex44, hex46, hex48, hex49, hex52, hex53, hex55, hex56, hex57, hex59, hex60), ~ recode(.,
+      `1` = 5, `2` = 4, `4` = 2, `5` = 1)) ##HEXACO
+    )
+
+##Combine the items for each scale and compute Cronbach’s Alpha for the scales
+##Bullshit Frequency Scale
+bfs <- Thesis_scale[, c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", 
+               "BFS_7", "BFS_8", "BFS_9", "BFS_10", "BFS_11", "BFS_12")]
+alpha(bfs, check.keys = TRUE) 
+##BFSevasive
+bfse <- Thesis_scale[, c("BFS_9", "BFS_10", "BFS_11", "BFS_12")]
+alpha(bfse, check.keys = TRUE) 
+##BFSpersuasive
+bfsp <- Thesis_scale[, c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", 
+               "BFS_7", "BFS_8")]
+alpha(bfsp, check.keys = TRUE) 
+##Bullshit Propensity Scale
+bps <- Thesis_scale[, c("BPS_1", "BPS_2", "BPS_3", "BPS_4", "BPS_5", "BPS_6", 
+               "BPS_7", "BPS_8", "BPS_9", "BPS_10", "BPS_11", "BPS_12")]
+alpha(bps, check.keys = TRUE) 
+##Lying in Everyday Situations Scale
+lie <- Thesis_scale[, c("lies1", "lies2", "lies3", "lies4", "lies5", "lies6", 
+                "lies7", "lies8", "lies9", "lies10", "lies11", "lies12", 
+                "lies13", "lies14")]
+alpha(lie, check.keys = TRUE)
+##Short_dark_triad Narcissism
+sdtnarc <- Thesis_scale[, c("DTS_Nar_1", "DTS_Nar_2", "DTS_Nar_3", "DTS_Nar_4", "DTS_Nar_5", 
+                   "DTS_Nar_6", "DTS_Nar_7", "DTS_Nar_8", "DTS_Nar_9")]
+alpha(sdtnarc, check.keys = TRUE)
+##Short_dark_triad Machiavellianism
+sdtmach <- Thesis_scale[, c("DTS_MACH_1", "DTS_MACH_2", "DTS_MACH_3", "DTS_MACH_4", "DTS_MACH_5", 
+                    "DTS_MACH_6", "DTS_MACH_7", "DTS_MACH_8", "DTS_MACH_9")]
+alpha(sdtmach, check.keys = TRUE)
+##Short_dark_triad Psychopathy
+sdtpsych <- Thesis_scale[, c("DTS_Path_1", "DTS_Path_2", "DTS_Path_3", "DTS_Path_4", 
+                    "DTS_Path_5", "DTS_Path_6", "DTS_Path_7", "DTS_Path_8", "DTS_Path_9")]
+alpha(sdtpsych, check.keys = TRUE)
+##Machiavellianism scale
+machi <- Thesis_scale[, c("MPS_1", "MPS_2", "MPS_3", "MPS_4", "MPS_5", "MPS_6", "MPS_7", "MPS_8",
+               "MPS_9", "MPS_10", "MPS_11", "MPS_12", "MPS_13", "MPS_14", "MPS_15", "MPS_16")]
+alpha(machi, check.keys = TRUE)
+##Psychopathy scale
+psycho <- Thesis_scale[, c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", 
+                    "LSRP_PPS_6", "LSRP_PPS_7", "LSRP_PPS_8", "LSRP_PPS_9", "LSRP_PPS_10", 
+                    "LSRP_PPS_11", "LSRP_PPS_12", "LSRP_PPS_13", "LSRP_PPS_14", "LSRP_PPS_15", 
+                    "LSRP_PPS_16", "LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", 
+                    "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10")]
+alpha(psycho, check.keys = TRUE)
+##primary factor
+psychoprim <- Thesis_scale[, c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", 
+                    "LSRP_PPS_6", "LSRP_PPS_7", "LSRP_PPS_8", "LSRP_PPS_9", "LSRP_PPS_10", 
+                    "LSRP_PPS_11", "LSRP_PPS_12", "LSRP_PPS_13", "LSRP_PPS_14", "LSRP_PPS_15", 
+                    "LSRP_PPS_16")]
+alpha(psychoprim, check.keys = TRUE)
+##secondary factor
+psychosec <- Thesis_scale[, c("LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", 
+                    "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10")]
+alpha(psychosec, check.keys = TRUE)
+##Hypersensitive Narcissism scale and Narcissistic Personality Inventory
+narc <- Thesis_scale[, c("HNS_1", "HNS_2", "HNS_3", "HNS_4", "HNS_5", 
+               "HNS_6", "HNS_7", "HNS_8", "HNS_9", "HNS_10")]
+alpha(narc, check.keys = TRUE)
+npi <- Thesis_scale[, c("HNS_1", "HNS_2", "HNS_3", "HNS_4", "HNS_5", 
+               "HNS_6", "HNS_7", "HNS_8", "HNS_9", "HNS_10")]
+alpha(npi, check.keys = TRUE)
+hns <- Thesis_scale[, c("HNS_1", "HNS_2", "HNS_3", "HNS_4", "HNS_5", 
+               "HNS_6", "HNS_7", "HNS_8", "HNS_9", "HNS_10")]
+alpha(hns, check.keys = TRUE)
+
+##Need for Cognition Scale
+ncog <- Thesis_scale[, c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "ncog7",
+                     "ncog8", "ncog9", "ncog10", "ncog11", "ncog12", "ncog13", 
+                     "ncog14", "ncog15", "ncog16", "ncog17", "ncog18")]
+alpha(ncog, check.keys = TRUE) 
+
+##Need for Closure scale
+nfclos <- Thesis_scale[, c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "nclos7", "nclos8", 
+                 "nclos9", "nclos10", "nclos11", "nclos12", "nclos13", "nclos14", "nclos15", "nclos16", 
+                 "nclos17", "nclos18", "nclos19", "nclos20", "nclos21", "nclos22", "nclos23", "nclos24", 
+                 "nclos25", "nclos26", "nclos27", "nclos28", "nclos29", "nclos30", "nclos31", "nclos32", 
+                 "nclos33", "nclos34", "nclos35", "nclos36", "nclos37", "nclos38", "nclos39", "nclos40", 
+                 "nclos41", "nclos42")]
+alpha(nfclos, check.keys = TRUE) 
+
+##Self-esteem Scale
+se <- Thesis_scale[, c("self_esteem_1", "self_esteem_2", "self_esteem_3", "self_esteem_4", 
+                       "self_esteem_5", "self_esteem_6", "self_esteem_7", "self_esteem_8", 
+                       "self_esteem_9", "self_esteem_10")]
+alpha(se, check.keys = TRUE)
+
+##Actively Thinking Style
+activeTS <- Thesis_clean[, c("A4CTS_1", "A4CTS_2", "A4CTS_3", "A4CTS_4", "A4CTS_5", "A4CTS_6")]
+alpha(activeTS, check.keys = TRUE)
+##Close-minded Thinking Style
+closeTS <- Thesis_clean[, c("A4CTS_7", "A4CTS_8", "A4CTS_9", "A4CTS_10", "A4CTS_11", "A4CTS_12")]
+alpha(closeTS, check.keys = TRUE)
+##prefer intuitive Thinking Style
+intuitiveTS <- Thesis_clean[, c("A4CTS_13", "A4CTS_14", "A4CTS_15", "A4CTS_16", "A4CTS_17", "A4CTS_18")]
+alpha(intuitiveTS, check.keys = TRUE)
+##prefer effortful Thinking Style
+effortTS <- Thesis_clean[, c("A4CTS_19", "A4CTS_20", "A4CTS_21", "A4CTS_22", "A4CTS_23", "A4CTS_24")]
+alpha(effortTS, check.keys = TRUE)
+
+
+##calculate the mean for each scale
+Thesis_scale <- Thesis_clean %>%
+  mutate(
+    BFS = rowMeans(select(., BFS_1:BFS_12), na.rm = TRUE), ##Bullshit Frequency Scale
+    
+    BFSe = rowMeans(select(., BFS_9:BFS_12), na.rm = TRUE),
+    
+    BFSp = rowMeans(select(., BFS_1:BFS_8), na.rm = TRUE),
+    
+    BPS = rowMeans(select(., BPS_1:BPS_12), na.rm = TRUE), ##Bullshit Propensity Scale
+    
+    SE = rowMeans(select(., self_esteem_1:self_esteem_10), na.rm = TRUE), ##Self-esteem
+    
+    MACH = rowMeans(select(., MPS_1:MPS_16), na.rm = TRUE), ##Machiavellianism
+    
+    PSYC = rowMeans(select(., LSRP_PPS_1:LSRP_PPS_16), na.rm = TRUE), ##Psychopathy
+    
+    NARC = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Narcissism
+    
+    EXTR = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Extraversion
+    
+    AGRE = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Agreeableness
+    
+    CONS = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Conscientiousness
+    
+    OPEN = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Openness
+    
+    PIT = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Preference for Intuitive Thinking
+    
+    PET = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Preference for Effortful Thinking
+    
+    CMT = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Close-minded thinking
+    
+    OMT = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Open-minded thinking
+    
+    CFA = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##cognitive reflection ability
+    
+    COGA = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Cognitive Ability
+    
+    SDT_MACH = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Short Dark Triad 
+    
+    SDT_PSYCH = rowMeans(select(., ncog1:ncog18), na.rm = TRUE),
+    
+    SDT_NARC = rowMeans(select(., ncog1:ncog18), na.rm = TRUE),
+    
+    NFC = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Need for Cognition
+    
+    HNS = rowMeans(select(., HNS_1:HNS_10), na.rm = TRUE), ##Hypersensitive Narcissism Scale
+    
+    FI = rowMeans(select(., fi1:fi12), na.rm = TRUE), ##Faith in Intuition Scale
+    
+    IHS = rowMeans(select(., IHS_1:IHS_6), na.rm = TRUE), ##Intellectual Humility 
+    
+    LIE = rowMeans(select(., lies1:lies14), na.rm = TRUE), ##Lying in Everyday Situations Scale
+    )
+
+
+
+
+```
+
+
+```{r}
+
+
+
 glimpse(Thesis)
+
 ```
 
