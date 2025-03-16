@@ -72,206 +72,136 @@ Thesis_scale <- Thesis_clean %>%
     across(c(hex1, hex9, hex10, hex12, hex14, hex15, hex19, hex20, hex21, hex24, hex26, hex28, hex30, hex31, hex32, hex35, hex41, hex44, hex46, hex48, hex49, hex52, hex53, hex55, hex56, hex57, hex59, hex60), ~ recode(.,
       `1` = 5, `2` = 4, `4` = 2, `5` = 1)) ##HEXACO
     )
+```
 
-##Combine the items for each scale and compute Cronbach’s Alpha for the scales
-##Bullshit Frequency Scale
-bfs <- Thesis_scale[, c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", 
-               "BFS_7", "BFS_8", "BFS_9", "BFS_10", "BFS_11", "BFS_12")]
-alpha(bfs, check.keys = TRUE) 
-##BFSevasive
-bfse <- Thesis_scale[, c("BFS_9", "BFS_10", "BFS_11", "BFS_12")]
-alpha(bfse, check.keys = TRUE) 
-##BFSpersuasive
-bfsp <- Thesis_scale[, c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", 
-               "BFS_7", "BFS_8")]
-alpha(bfsp, check.keys = TRUE) 
-##Bullshit Propensity Scale
-bps <- Thesis_scale[, c("BPS_1", "BPS_2", "BPS_3", "BPS_4", "BPS_5", "BPS_6", 
-               "BPS_7", "BPS_8", "BPS_9", "BPS_10", "BPS_11", "BPS_12")]
-alpha(bps, check.keys = TRUE) 
+```{r test from gpt}
+##Create an empty list to store results
+scale_stats <- list()
+
+##Function to compute scale statistics
+compute_scale_stats <- function(data, vars, scale_name) {
+  scale_data <- data[, vars]
+##Convert all variables to numeric
+  scale_data <- data.frame(lapply(scale_data, function(x) as.numeric(as.character(x))))
+ 
+   # Remove rows where all values are NA
+  if (all(is.na(scale_data))) {
+    cat("\nScale:", scale_name, "has only missing values, skipping.\n")
+    return()
+  }
+  
+##Compute Cronbach's Alpha
+  alpha_result <- alpha(scale_data, check.keys = TRUE)
+  alpha_value <- round(alpha_result$total$raw_alpha, 3)
+##Compute row means and descriptive statistics
+  row_means <- rowMeans(scale_data, na.rm = TRUE)
+  if (all(is.na(row_means))) {
+    mean_value <- sd_value <- min_value <- max_value <- NA
+  } else {
+    mean_value <- round(mean(row_means, na.rm = TRUE), 3)
+    sd_value <- round(sd(row_means, na.rm = TRUE), 3)
+    min_value <- round(min(row_means, na.rm = TRUE), 3)
+    max_value <- round(max(row_means, na.rm = TRUE), 3)
+  }
+  
+##Print clean results
+  cat("\nScale:", scale_name, "\n")
+  cat("Cronbach's Alpha:", alpha_value, "\n")
+  cat("Mean:", mean_value, "| SD:", sd_value, "| Range:", min_value, "-", max_value, "\n")
+  
+##Store results in a list
+  scale_stats[[scale_name]] <<- c(Alpha = alpha_value, Mean = mean_value, SD = sd_value, Min = min_value, Max = max_value)
+}
+
+##Apply function to each scale
+scales <- list(
+##Bullshit Frequency scale general  
+  bfs = c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", "BFS_7", "BFS_8", "BFS_9", "BFS_10", "BFS_11", "BFS_12"),
+##Bullshit Frequency scale evasive
+  bfse = c("BFS_9", "BFS_10", "BFS_11", "BFS_12"),
+##Bullshit Frequency scale persuasive
+  bfsp = c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", "BFS_7", "BFS_8"),
+##Bullshit Propensity scale 
+  bps = c("BPS_1", "BPS_2", "BPS_3", "BPS_4", "BPS_5", "BPS_6", "BPS_7", "BPS_8", "BPS_9", "BPS_10", "BPS_11", "BPS_12"),
 ##Lying in Everyday Situations Scale
-lie <- Thesis_scale[, c("lies1", "lies2", "lies3", "lies4", "lies5", "lies6", 
-                "lies7", "lies8", "lies9", "lies10", "lies11", "lies12", 
-                "lies13", "lies14")]
-alpha(lie, check.keys = TRUE)
+  lie = c("lies1", "lies2", "lies3", "lies4", "lies5", "lies6", "lies7", "lies8", "lies9", "lies10", "lies11", "lies12", "lies13", "lies14"),
 ##Short_dark_triad Narcissism
-sdtnarc <- Thesis_scale[, c("DTS_Nar_1", "DTS_Nar_2", "DTS_Nar_3", "DTS_Nar_4", "DTS_Nar_5", 
-                   "DTS_Nar_6", "DTS_Nar_7", "DTS_Nar_8", "DTS_Nar_9")]
-alpha(sdtnarc, check.keys = TRUE)
+  sdtnarc = c("DTS_Nar_1", "DTS_Nar_2", "DTS_Nar_3", "DTS_Nar_4", "DTS_Nar_5", "DTS_Nar_6", "DTS_Nar_7", "DTS_Nar_8", "DTS_Nar_9"),
 ##Short_dark_triad Machiavellianism
-sdtmach <- Thesis_scale[, c("DTS_MACH_1", "DTS_MACH_2", "DTS_MACH_3", "DTS_MACH_4", "DTS_MACH_5", 
-                    "DTS_MACH_6", "DTS_MACH_7", "DTS_MACH_8", "DTS_MACH_9")]
-alpha(sdtmach, check.keys = TRUE)
+  sdtmach = c("DTS_MACH_1", "DTS_MACH_2", "DTS_MACH_3", "DTS_MACH_4", "DTS_MACH_5", "DTS_MACH_6", "DTS_MACH_7", "DTS_MACH_8", "DTS_MACH_9"),
 ##Short_dark_triad Psychopathy
-sdtpsych <- Thesis_scale[, c("DTS_Path_1", "DTS_Path_2", "DTS_Path_3", "DTS_Path_4", 
-                    "DTS_Path_5", "DTS_Path_6", "DTS_Path_7", "DTS_Path_8", "DTS_Path_9")]
-alpha(sdtpsych, check.keys = TRUE)
-##Machiavellianism scale
-machi <- Thesis_scale[, c("MPS_1", "MPS_2", "MPS_3", "MPS_4", "MPS_5", "MPS_6", "MPS_7", "MPS_8",
-               "MPS_9", "MPS_10", "MPS_11", "MPS_12", "MPS_13", "MPS_14", "MPS_15", "MPS_16")]
-alpha(machi, check.keys = TRUE)
-##Psychopathy scale
-psycho <- Thesis_scale[, c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", 
+  sdtpsych = c("DTS_Path_1", "DTS_Path_2", "DTS_Path_3", "DTS_Path_4", "DTS_Path_5", "DTS_Path_6", "DTS_Path_7", "DTS_Path_8", "DTS_Path_9"),
+##Machiavellianism Personality scale
+  machi = c("MPS_1", "MPS_2", "MPS_3", "MPS_4", "MPS_5", "MPS_6", "MPS_7", "MPS_8", "MPS_9", "MPS_10", "MPS_11", "MPS_12", "MPS_13", "MPS_14", "MPS_15", "MPS_16"),
+##Levenson Self-Report Psychopathy Scale
+  psycho = c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", "LSRP_PPS_6", "LSRP_PPS_7", "LSRP_PPS_8", "LSRP_PPS_9", "LSRP_PPS_10", "LSRP_PPS_11", "LSRP_PPS_12", "LSRP_PPS_13", "LSRP_PPS_14", "LSRP_PPS_15", "LSRP_PPS_16", "LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10"),
+##primary factor of psychopathy scale
+  psychoprim = c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", 
                     "LSRP_PPS_6", "LSRP_PPS_7", "LSRP_PPS_8", "LSRP_PPS_9", "LSRP_PPS_10", 
                     "LSRP_PPS_11", "LSRP_PPS_12", "LSRP_PPS_13", "LSRP_PPS_14", "LSRP_PPS_15", 
-                    "LSRP_PPS_16", "LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", 
-                    "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10")]
-alpha(psycho, check.keys = TRUE)
-##primary factor
-psychoprim <- Thesis_scale[, c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", 
-                    "LSRP_PPS_6", "LSRP_PPS_7", "LSRP_PPS_8", "LSRP_PPS_9", "LSRP_PPS_10", 
-                    "LSRP_PPS_11", "LSRP_PPS_12", "LSRP_PPS_13", "LSRP_PPS_14", "LSRP_PPS_15", 
-                    "LSRP_PPS_16")]
-alpha(psychoprim, check.keys = TRUE)
-##secondary factor
-psychosec <- Thesis_scale[, c("LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", 
-                    "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10")]
-alpha(psychosec, check.keys = TRUE)
-##Hypersensitive Narcissism scale and Narcissistic Personality Inventory
-npi <- Thesis_scale[, c("NPI_1", "NPI_2", "NPI_3", "NPI_4", "NPI_5", "NPI_6", "NPI_7", "NPI_8", 
-               "NPI_9", "NPI_10", "NPI_11", "NPI_12", "NPI_13", "NPI_14", "NPI_15", "NPI_16")]
-alpha(npi, check.keys = TRUE)
-hns <- Thesis_scale[, c("HNS_1", "HNS_2", "HNS_3", "HNS_4", "HNS_5", 
-               "HNS_6", "HNS_7", "HNS_8", "HNS_9", "HNS_10")]
-alpha(hns, check.keys = TRUE)
-
+                    "LSRP_PPS_16"),
+##secondary factor of psychopathy scale
+  psychosec = c("LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", 
+                    "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10"),
+##Self-esteem (Rosenberg)
+  se = c("self_esteem_1", "self_esteem_2", "self_esteem_3", "self_esteem_4", "self_esteem_5", 
+                     "self_esteem_6", "self_esteem_7", "self_esteem_8", "self_esteem_9", "self_esteem_10"),
+##HEXACO
 ##Honesty_humility
-hon <- Thesis_scale[, c("hex6", "hex12", "hex18", "hex24", "hex30", 
-               "hex36", "hex42", "hex48", "hex54", "hex60")]
-alpha(hon, check.keys = TRUE) 
-##EMOTIONALITY
-emo <- Thesis_scale[, c("hex5", "hex11", "hex17", "hex23", "hex29", 
-               "hex35", "hex41", "hex47", "hex53", "hex59")]
-alpha(emo, check.keys = TRUE) 
-##EXTRAVERSION
-extra <- Thesis_scale[, c("hex4", "hex10", "hex16", "hex22", "hex28", 
-               "hex34", "hex40", "hex46", "hex52", "hex58")]
-alpha(extra, check.keys = TRUE) 
-##AGREEABLENESS
-agree <- Thesis_scale[, c("hex3", "hex9", "hex15", "hex21", "hex27", 
-               "hex33", "hex39", "hex45", "hex51", "hex57")]
-alpha(agree, check.keys = TRUE) 
+  hon = c("hex6", "hex12", "hex18", "hex24", "hex30", "hex36", "hex42", "hex48", "hex54", "hex60"),
+##Emotionality
+  emo = c("hex5", "hex11", "hex17", "hex23", "hex29", "hex35", "hex41", "hex47", "hex53", "hex59"),
+##Extraversion
+  extra = c("hex4", "hex10", "hex16", "hex22", "hex28", "hex34", "hex40", "hex46", "hex52", "hex58"),
+##Agreeableness
+  agree = c("hex3", "hex9", "hex15", "hex21", "hex27", "hex33", "hex39", "hex45", "hex51", "hex57"),
 ##CONSCIENTIOUSNESS
-cons <- Thesis_scale[, c("hex2", "hex8", "hex14", "hex20", "hex26", 
-               "hex32", "hex38", "hex44", "hex50", "hex56")]
-alpha(cons, check.keys = TRUE) 
-##OPENNESS_TO_EXPERIENCE
-open <- Thesis_scale[, c("hex1", "hex7", "hex13", "hex19", "hex25", 
-               "hex31", "hex37", "hex43", "hex49", "hex55")]
-alpha(open, check.keys = TRUE) 
-
-##Need for Closure scale
-nfclos <- Thesis_scale[, c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "nclos7", "nclos8", 
-                 "nclos9", "nclos10", "nclos11", "nclos12", "nclos13", "nclos14", "nclos15", "nclos16", 
-                 "nclos17", "nclos18", "nclos19", "nclos20", "nclos21", "nclos22", "nclos23", "nclos24", 
-                 "nclos25", "nclos26", "nclos27", "nclos28", "nclos29", "nclos30", "nclos31", "nclos32", 
-                 "nclos33", "nclos34", "nclos35", "nclos36", "nclos37", "nclos38", "nclos39", "nclos40", 
-                 "nclos41", "nclos42")]
-alpha(nfclos, check.keys = TRUE) 
-##Need for Cognition Scale
-ncog <- Thesis_scale[, c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "ncog7",
-                     "ncog8", "ncog9", "ncog10", "ncog11", "ncog12", "ncog13", 
-                     "ncog14", "ncog15", "ncog16", "ncog17", "ncog18")]
-alpha(ncog, check.keys = TRUE) 
-
-##Self-esteem Scale
-se <- Thesis_scale[, c("self_esteem_1", "self_esteem_2", "self_esteem_3", "self_esteem_4", 
-                       "self_esteem_5", "self_esteem_6", "self_esteem_7", "self_esteem_8", 
-                       "self_esteem_9", "self_esteem_10")]
-alpha(se, check.keys = TRUE)
-
-##Actively Thinking Style
-activeTS <- Thesis_clean[, c("A4CTS_1", "A4CTS_2", "A4CTS_3", "A4CTS_4", "A4CTS_5", "A4CTS_6")]
-alpha(activeTS, check.keys = TRUE)
-##Close-minded Thinking Style
-closeTS <- Thesis_clean[, c("A4CTS_7", "A4CTS_8", "A4CTS_9", "A4CTS_10", "A4CTS_11", "A4CTS_12")]
-alpha(closeTS, check.keys = TRUE)
-##prefer intuitive Thinking Style
-intuitiveTS <- Thesis_clean[, c("A4CTS_13", "A4CTS_14", "A4CTS_15", "A4CTS_16", "A4CTS_17", "A4CTS_18")]
-alpha(intuitiveTS, check.keys = TRUE)
-##prefer effortful Thinking Style
-effortTS <- Thesis_clean[, c("A4CTS_19", "A4CTS_20", "A4CTS_21", "A4CTS_22", "A4CTS_23", "A4CTS_24")]
-alpha(effortTS, check.keys = TRUE)
-
-##Actively Open-Minded Thinking about Evidence Scale 
-aopes <- Thesis_clean[, c("aopen1", "aopen2", "aopen3", "aopen4", "aopen5", "aopen6", "aopen7", "aopen8")]
-alpha(aopes, check.keys = TRUE)
-##Faith in Intuition Scale
-fi <- Thesis_clean[, c("fi1", "fi2", "fi3", "fi4", "fi5", "fi6", "fi7", "fi8", "fi9", "fi10", "fi11", "fi12")]
-alpha(fi, check.keys = TRUE)
+  cons = c("hex2", "hex8", "hex14", "hex20", "hex26", "hex32", "hex38", "hex44", "hex50", "hex56"),
+##Openness to Experience
+  open = c("hex1", "hex7", "hex13", "hex19", "hex25", "hex31", "hex37", "hex43", "hex49", "hex55"),
 ##Intellectual Humility Scale
-ihs <- Thesis_clean[, c("IHS_1", "IHS_2", "IHS_3", "IHS_4", "IHS_5", "IHS_6")]
-alpha(ihs, check.keys = TRUE)
+  ihs = c("IHS_1", "IHS_2", "IHS_3", "IHS_4", "IHS_5", "IHS_6"),
+##Need for Closure
+  nclos = c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "nclos7", "nclos8", "nclos9", "nclos10", 
+                                                 "nclos11", "nclos12", "nclos13", "nclos14", "nclos15", 
+                                                 "nclos16", "nclos17", "nclos18", "nclos19", "nclos20", 
+                                                 "nclos21", "nclos22", "nclos23", "nclos24", "nclos25", 
+                                                 "nclos26", "nclos27", "nclos28", "nclos29", "nclos30", 
+                                                 "nclos31", "nclos32", "nclos33", "nclos34", "nclos35", 
+                                                 "nclos36", "nclos37", "nclos38", "nclos39", "nclos40", 
+                                                 "nclos41", "nclos42"),
+##Need for Cognition
+  ncog = c("ncog7", "ncog8", "ncog9", "ncog10", "ncog11", "ncog12", 
+                                               "ncog13", "ncog14", "ncog15", "ncog16", "ncog17", "ncog18"),
+##Actively Open Thinking Style
+  openTS = c("A4CTS_1", "A4CTS_2", "A4CTS_3", "A4CTS_4", "A4CTS_5", "A4CTS_6"),
+##Close-minded Thinking Style
+  closeTS = c("A4CTS_7", "A4CTS_8", "A4CTS_9", "A4CTS_10", "A4CTS_11", "A4CTS_12"),
+##prefer intuitive Thinking Style
+  intuitiveTS = c("A4CTS_13", "A4CTS_14", "A4CTS_15", "A4CTS_16", "A4CTS_17", "A4CTS_18"),
+##prefer effortful Thinking Style
+  effortTS = c("A4CTS_19", "A4CTS_20", "A4CTS_21", "A4CTS_22", "A4CTS_23", "A4CTS_24"),
+##Actively Open-Minded Thinking about Evidence Scale 
+  Activeopen = c("aopen1", "aopen2", "aopen3", "aopen4", "aopen5", "aopen6", "aopen7", "aopen8"),
+##Faith in Intuition Scale
+  fi = c("fi1", "fi2", "fi3", "fi4", "fi5", "fi6", "fi7", "fi8", "fi9", "fi10", "fi11", "fi12")
+)
 
+##Loop through the scales and apply function
+for (scale in names(scales)) {
+  compute_scale_stats(Thesis_scale, scales[[scale]], toupper(scale))
+}
 
+##Convert results into a structured data frame
+scale_stats_df <- data.frame(
+  Scale = names(scale_stats),
+  do.call(rbind, scale_stats)
+)
 
-##calculate the mean for each scale
-Thesis_scale <- Thesis_clean %>%
-  mutate(
-    BFS = rowMeans(select(., BFS_1:BFS_12), na.rm = TRUE), ##Bullshit Frequency Scale
-    
-    BFSe = rowMeans(select(., BFS_9:BFS_12), na.rm = TRUE),
-    
-    BFSp = rowMeans(select(., BFS_1:BFS_8), na.rm = TRUE),
-    
-    BPS = rowMeans(select(., BPS_1:BPS_12), na.rm = TRUE), ##Bullshit Propensity Scale
-    
-    SE = rowMeans(select(., self_esteem_1:self_esteem_10), na.rm = TRUE), ##Self-esteem
-    
-    MACH = rowMeans(select(., MPS_1:MPS_16), na.rm = TRUE), ##Machiavellianism
-    
-    PSYC = rowMeans(select(., LSRP_PPS_1:LSRP_PPS_16), na.rm = TRUE), ##Psychopathy
-    
-    NARC = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Narcissism
-    
-    EXTR = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Extraversion
-    
-    AGRE = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Agreeableness
-    
-    CONS = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Conscientiousness
-    
-    OPEN = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Openness
-    
-    PIT = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Preference for Intuitive Thinking
-    
-    PET = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Preference for Effortful Thinking
-    
-    CMT = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Close-minded thinking
-    
-    OMT = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Open-minded thinking
-    
-    CFA = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##cognitive reflection ability
-    
-    COGA = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Cognitive Ability
-    
-    SDT_MACH = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Short Dark Triad 
-    
-    SDT_PSYCH = rowMeans(select(., ncog1:ncog18), na.rm = TRUE),
-    
-    SDT_NARC = rowMeans(select(., ncog1:ncog18), na.rm = TRUE),
-    
-    NFC = rowMeans(select(., ncog1:ncog18), na.rm = TRUE), ##Need for Cognition
-    
-    HNS = rowMeans(select(., HNS_1:HNS_10), na.rm = TRUE), ##Hypersensitive Narcissism Scale
-    
-    FI = rowMeans(select(., fi1:fi12), na.rm = TRUE), ##Faith in Intuition Scale
-    
-    IHS = rowMeans(select(., IHS_1:IHS_6), na.rm = TRUE), ##Intellectual Humility 
-    
-    LIE = rowMeans(select(., lies1:lies14), na.rm = TRUE), ##Lying in Everyday Situations Scale
-    )
-
-
-
-
+##Display final results
+print(scale_stats_df)
 ```
 
 
-```{r}
 
-
-
-glimpse(Thesis)
-
-```
 
