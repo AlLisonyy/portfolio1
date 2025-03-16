@@ -75,7 +75,7 @@ Thesis_scale <- Thesis_clean %>%
     )
 ```
 
-```{r test from gpt}
+```{r computing mean, sd, and other descriptives for each scales and variables}
 ##Create an empty list to store results
 scale_stats <- list()
 
@@ -84,16 +84,11 @@ compute_scale_stats <- function(data, vars, scale_name) {
   scale_data <- data[, vars]
 ##Convert all variables to numeric
   scale_data <- data.frame(lapply(scale_data, function(x) as.numeric(as.character(x))))
- 
-   # Remove rows where all values are NA
-  if (all(is.na(scale_data))) {
-    cat("\nScale:", scale_name, "has only missing values, skipping.\n")
-    return()
-  }
-  
+
 ##Compute Cronbach's Alpha
   alpha_result <- alpha(scale_data, check.keys = TRUE)
   alpha_value <- round(alpha_result$total$raw_alpha, 3)
+
 ##Compute row means and descriptive statistics
   row_means <- rowMeans(scale_data, na.rm = TRUE)
   if (all(is.na(row_means))) {
