@@ -1,7 +1,7 @@
 ---
-title: "Portfolio 2"
+title: "Thesis data cleaning"
 author: "Allison Li"
-date: "03042025"
+date: "03102025"
 output: 
   html_document: 
     toc: yes
@@ -13,6 +13,7 @@ output:
 ##install.packages("psych")
 ##For this portfolio, I would like to use the dataset from my thesis study.
 library(psych)
+library(haven)
 library(ggplot2)
 library(tidyverse)
 library(dplyr)
