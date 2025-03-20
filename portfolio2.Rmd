@@ -10,11 +10,15 @@ output:
 
 ```{r load-packages, message=FALSE}
 ##install packages
+##install.packages("ltm")
 ##install.packages("psych")
+##install.packages("ppcor")
 ##For this portfolio, I would like to use the dataset from my thesis study.
 library(psych)
 library(haven)
 library(ggplot2)
+library(ltm)
+library(ppcor)
 library(tidyverse)
 library(dplyr)
 Thesis <- read_sav("~/Downloads/Thesis.sav")
@@ -25,22 +29,36 @@ Thesis <- read_sav("~/Downloads/Thesis.sav")
 ##The first step is to clean data, and I started with getting rid of participants that did not finished the study, as well as deleting variable that does not have any data, such as recipient name.  
 Thesis_clean <- Thesis %>% 
   select(-RecipientLastName, -RecipientFirstName, -RecipientEmail, -ExternalReference, -DistributionChannel, -browser_info_Resolution, -StartDate, -EndDate, -browser_info_Browser, -browser_info_Version, -IPAddress, -RecordedDate, -LocationLatitude, -LocationLongitude, -ResponseId, -UserLanguage, -browser_info_Operating_System, -robot_timer_First_Click, -robot_timer_Last_Click, -robot_timer_Page_Submit, -robot_timer_Click_Count)
-Thesis_clean <- Thesis[-c(1), ]
+Thesis_clean <- Thesis_clean[-c(1), ]
 ##Keep only participants with progress >= 50
-Thesis_clean <- Thesis %>% 
+Thesis_clean <- Thesis_clean %>% 
   filter(Progress >= 50)
+##Remove people's answers who did not give consent to participate in the study
+Thesis_clean <- Thesis_clean %>%
+  filter(Consent1 != 2)
 ```
 
 
 ```{r scoring scales}
 ##Reverse coding for BPS
+##Define columns that should remain as text, which are my short-answer responses
+text_cols <- c("BS_TL_CG_1", "BS_TL_CG_2", "BS_TL_CG_3", "BS_TL_CG_4", "BS_TL_CG_5", 
+"BS_TL_Recycle_1", "BS_TL_Recycling_2", "BS_TL_Recycling_3", "BS_TL_Recycling_4", "BS_TL_Recycling_5", 
+"BS_TL_Crime_1", "BS_TL_Crime_2", "BS_TL_Crime_3", "BS_TL_Crime_4", "BS_TL_Crime_5", 
+"major", "BS_shortanswer1", "BS_shortanswer2", "comment") 
+
+##Convert the numeric columns
 Thesis_clean <- Thesis_clean %>%
-  mutate(across(everything(), ~ as.numeric(.)))
+  mutate(across(-all_of(text_cols), ~ as.numeric(.)))
+
 Thesis_scale <- Thesis_clean %>%
   mutate(
     across(c(BPS_1, BPS_2, BPS_3, BPS_6, BPS_9, BPS_11), ~ recode(., 
       `1` = 5, `2` = 4, `4` = 2, `5` = 1)), ##Bullshit Propensity Scale
 
+    across(c(self_esteem_2, self_esteem_5, self_esteem_6, self_esteem_8, self_esteem_9), ~ recode(., 
+      `1` = 4, `11` = 3, `12` = 2, `13` = 1)), ##Thought-Rating
+    
     across(c(self_esteem_2, self_esteem_5, self_esteem_6, self_esteem_8, self_esteem_9), ~ recode(., 
       `1` = 4, `11` = 3, `12` = 2, `13` = 1)), ##Rosenberg Self-esteem Scale
 
@@ -73,130 +91,224 @@ Thesis_scale <- Thesis_clean %>%
     across(c(hex1, hex9, hex10, hex12, hex14, hex15, hex19, hex20, hex21, hex24, hex26, hex28, hex30, hex31, hex32, hex35, hex41, hex44, hex46, hex48, hex49, hex52, hex53, hex55, hex56, hex57, hex59, hex60), ~ recode(.,
       `1` = 5, `2` = 4, `4` = 2, `5` = 1)) ##HEXACO
     )
+
+
+```
+I realized that I should have create new variables for the recoded ones, so that would be easier for me to keep track on if the numbers are already recoded. I had too many variables this time so I did not do that. 
+
+```{r BS measurement}
+Thesis_scale <- Thesis_scale %>%
+  mutate(
+    recoded_college = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
+    sum_recoded_TR_college = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
+    sum_recoded_TR_recycling = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
+    sum_recoded_TR_crime = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
+    recoded_recycling = rowSums(select(., RC1_score, RC2_score, RC3_score, RC4_score, RC5_scoree), na.rm = TRUE),
+    recoded_crime = rowSums(select(., CR1_score, CR2_score, CR3_score, CR4_score, CR5_score), na.rm = TRUE),
+    )
 ```
 
+
 ```{r computing mean, sd, and other descriptives for each scales and variables}
-##Create an empty list to store results
-scale_stats <- list()
-
-##Function to compute scale statistics
-compute_scale_stats <- function(data, vars, scale_name) {
-  scale_data <- data[, vars]
-##Convert all variables to numeric
-  scale_data <- data.frame(lapply(scale_data, function(x) as.numeric(as.character(x))))
-
-##Compute Cronbach's Alpha
-  alpha_result <- alpha(scale_data, check.keys = TRUE)
-  alpha_value <- round(alpha_result$total$raw_alpha, 3)
-
-##Compute row means and descriptive statistics
-  row_means <- rowMeans(scale_data, na.rm = TRUE)
-  if (all(is.na(row_means))) {
-    mean_value <- sd_value <- min_value <- max_value <- NA
-  } else {
-    mean_value <- round(mean(row_means, na.rm = TRUE), 3)
-    sd_value <- round(sd(row_means, na.rm = TRUE), 3)
-    min_value <- round(min(row_means, na.rm = TRUE), 3)
-    max_value <- round(max(row_means, na.rm = TRUE), 3)
-  }
-  
-##Print clean results
-  cat("\nScale:", scale_name, "\n")
-  cat("Cronbach's Alpha:", alpha_value, "\n")
-  cat("Mean:", mean_value, "| SD:", sd_value, "| Range:", min_value, "-", max_value, "\n")
-  
-##Store results in a list
-  scale_stats[[scale_name]] <<- c(Alpha = alpha_value, Mean = mean_value, SD = sd_value, Min = min_value, Max = max_value)
-}
-
-##Apply function to each scale
-scales <- list(
+##Define the scales
 ##Bullshit Frequency scale general  
-  bfs = c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", "BFS_7", "BFS_8", "BFS_9", "BFS_10", "BFS_11", "BFS_12"),
+bfs <- c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", "BFS_7", "BFS_8", "BFS_9", "BFS_10", "BFS_11", "BFS_12")
 ##Bullshit Frequency scale evasive
-  bfse = c("BFS_9", "BFS_10", "BFS_11", "BFS_12"),
+bfse <- c("BFS_9", "BFS_10", "BFS_11", "BFS_12")
 ##Bullshit Frequency scale persuasive
-  bfsp = c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", "BFS_7", "BFS_8"),
+bfsp <- c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", "BFS_7", "BFS_8")
 ##Bullshit Propensity scale 
-  bps = c("BPS_1", "BPS_2", "BPS_3", "BPS_4", "BPS_5", "BPS_6", "BPS_7", "BPS_8", "BPS_9", "BPS_10", "BPS_11", "BPS_12"),
+bps <- c("BPS_1", "BPS_2", "BPS_3", "BPS_4", "BPS_5", "BPS_6", "BPS_7", "BPS_8", "BPS_9", "BPS_10", "BPS_11", "BPS_12")
 ##Lying in Everyday Situations Scale
-  lie = c("lies1", "lies2", "lies3", "lies4", "lies5", "lies6", "lies7", "lies8", "lies9", "lies10", "lies11", "lies12", "lies13", "lies14"),
+lie <- c("lies1", "lies2", "lies3", "lies4", "lies5", "lies6", "lies7", "lies8", "lies9", "lies10", "lies11", "lies12", "lies13", "lies14")
 ##Short_dark_triad Narcissism
-  sdtnarc = c("DTS_Nar_1", "DTS_Nar_2", "DTS_Nar_3", "DTS_Nar_4", "DTS_Nar_5", "DTS_Nar_6", "DTS_Nar_7", "DTS_Nar_8", "DTS_Nar_9"),
+sdtnarc <- c("DTS_Nar_1", "DTS_Nar_2", "DTS_Nar_3", "DTS_Nar_4", "DTS_Nar_5", "DTS_Nar_6", "DTS_Nar_7", "DTS_Nar_8", "DTS_Nar_9")
 ##Short_dark_triad Machiavellianism
-  sdtmach = c("DTS_MACH_1", "DTS_MACH_2", "DTS_MACH_3", "DTS_MACH_4", "DTS_MACH_5", "DTS_MACH_6", "DTS_MACH_7", "DTS_MACH_8", "DTS_MACH_9"),
+sdtmach <- c("DTS_MACH_1", "DTS_MACH_2", "DTS_MACH_3", "DTS_MACH_4", "DTS_MACH_5", "DTS_MACH_6", "DTS_MACH_7", "DTS_MACH_8", "DTS_MACH_9")
 ##Short_dark_triad Psychopathy
-  sdtpsych = c("DTS_Path_1", "DTS_Path_2", "DTS_Path_3", "DTS_Path_4", "DTS_Path_5", "DTS_Path_6", "DTS_Path_7", "DTS_Path_8", "DTS_Path_9"),
+sdtpsych <- c("DTS_Path_1", "DTS_Path_2", "DTS_Path_3", "DTS_Path_4", "DTS_Path_5", "DTS_Path_6", "DTS_Path_7", "DTS_Path_8", "DTS_Path_9")
 ##Machiavellianism Personality scale
-  machi = c("MPS_1", "MPS_2", "MPS_3", "MPS_4", "MPS_5", "MPS_6", "MPS_7", "MPS_8", "MPS_9", "MPS_10", "MPS_11", "MPS_12", "MPS_13", "MPS_14", "MPS_15", "MPS_16"),
+machi <- c("MPS_1", "MPS_2", "MPS_3", "MPS_4", "MPS_5", "MPS_6", "MPS_7", "MPS_8", "MPS_9", "MPS_10", "MPS_11", "MPS_12", "MPS_13", "MPS_14", "MPS_15", "MPS_16")
 ##Levenson Self-Report Psychopathy Scale
-  psycho = c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", "LSRP_PPS_6", "LSRP_PPS_7", "LSRP_PPS_8", "LSRP_PPS_9", "LSRP_PPS_10", "LSRP_PPS_11", "LSRP_PPS_12", "LSRP_PPS_13", "LSRP_PPS_14", "LSRP_PPS_15", "LSRP_PPS_16", "LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10"),
+psycho <- c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", "LSRP_PPS_6", "LSRP_PPS_7", "LSRP_PPS_8", "LSRP_PPS_9", "LSRP_PPS_10", "LSRP_PPS_11", "LSRP_PPS_12", "LSRP_PPS_13", "LSRP_PPS_14", "LSRP_PPS_15", "LSRP_PPS_16", "LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10")
 ##primary factor of psychopathy scale
-  psychoprim = c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", 
+psychopri <- c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", 
                     "LSRP_PPS_6", "LSRP_PPS_7", "LSRP_PPS_8", "LSRP_PPS_9", "LSRP_PPS_10", 
                     "LSRP_PPS_11", "LSRP_PPS_12", "LSRP_PPS_13", "LSRP_PPS_14", "LSRP_PPS_15", 
-                    "LSRP_PPS_16"),
+                    "LSRP_PPS_16")
 ##secondary factor of psychopathy scale
-  psychosec = c("LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", 
-                    "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10"),
+psychosec <- c("LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", 
+                    "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10")
 ##Self-esteem (Rosenberg)
-  se = c("self_esteem_1", "self_esteem_2", "self_esteem_3", "self_esteem_4", "self_esteem_5", 
-                     "self_esteem_6", "self_esteem_7", "self_esteem_8", "self_esteem_9", "self_esteem_10"),
+se <- c("self_esteem_1", "self_esteem_2", "self_esteem_3", "self_esteem_4", "self_esteem_5", 
+                     "self_esteem_6", "self_esteem_7", "self_esteem_8", "self_esteem_9", "self_esteem_10")
 ##HEXACO
 ##Honesty_humility
-  hon = c("hex6", "hex12", "hex18", "hex24", "hex30", "hex36", "hex42", "hex48", "hex54", "hex60"),
+hon <- c("hex6", "hex12", "hex18", "hex24", "hex30", "hex36", "hex42", "hex48", "hex54", "hex60")
 ##Emotionality
-  emo = c("hex5", "hex11", "hex17", "hex23", "hex29", "hex35", "hex41", "hex47", "hex53", "hex59"),
+emo <- c("hex5", "hex11", "hex17", "hex23", "hex29", "hex35", "hex41", "hex47", "hex53", "hex59")
 ##Extraversion
-  extra = c("hex4", "hex10", "hex16", "hex22", "hex28", "hex34", "hex40", "hex46", "hex52", "hex58"),
+extra <- c("hex4", "hex10", "hex16", "hex22", "hex28", "hex34", "hex40", "hex46", "hex52", "hex58")
 ##Agreeableness
-  agree = c("hex3", "hex9", "hex15", "hex21", "hex27", "hex33", "hex39", "hex45", "hex51", "hex57"),
+agree <- c("hex3", "hex9", "hex15", "hex21", "hex27", "hex33", "hex39", "hex45", "hex51", "hex57")
 ##CONSCIENTIOUSNESS
-  cons = c("hex2", "hex8", "hex14", "hex20", "hex26", "hex32", "hex38", "hex44", "hex50", "hex56"),
+cons <- c("hex2", "hex8", "hex14", "hex20", "hex26", "hex32", "hex38", "hex44", "hex50", "hex56")
 ##Openness to Experience
-  open = c("hex1", "hex7", "hex13", "hex19", "hex25", "hex31", "hex37", "hex43", "hex49", "hex55"),
+open <- c("hex1", "hex7", "hex13", "hex19", "hex25", "hex31", "hex37", "hex43", "hex49", "hex55")
 ##Intellectual Humility Scale
-  ihs = c("IHS_1", "IHS_2", "IHS_3", "IHS_4", "IHS_5", "IHS_6"),
+ihs <- c("IHS_1", "IHS_2", "IHS_3", "IHS_4", "IHS_5", "IHS_6")
 ##Need for Closure
-  nclos = c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "nclos7", "nclos8", "nclos9", "nclos10", 
+nclos <- c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "nclos7", "nclos8", "nclos9", "nclos10", 
                                                  "nclos11", "nclos12", "nclos13", "nclos14", "nclos15", 
                                                  "nclos16", "nclos17", "nclos18", "nclos19", "nclos20", 
                                                  "nclos21", "nclos22", "nclos23", "nclos24", "nclos25", 
                                                  "nclos26", "nclos27", "nclos28", "nclos29", "nclos30", 
                                                  "nclos31", "nclos32", "nclos33", "nclos34", "nclos35", 
                                                  "nclos36", "nclos37", "nclos38", "nclos39", "nclos40", 
-                                                 "nclos41", "nclos42"),
+                                                 "nclos41", "nclos42")
 ##Need for Cognition
-  ncog = c("ncog7", "ncog8", "ncog9", "ncog10", "ncog11", "ncog12", 
-                                               "ncog13", "ncog14", "ncog15", "ncog16", "ncog17", "ncog18"),
+ncog <- c("ncog7", "ncog8", "ncog9", "ncog10", "ncog11", "ncog12", 
+                                               "ncog13", "ncog14", "ncog15", "ncog16", "ncog17", "ncog18")
 ##Actively Open Thinking Style
-  openTS = c("A4CTS_1", "A4CTS_2", "A4CTS_3", "A4CTS_4", "A4CTS_5", "A4CTS_6"),
+openTS <- c("A4CTS_1", "A4CTS_2", "A4CTS_3", "A4CTS_4", "A4CTS_5", "A4CTS_6")
 ##Close-minded Thinking Style
-  closeTS = c("A4CTS_7", "A4CTS_8", "A4CTS_9", "A4CTS_10", "A4CTS_11", "A4CTS_12"),
+closeTS <- c("A4CTS_7", "A4CTS_8", "A4CTS_9", "A4CTS_10", "A4CTS_11", "A4CTS_12")
 ##prefer intuitive Thinking Style
-  intuitiveTS = c("A4CTS_13", "A4CTS_14", "A4CTS_15", "A4CTS_16", "A4CTS_17", "A4CTS_18"),
+intuitiveTS <- c("A4CTS_13", "A4CTS_14", "A4CTS_15", "A4CTS_16", "A4CTS_17", "A4CTS_18")
 ##prefer effortful Thinking Style
-  effortTS = c("A4CTS_19", "A4CTS_20", "A4CTS_21", "A4CTS_22", "A4CTS_23", "A4CTS_24"),
+effortTS <- c("A4CTS_19", "A4CTS_20", "A4CTS_21", "A4CTS_22", "A4CTS_23", "A4CTS_24")
 ##Actively Open-Minded Thinking about Evidence Scale 
-  Activeopen = c("aopen1", "aopen2", "aopen3", "aopen4", "aopen5", "aopen6", "aopen7", "aopen8"),
+Activeopen <- c("aopen1", "aopen2", "aopen3", "aopen4", "aopen5", "aopen6", "aopen7", "aopen8")
 ##Faith in Intuition Scale
-  fi = c("fi1", "fi2", "fi3", "fi4", "fi5", "fi6", "fi7", "fi8", "fi9", "fi10", "fi11", "fi12")
-)
-
-##Loop through the scales and apply function
-for (scale in names(scales)) {
-  compute_scale_stats(Thesis_scale, scales[[scale]], toupper(scale))
-}
-
-##Convert results into a structured data frame
-scale_stats_df <- data.frame(
-  Scale = names(scale_stats),
-  do.call(rbind, scale_stats)
-)
-
-##Display final results
-print(scale_stats_df)
+fi <- c("fi1", "fi2", "fi3", "fi4", "fi5", "fi6", "fi7", "fi8", "fi9", "fi10", "fi11", "fi12")
 ```
+
+
+```{r mean for each scale}
+Thesis_scale <- Thesis_scale %>%
+  mutate(
+    bfsmean = rowMeans(select(., all_of(bfs)), na.rm = TRUE),
+    bfsemean = rowMeans(select(., all_of(bfse)), na.rm = TRUE),
+    bfspmean = rowMeans(select(., all_of(bfsp)), na.rm = TRUE),
+    bpsmean = rowMeans(select(., all_of(bps)), na.rm = TRUE),
+    liemean = rowMeans(select(., all_of(lie)), na.rm = TRUE),
+    sdtnarcmean = rowMeans(select(., all_of(sdtnarc)), na.rm = TRUE),
+    sdtmachmean = rowMeans(select(., all_of(sdtmach)), na.rm = TRUE),
+    sdtpsychmean = rowMeans(select(., all_of(sdtpsych)), na.rm = TRUE),
+    machimean = rowMeans(select(., all_of(machi)), na.rm = TRUE),
+    psychomean = rowMeans(select(., all_of(psycho)), na.rm = TRUE),
+    psychoprimean = rowMeans(select(., all_of(psychopri)), na.rm = TRUE),
+    psychosecmean = rowMeans(select(., all_of(psychosec)), na.rm = TRUE),
+    semean = rowMeans(select(., all_of(se)), na.rm = TRUE),
+    honmean = rowMeans(select(., all_of(hon)), na.rm = TRUE),
+    emomena = rowMeans(select(., all_of(emo)), na.rm = TRUE),
+    extramean = rowMeans(select(., all_of(extra)), na.rm = TRUE),
+    agreemean = rowMeans(select(., all_of(agree)), na.rm = TRUE),
+    consmean = rowMeans(select(., all_of(cons)), na.rm = TRUE),
+    openmean = rowMeans(select(., all_of(open)), na.rm = TRUE),
+    ihsmean = rowMeans(select(., all_of(ihs)), na.rm = TRUE),
+    nclosmean = rowMeans(select(., all_of(nclos)), na.rm = TRUE),
+    ncogmean = rowMeans(select(., all_of(ncog)), na.rm = TRUE),
+    openTSmean = rowMeans(select(., all_of(openTS)), na.rm = TRUE),
+    closeTSmean = rowMeans(select(., all_of(closeTS)), na.rm = TRUE),
+    intuitiveTSmean = rowMeans(select(., all_of(intuitiveTS)), na.rm = TRUE),
+    effortTSmean = rowMeans(select(., all_of(effortTS)), na.rm = TRUE),
+    Activeopenmean = rowMeans(select(., all_of(Activeopen)), na.rm = TRUE),
+    fimean = rowMeans(select(., all_of(fi)), na.rm = TRUE)
+  )
+
+```
+
+```{r}
+##BFS and BPS
+partial_BFSBPS <- Thesis_scale %>% 
+  select(bfsmean, bpsmean, liemean) %>%
+  drop_na()
+
+partial_BFSBPS_result <- pcor.test(partial_BFSBPS$bfsmean, 
+                                 partial_BFSBPS$bpsmean, 
+                                 partial_BFSBPS$liemean)
+
+print(partial_corr_result)
+
+##BFS and mach
+partial_BFSmach<- Thesis_scale %>% 
+  select(bfsmean, sdtmachmean, liemean) %>% 
+  drop_na()
+
+partial_BFSmach_result <- pcor.test(partial_BFSmach$bfsmean, 
+                                 partial_BFSmach$sdtmachmean, 
+                                 partial_BFSmach$liemean)
+
+print(partial_BFSmach_result)
+
+##BFS and narc
+partial_BFSnarc<- Thesis_scale %>% 
+  select(bfsmean, sdtnarcmean, liemean) %>% 
+  drop_na()
+
+partial_BFSnarc_result <- pcor.test(
+  x = partial_BFSnarc$bfsmean,
+  y = partial_BFSnarc$sdtnarcmean,
+  z = partial_BFSnarc$liemean)
+
+print(partial_BFSnarc_result)
+
+##BFS and psychopathy
+partial_BFSpsych<- Thesis_scale %>% 
+  select(bfsmean, sdtpsychmean, liemean) %>%
+  drop_na()
+
+partial_BFSpsych_result <- pcor.test(
+  x = partial_BFSpsych$bfsmean,
+  y = partial_BFSpsych$sdtpsychmean,
+  z = partial_BFSpsych$liemean
+  )
+
+print(partial_BFSpsych_result)
+
+##BPS and mach
+partial_BPSmach<- Thesis_scale %>% 
+  select(bpsmean, sdtmachmean, liemean) %>%
+  drop_na()
+
+partial_BPSmach_result <- pcor.test(
+  x = partial_BPSmach$bpsmean,
+  y = partial_BPSmach$sdtmachmean,
+  z = partial_BPSmach$liemean
+  )
+
+print(partial_BPSmach_result)
+
+##BPS and narc
+partial_BPSnarc<- Thesis_scale %>% 
+  select(bpsmean, sdtnarcmean, liemean) %>%
+  drop_na()
+
+partial_BPSnarc_result <- pcor.test(
+  x = partial_BPSnarc$bpsmean,
+  y = partial_BPSnarc$sdtnarcmean,
+  z = partial_BPSnarc$liemean
+  )
+
+print(partial_BPSnarc_result)
+
+##BPS and psychopathy
+partial_BPSpsych<- Thesis_scale %>% 
+  select(bpsmean, sdtpsychmean, liemean) %>%
+  drop_na()
+
+partial_BPSpsych_result <- pcor.test(
+  x = partial_BPSpsych$bpsmean,
+  y = partial_BPSpsych$sdtpsychmean,
+  z = partial_BPSpsych$liemean
+  )
+
+print(partial_BPSpsych_result)
+
+```
+
+
 
 
 
