@@ -3,9 +3,13 @@ title: "Thesis data cleaning"
 author: "Allison Li"
 date: "03102025"
 output: 
-  html_document: 
-    toc: yes
-    toc_float: yes
+  html_document:
+    encoding: UTF-8
+    toc: true
+    number_sections: false
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
 ---
 
 ```{r load-packages, message=FALSE}
@@ -24,7 +28,7 @@ library(dplyr)
 Thesis <- read_sav("~/Downloads/Thesis.sav")
 ```
 
-### Step 1: clean data
+## Step 1: clean data
 ```{r clean data}
 ##The first step is to clean data, and I started with getting rid of participants that did not finished the study, as well as deleting variable that does not have any data, such as recipient name.  
 Thesis_clean <- Thesis %>% 
@@ -35,29 +39,37 @@ Thesis_clean <- Thesis_clean %>%
   filter(Progress >= 50)
 ##Remove people's answers who did not give consent to participate in the study
 Thesis_clean <- Thesis_clean %>%
-  filter(Consent1 != 2)
+  filter(Consent1 != 2, (!is.na(difficulties)))
 ```
 
-
+## Step 2: reverse coding the scales
 ```{r scoring scales}
-##Reverse coding for BPS
 ##Define columns that should remain as text, which are my short-answer responses
 text_cols <- c("BS_TL_CG_1", "BS_TL_CG_2", "BS_TL_CG_3", "BS_TL_CG_4", "BS_TL_CG_5", 
 "BS_TL_Recycle_1", "BS_TL_Recycling_2", "BS_TL_Recycling_3", "BS_TL_Recycling_4", "BS_TL_Recycling_5", 
 "BS_TL_Crime_1", "BS_TL_Crime_2", "BS_TL_Crime_3", "BS_TL_Crime_4", "BS_TL_Crime_5", 
 "major", "BS_shortanswer1", "BS_shortanswer2", "comment") 
 
-##Convert the numeric columns
 Thesis_clean <- Thesis_clean %>%
   mutate(across(-all_of(text_cols), ~ as.numeric(.)))
 
+##Convert the numeric columns: 
+##step I: I noticed that SPSS assigned the wrong value for the thought rating items, so I have to recoded the wrong value first before reverse-coding it
 Thesis_scale <- Thesis_clean %>%
+  mutate(
+    across(c(BS_TR_CG_1, BS_TR_CG_2, BS_TR_CG_3, BS_TR_CG_4, BS_TR_CG_5, BS_TR_Recylcing_1, BS_TR_Recylcing_2, BS_TR_Recylcing_3,
+             BS_TR_Recylcing_4, BS_TR_Recylcing_5, BS_TR_Crime_1, BS_TR_Crime_2, BS_TR_Crime_3, BS_TR_Crime_4, BS_TR_Crime_5), ~ recode(., 
+             `4` = 0, `5` = 1, `6` = 2, `7` = 3, `8` = 4, `9` = 5, `10` = 6, `11` = 7, `12` = 8, `13` = 9, `14` = 10))
+    )##Thought-Rating for the originally wrong value   
+                                                                                                                      
+##step II: 
+Thesis_scale <- Thesis_scale %>%
   mutate(
     across(c(BPS_1, BPS_2, BPS_3, BPS_6, BPS_9, BPS_11), ~ recode(., 
       `1` = 5, `2` = 4, `4` = 2, `5` = 1)), ##Bullshit Propensity Scale
-
-    across(c(self_esteem_2, self_esteem_5, self_esteem_6, self_esteem_8, self_esteem_9), ~ recode(., 
-      `1` = 4, `11` = 3, `12` = 2, `13` = 1)), ##Thought-Rating
+    
+    across(c(BS_TR_CG_1, BS_TR_CG_2, BS_TR_CG_3, BS_TR_CG_4, BS_TR_CG_5, BS_TR_Recylcing_1, BS_TR_Recylcing_2, BS_TR_Recylcing_3, BS_TR_Recylcing_4, BS_TR_Recylcing_5, BS_TR_Crime_1, BS_TR_Crime_2, BS_TR_Crime_3, BS_TR_Crime_4, BS_TR_Crime_5), ~ recode(., 
+      `10` = 0, `9` = 1, `8` = 2, `7` = 3, `6` = 4, `4` = 6, `3` = 7, `2` = 8, `1` = 9, `0` = 10)), ##Thought-Rating
     
     across(c(self_esteem_2, self_esteem_5, self_esteem_6, self_esteem_8, self_esteem_9), ~ recode(., 
       `1` = 4, `11` = 3, `12` = 2, `13` = 1)), ##Rosenberg Self-esteem Scale
@@ -92,20 +104,65 @@ Thesis_scale <- Thesis_clean %>%
       `1` = 5, `2` = 4, `4` = 2, `5` = 1)) ##HEXACO
     )
 
-
 ```
 I realized that I should have create new variables for the recoded ones, so that would be easier for me to keep track on if the numbers are already recoded. I had too many variables this time so I did not do that. 
 
-```{r BS measurement}
+## Step 3: calculating scales that requires more than sum or mean
+```{r BS Thought rating and listing measurement calculation}
+## For the thought listing and rating task, I need to first identify participants' valid responses. I coded 1 for all valid responses and 0 for all the invalid ones. The criteria is that if the participant answered NA, not sure, or answers suggesting they do not have answers, I code it as 0. I created variables such as CG_score, RC_score, and CR_score for each question. I verify all of the thought rating scores by sliding the thought rating variables next to their respective thought scores (e.g., “thought_rating1” should be next to “thought1_score”)
+## How to compute: I Sum the total number of thoughts for each participant per the topic. In other words, if a participant wrote three valid thoughts for topic 1, they should have “3” for their “sum_recoded_TR_topic”.
+
 Thesis_scale <- Thesis_scale %>%
   mutate(
     recoded_college = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
-    sum_recoded_TR_college = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
-    sum_recoded_TR_recycling = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
-    sum_recoded_TR_crime = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
-    recoded_recycling = rowSums(select(., RC1_score, RC2_score, RC3_score, RC4_score, RC5_scoree), na.rm = TRUE),
+    recoded_recycling = rowSums(select(., RC1_score, RC2_score, RC3_score, RC4_score, RC5_score), na.rm = TRUE),
     recoded_crime = rowSums(select(., CR1_score, CR2_score, CR3_score, CR4_score, CR5_score), na.rm = TRUE),
     )
+
+## Next, I need to delete the scores in the BS_TR_topic items if I marked "0" in the accordingly topic_score variables. In other words, I need to put "0" in the BS_TR_topic when the participant did not provide valid answers.
+##topic: college graduate
+Thesis_scale$BS_TR_CG_1 <- ifelse(Thesis_scale$CG1_score == 0, 0, Thesis_scale$BS_TR_CG_1)
+Thesis_scale$BS_TR_CG_2 <- ifelse(Thesis_scale$CG2_score == 0, 0, Thesis_scale$BS_TR_CG_2)
+Thesis_scale$BS_TR_CG_3 <- ifelse(Thesis_scale$CG3_score == 0, 0, Thesis_scale$BS_TR_CG_3)
+Thesis_scale$BS_TR_CG_4 <- ifelse(Thesis_scale$CG4_score == 0, 0, Thesis_scale$BS_TR_CG_4)
+Thesis_scale$BS_TR_CG_5 <- ifelse(Thesis_scale$CG5_score == 0, 0, Thesis_scale$BS_TR_CG_5)
+##topic: recycling
+Thesis_scale$BS_TR_Recylcing_1 <- ifelse(Thesis_scale$RC1_score == 0, 0, Thesis_scale$BS_TR_Recylcing_1)
+Thesis_scale$BS_TR_Recylcing_2 <- ifelse(Thesis_scale$RC2_score == 0, 0, Thesis_scale$BS_TR_Recylcing_2)
+Thesis_scale$BS_TR_Recylcing_3 <- ifelse(Thesis_scale$RC3_score == 0, 0, Thesis_scale$BS_TR_Recylcing_3)
+Thesis_scale$BS_TR_Recylcing_4 <- ifelse(Thesis_scale$RC4_score == 0, 0, Thesis_scale$BS_TR_Recylcing_4)
+Thesis_scale$BS_TR_Recylcing_5 <- ifelse(Thesis_scale$RC5_score == 0, 0, Thesis_scale$BS_TR_Recylcing_5)
+##topic: retruning to crime after prison
+Thesis_scale$BS_TR_Crime_1 <- ifelse(Thesis_scale$CR1_score == 0, 0, Thesis_scale$BS_TR_Crime_1)
+Thesis_scale$BS_TR_Crime_2 <- ifelse(Thesis_scale$CR2_score == 0, 0, Thesis_scale$BS_TR_Crime_2)
+Thesis_scale$BS_TR_Crime_3 <- ifelse(Thesis_scale$CR3_score == 0, 0, Thesis_scale$BS_TR_Crime_3)
+Thesis_scale$BS_TR_Crime_4 <- ifelse(Thesis_scale$CR4_score == 0, 0, Thesis_scale$BS_TR_Crime_4)
+Thesis_scale$BS_TR_Crime_5 <- ifelse(Thesis_scale$CR5_score == 0, 0, Thesis_scale$BS_TR_Crime_5)
+## Next, I sum the recoded_TR_topic variables separately for each topic. If the participants wrote about five answers, they should all have five “sum_recoded_TR_topic” scores (one for each topic).
+Thesis_scale <- Thesis_scale %>%
+  mutate(
+    sum_recoded_TR_college = rowSums(select(., BS_TR_CG_1, BS_TR_CG_2, BS_TR_CG_3, BS_TR_CG_4, BS_TR_CG_5), na.rm = TRUE),
+    sum_recoded_TR_recycling = rowSums(select(., BS_TR_Recylcing_1, BS_TR_Recylcing_2, BS_TR_Recylcing_3, BS_TR_Recylcing_4, BS_TR_Recylcing_5), na.rm = TRUE),
+    sum_recoded_TR_crime = rowSums(select(., BS_TR_Crime_1, BS_TR_Crime_2, BS_TR_Crime_3, BS_TR_Crime_4, BS_TR_Crime_5), na.rm = TRUE)
+    )
+###I als0 just want to double check what does na.rm did for my data in terms of na.rm = TRUE/FALSE
+length(Thesis_scale$recoded_college)
+
+## Lastly, I use this equation to calculate the BS Proportion per topic, whereby each participant will have five individual BS Proportion scores (one for each topic): sum_recoded_thought_rating_topic1 / (sum thought_frequency_topic1 x 10)
+Thesis_scale <- Thesis_scale %>%
+  mutate(BSthought = sum_recoded_TR_college / (recoded_college * 10))
+
+# Check if it worked
+head(Thesis_scale$BSthought)
+
+TOO MANY NAs, what can I do with this?
+```
+
+```{r}
+colnames(Thesis_scale)
+Thesis_scale$BFS_score <- Thesis_scale %>% 
+  rowMeans(BFS_1:BFS_12)
+psych::describe(Thesis_scale$BFS_score)
 ```
 
 
@@ -181,6 +238,19 @@ effortTS <- c("A4CTS_19", "A4CTS_20", "A4CTS_21", "A4CTS_22", "A4CTS_23", "A4CTS
 Activeopen <- c("aopen1", "aopen2", "aopen3", "aopen4", "aopen5", "aopen6", "aopen7", "aopen8")
 ##Faith in Intuition Scale
 fi <- c("fi1", "fi2", "fi3", "fi4", "fi5", "fi6", "fi7", "fi8", "fi9", "fi10", "fi11", "fi12")
+```
+
+```{r computing mean, sd, and other descriptives for each scales and variables}
+colnames(Thesis_clean)
+Thesis_clean$BFS_score <- Thesis_clean %>% 
+  rowMeans(BFS_1:BFS_12)
+psych::describe(Thesis_clean$BFS_score)
+
+df %>% 
+  psych::describe(var1, var2, ...)
+
+
+Thesis_scale$BS_TR_CG_3_r <- ifelse(Thesis_scale$CG3_score == 0, 0, Thesis_scale$BS_TR_CG_3)
 ```
 
 
@@ -306,6 +376,9 @@ partial_BPSpsych_result <- pcor.test(
 
 print(partial_BPSpsych_result)
 
+```
+```{r}
+percentage correct
 ```
 
 
