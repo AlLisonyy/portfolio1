@@ -158,7 +158,7 @@ head(Thesis_scale$BSthought)
 TOO MANY NAs, what can I do with this?
 ```
 
-```{r}
+```{r descriptives for each scale and variables}
 colnames(Thesis_scale)
 Thesis_scale$BFS_score <- Thesis_scale %>% 
   rowMeans(BFS_1:BFS_12)
