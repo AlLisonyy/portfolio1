@@ -11,7 +11,7 @@ output:
     toc_depth: 4
     fig_caption: true
 ---
-### Goal
+## Goal
 For this portfolio, I plan to use the dataset from my thesis study. The study is a correlational design, so there are many scales and variables that need to be cleaned and organized, such as reverse coding. This portfolio will focus on this process.
 
 ```{r load-packages, message=FALSE}

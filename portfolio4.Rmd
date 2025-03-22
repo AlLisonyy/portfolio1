@@ -1,0 +1,114 @@
+---
+title: "Thesis data Main Analysis"
+author: "Allison Li"
+date: "03242025"
+output: 
+  html_document:
+    encoding: UTF-8
+    toc: true
+    number_sections: false
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
+---
+
+> The projects should be numbered consecutively (i.e., in the order in which you began them), and should include for each project a description of the goal, the product (computer program, hand graph, computer graph, etc.), the data, and some interpretation. Reports must be reproducible and of high quality in terms of writing, grammar, presentation, etc.
+
+## Bullshit Frequency scales and other variables's partial correlation when controled for lying tendency
+```{r BFS and others}
+##BFS and BPS
+partial_BFSBPS <- Thesis_scale %>% 
+  select(bfsmean, bpsmean, liemean) %>%
+  drop_na()
+
+partial_BFSBPS_result <- pcor.test(partial_BFSBPS$bfsmean, 
+                                 partial_BFSBPS$bpsmean, 
+                                 partial_BFSBPS$liemean)
+
+print(partial_corr_result)
+
+##BFS and mach
+partial_BFSmach<- Thesis_scale %>% 
+  select(bfsmean, sdtmachmean, liemean) %>% 
+  drop_na()
+
+partial_BFSmach_result <- pcor.test(partial_BFSmach$bfsmean, 
+                                 partial_BFSmach$sdtmachmean, 
+                                 partial_BFSmach$liemean)
+
+print(partial_BFSmach_result)
+
+##BFS and narc
+partial_BFSnarc<- Thesis_scale %>% 
+  select(bfsmean, sdtnarcmean, liemean) %>% 
+  drop_na()
+
+partial_BFSnarc_result <- pcor.test(
+  x = partial_BFSnarc$bfsmean,
+  y = partial_BFSnarc$sdtnarcmean,
+  z = partial_BFSnarc$liemean)
+
+print(partial_BFSnarc_result)
+
+##BFS and psychopathy
+partial_BFSpsych<- Thesis_scale %>% 
+  select(bfsmean, sdtpsychmean, liemean) %>%
+  drop_na()
+
+partial_BFSpsych_result <- pcor.test(
+  x = partial_BFSpsych$bfsmean,
+  y = partial_BFSpsych$sdtpsychmean,
+  z = partial_BFSpsych$liemean
+  )
+
+print(partial_BFSpsych_result)
+
+
+
+```
+
+## Bullshit Propensity scales and other variables's partial correlation when controled for lying tendency
+```{r BPS and others}
+##BPS and mach
+partial_BPSmach<- Thesis_scale %>% 
+  select(bpsmean, sdtmachmean, liemean) %>%
+  drop_na()
+
+partial_BPSmach_result <- pcor.test(
+  x = partial_BPSmach$bpsmean,
+  y = partial_BPSmach$sdtmachmean,
+  z = partial_BPSmach$liemean
+  )
+
+print(partial_BPSmach_result)
+
+##BPS and narc
+partial_BPSnarc<- Thesis_scale %>% 
+  select(bpsmean, sdtnarcmean, liemean) %>%
+  drop_na()
+
+partial_BPSnarc_result <- pcor.test(
+  x = partial_BPSnarc$bpsmean,
+  y = partial_BPSnarc$sdtnarcmean,
+  z = partial_BPSnarc$liemean
+  )
+
+print(partial_BPSnarc_result)
+
+##BPS and psychopathy
+partial_BPSpsych<- Thesis_scale %>% 
+  select(bpsmean, sdtpsychmean, liemean) %>%
+  drop_na()
+
+partial_BPSpsych_result <- pcor.test(
+  x = partial_BPSpsych$bpsmean,
+  y = partial_BPSpsych$sdtpsychmean,
+  z = partial_BPSpsych$liemean
+  )
+
+print(partial_BPSpsych_result)
+```
+
+```{r}
+percenrage correct
+```
