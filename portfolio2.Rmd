@@ -11,6 +11,8 @@ output:
     toc_depth: 4
     fig_caption: true
 ---
+### Goal
+For this portfolio, I plan to use the dataset from my thesis study. The study is a correlational design, so there are many scales and variables that need to be cleaned and organized, such as reverse coding. This portfolio will focus on this process.
 
 ```{r load-packages, message=FALSE}
 ##install packages
@@ -29,7 +31,7 @@ Thesis <- read_sav("~/Downloads/Thesis.sav")
 ```
 
 ## Step 1: clean data
-```{r clean data}
+```{r clean variables}
 ##The first step is to clean data, and I started with getting rid of participants that did not finished the study, as well as deleting variable that does not have any data, such as recipient name.  
 Thesis_clean <- Thesis %>% 
   select(-RecipientLastName, -RecipientFirstName, -RecipientEmail, -ExternalReference, -DistributionChannel, -browser_info_Resolution, -StartDate, -EndDate, -browser_info_Browser, -browser_info_Version, -IPAddress, -RecordedDate, -LocationLatitude, -LocationLongitude, -ResponseId, -UserLanguage, -browser_info_Operating_System, -robot_timer_First_Click, -robot_timer_Last_Click, -robot_timer_Page_Submit, -robot_timer_Click_Count)
@@ -43,7 +45,7 @@ Thesis_clean <- Thesis_clean %>%
 ```
 
 ## Step 2: reverse coding the scales
-```{r scoring scales}
+```{r reverse coding scales}
 ##Define columns that should remain as text, which are my short-answer responses
 text_cols <- c("BS_TL_CG_1", "BS_TL_CG_2", "BS_TL_CG_3", "BS_TL_CG_4", "BS_TL_CG_5", 
 "BS_TL_Recycle_1", "BS_TL_Recycling_2", "BS_TL_Recycling_3", "BS_TL_Recycling_4", "BS_TL_Recycling_5", 
@@ -53,8 +55,7 @@ text_cols <- c("BS_TL_CG_1", "BS_TL_CG_2", "BS_TL_CG_3", "BS_TL_CG_4", "BS_TL_CG
 Thesis_clean <- Thesis_clean %>%
   mutate(across(-all_of(text_cols), ~ as.numeric(.)))
 
-##Convert the numeric columns: 
-##step I: I noticed that SPSS assigned the wrong value for the thought rating items, so I have to recoded the wrong value first before reverse-coding it
+##Convert the numeric columns: I noticed that SPSS assigned the wrong value for the thought rating items, so I have to recoded the wrong value first before reverse-coding it
 Thesis_scale <- Thesis_clean %>%
   mutate(
     across(c(BS_TR_CG_1, BS_TR_CG_2, BS_TR_CG_3, BS_TR_CG_4, BS_TR_CG_5, BS_TR_Recylcing_1, BS_TR_Recylcing_2, BS_TR_Recylcing_3,
@@ -107,9 +108,10 @@ Thesis_scale <- Thesis_scale %>%
 ```
 I realized that I should have create new variables for the recoded ones, so that would be easier for me to keep track on if the numbers are already recoded. I had too many variables this time so I did not do that. 
 
-## Step 3.1: calculating scales that requires more than sum or mean
+## Step 3.1: calculating the Thought listing and rating task
 ```{r BS Thought rating and listing measurement calculation}
 ## For the thought listing and rating task, I need to first identify participants' valid responses. I coded 1 for all valid responses and 0 for all the invalid ones. The criteria is that if the participant answered NA, not sure, or answers suggesting they do not have answers, I code it as 0. I created variables such as CG_score, RC_score, and CR_score for each question. I verify all of the thought rating scores by sliding the thought rating variables next to their respective thought scores (e.g., “thought_rating1” should be next to “thought1_score”)
+
 ## How to compute: I Sum the total number of thoughts for each participant per the topic. In other words, if a participant wrote three valid thoughts for topic 1, they should have “3” for their “sum_recoded_TR_topic”.
 
 Thesis_scale <- Thesis_scale %>%
@@ -155,232 +157,61 @@ Thesis_scale <- Thesis_scale %>%
     BSthought_recycling = sum_recoded_TR_recycling / (recoded_recycling * 10),
     BSthought_crime = sum_recoded_TR_crime / (recoded_crime * 10)
     )
-
-# Check if it worked
+## Then I combine them into one score
+Thesis_scale <- Thesis_scale %>%
+  mutate(BSthought = (BSthought_college + BSthought_recycling + BSthought_crime)/ 3)
+## Check if it worked for one
 head(Thesis_scale$BSthought_college)
 ```
 
-## Step 3.2: calculating scales' basic descriptives (mean, sd, max, and mix) and cronbach alpha
-```{r cronbach alpha and other descriptives for each scales}
-##Define the scales
-##Bullshit Frequency scale general  
-bfs <- c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", "BFS_7", "BFS_8", "BFS_9", "BFS_10", "BFS_11", "BFS_12")
+## Step 3.2: calculating the cogntive ability measurements
+```{r cognitive ability}
+##Numeracy scale
+##compute their answers, if they answer one question right, they will get one point.
+Thesis_scale$ns1 <- ifelse(Thesis_scale$NS1 == 500, 1, 0)
+Thesis_scale$ns2 <- ifelse(Thesis_scale$NS2 == 10, 1, 0)
+Thesis_scale$ns3 <- ifelse(Thesis_scale$NS3 == 0.1, 1, 0)
+Thesis_scale$ns4 <- ifelse(Thesis_scale$NS4 == 9, 1, 0)
+Thesis_scale$ns5 <- ifelse(Thesis_scale$NS5 == 8, 1, 0)
+Thesis_scale$ns6 <- ifelse(Thesis_scale$NS6 == 2, 1, 0)
+Thesis_scale$ns7 <- ifelse(Thesis_scale$NS7 == 2, 1, 0)
+Thesis_scale$ns8 <- ifelse(Thesis_scale$NS8 == 10, 1, 0)
+Thesis_scale$ns9 <- ifelse(Thesis_scale$NS9 == 100, 1, 0)
+Thesis_scale$ns10 <- ifelse(Thesis_scale$NS10 == 20, 1, 0)
+Thesis_scale$ns11 <- ifelse(Thesis_scale$NS11 == 5, 1, 0)
+##calculate the mean of each question they got right
 Thesis_scale <- Thesis_scale %>%
-  mutate(BFS_score = rowMeans(Thesis_scale[,bfs],na.rm=TRUE)) 
-bfs_items <- Thesis_scale[, bfs]
-cronbach.alpha(bfs_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+  mutate(NS_score = (ns1 + ns2 + ns3 + ns4 + ns5 + ns6 + ns7 + ns8 + ns9 + ns10)/ 10)
 
-##Bullshit Frequency scale evasive
-bfse <- c("BFS_9", "BFS_10", "BFS_11", "BFS_12")
+##General Social Survey Wordsum Vocabulary Test
+##compute their answers, if they answer one question right, they will get one point.
+Thesis_scale$word1 <- ifelse(Thesis_scale$wordsum_1 == 4, 1, 0)
+Thesis_scale$word2 <- ifelse(Thesis_scale$wordsum_2 == 5, 1, 0)
+Thesis_scale$word3 <- ifelse(Thesis_scale$wordsum_3 == 5, 1, 0)
+Thesis_scale$word4 <- ifelse(Thesis_scale$wordsum_4 == 3, 1, 0)
+Thesis_scale$word5 <- ifelse(Thesis_scale$wordsum_5 == 1, 1, 0)
+Thesis_scale$word6 <- ifelse(Thesis_scale$wordsum_6 == 3, 1, 0)
+Thesis_scale$word7 <- ifelse(Thesis_scale$wordsum_7 == 5, 1, 0)
+Thesis_scale$word8 <- ifelse(Thesis_scale$wordsum_8 == 4, 1, 0)
+Thesis_scale$word9 <- ifelse(Thesis_scale$wordsum_9 == 4, 1, 0)
+Thesis_scale$word10 <- ifelse(Thesis_scale$wordsum_10 == 1, 1, 0)
+##calculate the mean of each question they got right
 Thesis_scale <- Thesis_scale %>%
-  mutate(BFSe_score = rowMeans(Thesis_scale[,bfse],na.rm=TRUE)) 
-bfse_items <- Thesis_scale[, bfse]
-cronbach.alpha(bfse_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+  mutate(word_score = (word1 + word2 + word3 + word4 + word5 + word6 + word7 + word8 + word9 + word10)/ 10)
 
-##Bullshit Frequency scale persuasive
-bfsp <- c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", "BFS_7", "BFS_8")
+##The Cognitive Reflection Test
+##compute their answers, if they answer one question right, they will get one point.
+Thesis_scale$crt1 <- ifelse(Thesis_scale$crt1 == 5, 1, 0)
+Thesis_scale$crt2 <- ifelse(Thesis_scale$crt2 == 5, 1, 0)
+Thesis_scale$crt3 <- ifelse(Thesis_scale$crt3 == 47, 1, 0)
+##calculate the mean of each question they got right
 Thesis_scale <- Thesis_scale %>%
-  mutate(BFSp_score = rowMeans(Thesis_scale[,bfsp],na.rm=TRUE))
-bfsp_items <- Thesis_scale[, bfsp]
-cronbach.alpha(bfsp_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+  mutate(crt_score = (crt1 + crt2 + crt3)/ 3)
+```
 
-##Bullshit Propensity scale 
-bps <- c("BPS_1", "BPS_2", "BPS_3", "BPS_4", "BPS_5", "BPS_6", "BPS_7", "BPS_8", "BPS_9", "BPS_10", "BPS_11", "BPS_12")
-Thesis_scale <- Thesis_scale %>%
-  mutate(BPS_score = rowMeans(Thesis_scale[,bps],na.rm=TRUE))
-bps_items <- Thesis_scale[, bps]
-cronbach.alpha(bps_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
 
-##Lying in Everyday Situations Scale
-lie <- c("lies1", "lies2", "lies3", "lies4", "lies5", "lies6", "lies7", "lies8", "lies9", "lies10", "lies11", "lies12", "lies13", "lies14")
-Thesis_scale <- Thesis_scale %>%
-  mutate(LIE_score = rowMeans(Thesis_scale[,lie],na.rm=TRUE))
-lie_items <- Thesis_scale[, lie]
-cronbach.alpha(lie_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Short_dark_triad Narcissism
-sdtnarc <- c("DTS_Nar_1", "DTS_Nar_2", "DTS_Nar_3", "DTS_Nar_4", "DTS_Nar_5", "DTS_Nar_6", "DTS_Nar_7", "DTS_Nar_8", "DTS_Nar_9")
-Thesis_scale <- Thesis_scale %>%
-  mutate(sdtnarc_score = rowMeans(Thesis_scale[,sdtnarc],na.rm=TRUE))
-sdtnarc_items <- Thesis_scale[, sdtnarc]
-cronbach.alpha(sdtnarc_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Short_dark_triad Machiavellianism
-sdtmach <- c("DTS_MACH_1", "DTS_MACH_2", "DTS_MACH_3", "DTS_MACH_4", "DTS_MACH_5", "DTS_MACH_6", "DTS_MACH_7", "DTS_MACH_8", "DTS_MACH_9")
-Thesis_scale <- Thesis_scale %>%
-  mutate(sdtmach_score = rowMeans(Thesis_scale[,sdtmach],na.rm=TRUE))
-sdtmach_items <- Thesis_scale[, sdtmach]
-cronbach.alpha(sdtmach_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Short_dark_triad Psychopathy
-sdtpsych <- c("DTS_Path_1", "DTS_Path_2", "DTS_Path_3", "DTS_Path_4", "DTS_Path_5", "DTS_Path_6", "DTS_Path_7", "DTS_Path_8", "DTS_Path_9")
-Thesis_scale <- Thesis_scale %>%
-  mutate(sdtpsych_score = rowMeans(Thesis_scale[,sdtpsych],na.rm=TRUE))
-sdtpsych_items <- Thesis_scale[, sdtpsych]
-cronbach.alpha(sdtpsych_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Narcissistic Personality Inventory
-narc <- c("NPI_1", "NPI_2", "NPI_3", "NPI_4", "NPI_5", "NPI_6", "NPI_7", "NPI_8", "NPI_9", "NPI_10", "NPI_11", "NPI_12", "NPI_13", "NPI_14", "NPI_15", "NPI_16")
-Thesis_scale <- Thesis_scale %>%
-  mutate(narc_score = rowMeans(Thesis_scale[,narc],na.rm=TRUE))
-narc_items <- Thesis_scale[, narc]
-cronbach.alpha(narc_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Machiavellianism Personality scale
-mach <- c("MPS_1", "MPS_2", "MPS_3", "MPS_4", "MPS_5", "MPS_6", "MPS_7", "MPS_8", "MPS_9", "MPS_10", "MPS_11", "MPS_12", "MPS_13", "MPS_14", "MPS_15", "MPS_16")
-Thesis_scale <- Thesis_scale %>%
-  mutate(mach_score = rowMeans(Thesis_scale[,mach],na.rm=TRUE))
-mach_items <- Thesis_scale[, mach]
-cronbach.alpha(mach_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Levenson Self-Report Psychopathy Scale
-psycho <- c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", "LSRP_PPS_6", "LSRP_PPS_7", "LSRP_PPS_8", "LSRP_PPS_9", "LSRP_PPS_10", "LSRP_PPS_11", "LSRP_PPS_12", "LSRP_PPS_13", "LSRP_PPS_14", "LSRP_PPS_15", "LSRP_PPS_16", "LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10")
-Thesis_scale <- Thesis_scale %>%
-  mutate(psycho_score = rowMeans(Thesis_scale[,psycho],na.rm=TRUE)) 
-psycho_items <- Thesis_scale[, psycho]
-cronbach.alpha(psycho_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##primary factor of psychopathy scale
-psychopri <- c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", 
-                    "LSRP_PPS_6", "LSRP_PPS_7", "LSRP_PPS_8", "LSRP_PPS_9", "LSRP_PPS_10", 
-                    "LSRP_PPS_11", "LSRP_PPS_12", "LSRP_PPS_13", "LSRP_PPS_14", "LSRP_PPS_15", 
-                    "LSRP_PPS_16")
-Thesis_scale <- Thesis_scale %>%
-  mutate(psychopri_score = rowMeans(Thesis_scale[,psychopri],na.rm=TRUE)) 
-psychopri_items <- Thesis_scale[, psychopri]
-cronbach.alpha(psychopri_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##secondary factor of psychopathy scale
-psychosec <- c("LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", 
-                    "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10")
-Thesis_scale <- Thesis_scale %>%
-  mutate(psychosec_score = rowMeans(Thesis_scale[,psychosec],na.rm=TRUE)) 
-psychosec_items <- Thesis_scale[, psychosec]
-cronbach.alpha(psychosec_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Self-esteem (Rosenberg)
-se <- c("self_esteem_1", "self_esteem_2", "self_esteem_3", "self_esteem_4", "self_esteem_5", 
-                     "self_esteem_6", "self_esteem_7", "self_esteem_8", "self_esteem_9", "self_esteem_10")
-Thesis_scale <- Thesis_scale %>%
-  mutate(se_score = rowMeans(Thesis_scale[,se],na.rm=TRUE)) 
-se_items <- Thesis_scale[, se]
-cronbach.alpha(se_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##HEXACO
-##Honesty_humility
-hon <- c("hex6", "hex12", "hex18", "hex24", "hex30", "hex36", "hex42", "hex48", "hex54", "hex60")
-Thesis_scale <- Thesis_scale %>%
-  mutate(hon_score = rowMeans(Thesis_scale[,hon],na.rm=TRUE)) 
-hon_items <- Thesis_scale[, hon]
-cronbach.alpha(hon_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Emotionality
-emo <- c("hex5", "hex11", "hex17", "hex23", "hex29", "hex35", "hex41", "hex47", "hex53", "hex59")
-Thesis_scale <- Thesis_scale %>%
-  mutate(emo_score = rowMeans(Thesis_scale[,emo],na.rm=TRUE)) 
-emo_items <- Thesis_scale[, emo]
-cronbach.alpha(emo_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Extraversion
-extra <- c("hex4", "hex10", "hex16", "hex22", "hex28", "hex34", "hex40", "hex46", "hex52", "hex58")
-Thesis_scale <- Thesis_scale %>%
-  mutate(extra_score = rowMeans(Thesis_scale[,extra],na.rm=TRUE)) 
-extra_items <- Thesis_scale[, extra]
-cronbach.alpha(extra_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Agreeableness
-agree <- c("hex3", "hex9", "hex15", "hex21", "hex27", "hex33", "hex39", "hex45", "hex51", "hex57")
-Thesis_scale <- Thesis_scale %>%
-  mutate(agree_score = rowMeans(Thesis_scale[,agree],na.rm=TRUE)) 
-agree_items <- Thesis_scale[, agree]
-cronbach.alpha(agree_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##CONSCIENTIOUSNESS
-cons <- c("hex2", "hex8", "hex14", "hex20", "hex26", "hex32", "hex38", "hex44", "hex50", "hex56")
-Thesis_scale <- Thesis_scale %>%
-  mutate(cons_score = rowMeans(Thesis_scale[,cons],na.rm=TRUE)) 
-cons_items <- Thesis_scale[, cons]
-cronbach.alpha(cons_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Openness to Experience
-open <- c("hex1", "hex7", "hex13", "hex19", "hex25", "hex31", "hex37", "hex43", "hex49", "hex55")
-Thesis_scale <- Thesis_scale %>%
-  mutate(open_score = rowMeans(Thesis_scale[,open],na.rm=TRUE)) 
-open_items <- Thesis_scale[, open]
-cronbach.alpha(open_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Intellectual Humility Scale
-ihs <- c("IHS_1", "IHS_2", "IHS_3", "IHS_4", "IHS_5", "IHS_6")
-Thesis_scale <- Thesis_scale %>%
-  mutate(ihs_score = rowMeans(Thesis_scale[,ihs],na.rm=TRUE)) 
-ihs_items <- Thesis_scale[, ihs]
-cronbach.alpha(ihs_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Need for Closure
-nclos <- c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "nclos7", "nclos8", "nclos9", "nclos10", 
-                                                 "nclos11", "nclos12", "nclos13", "nclos14", "nclos15", 
-                                                 "nclos16", "nclos17", "nclos18", "nclos19", "nclos20", 
-                                                 "nclos21", "nclos22", "nclos23", "nclos24", "nclos25", 
-                                                 "nclos26", "nclos27", "nclos28", "nclos29", "nclos30", 
-                                                 "nclos31", "nclos32", "nclos33", "nclos34", "nclos35", 
-                                                 "nclos36", "nclos37", "nclos38", "nclos39", "nclos40", 
-                                                 "nclos41", "nclos42")
-Thesis_scale <- Thesis_scale %>%
-  mutate(nclos_score = rowMeans(Thesis_scale[,nclos],na.rm=TRUE)) 
-nclos_items <- Thesis_scale[, nclos]
-cronbach.alpha(nclos_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Need for Cognition
-ncog <- c("ncog7", "ncog8", "ncog9", "ncog10", "ncog11", "ncog12", 
-                                               "ncog13", "ncog14", "ncog15", "ncog16", "ncog17", "ncog18")
-Thesis_scale <- Thesis_scale %>%
-  mutate(ncog_score = rowMeans(Thesis_scale[,ncog],na.rm=TRUE)) 
-ncog_items <- Thesis_scale[, ncog]
-cronbach.alpha(ncog_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Actively Open Thinking Style
-openTS <- c("A4CTS_1", "A4CTS_2", "A4CTS_3", "A4CTS_4", "A4CTS_5", "A4CTS_6")
-Thesis_scale <- Thesis_scale %>%
-  mutate(openTS_score = rowMeans(Thesis_scale[,openTS],na.rm=TRUE)) 
-openTS_items <- Thesis_scale[, openTS]
-cronbach.alpha(openTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Close-minded Thinking Style
-closeTS <- c("A4CTS_7", "A4CTS_8", "A4CTS_9", "A4CTS_10", "A4CTS_11", "A4CTS_12")
-Thesis_scale <- Thesis_scale %>%
-  mutate(closeTS_score = rowMeans(Thesis_scale[,closeTS],na.rm=TRUE)) 
-closeTS_items <- Thesis_scale[, closeTS]
-cronbach.alpha(closeTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##prefer intuitive Thinking Style
-intuitiveTS <- c("A4CTS_13", "A4CTS_14", "A4CTS_15", "A4CTS_16", "A4CTS_17", "A4CTS_18")
-Thesis_scale <- Thesis_scale %>%
-  mutate(intuitiveTS_score = rowMeans(Thesis_scale[,intuitiveTS],na.rm=TRUE)) 
-intuitiveTS_items <- Thesis_scale[, intuitiveTS]
-cronbach.alpha(intuitiveTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##prefer effortful Thinking Style
-effortTS <- c("A4CTS_19", "A4CTS_20", "A4CTS_21", "A4CTS_22", "A4CTS_23", "A4CTS_24")
-Thesis_scale <- Thesis_scale %>%
-  mutate(effortTS_score = rowMeans(Thesis_scale[,effortTS],na.rm=TRUE)) 
-effortTS_items <- Thesis_scale[, effortTS]
-cronbach.alpha(effortTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Actively Open-Minded Thinking about Evidence Scale 
-activeopen <- c("aopen1", "aopen2", "aopen3", "aopen4", "aopen5", "aopen6", "aopen7", "aopen8")
-Thesis_scale <- Thesis_scale %>%
-  mutate(activeopen_score = rowMeans(Thesis_scale[,activeopen],na.rm=TRUE)) 
-activeopen_items <- Thesis_scale[, activeopen]
-cronbach.alpha(activeopen_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-##Faith in Intuition Scale
-fi <- c("fi1", "fi2", "fi3", "fi4", "fi5", "fi6", "fi7", "fi8", "fi9", "fi10", "fi11", "fi12")
-Thesis_scale <- Thesis_scale %>%
-  mutate(fi_score = rowMeans(Thesis_scale[,fi],na.rm=TRUE)) 
-fi_items <- Thesis_scale[, fi]
-cronbach.alpha(fi_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
-
-## The descriptives information for each scales
-psych::describe(Thesis_scale %>% select(BFS_score, BFSe_score, BFSp_score, BPS_score, LIE_score, sdtnarc_score, sdtmach_score, sdtpsych_score, narc_score, mach_score, psycho_score, psychopri_score, psychosec_score, se_score, hon_score, emo_score, extra_score, agree_score, cons_score, open_score, ihs_score, nclos_score, ncog_score, openTS_score, closeTS_score, intuitiveTS_score, effortTS_score, activeopen_score, fi_score))
+## Step 4: save the cleaned datset for analysis
+```{r save}
+saveRDS(Thesis_scale, file = "Thesis_scale.rds")
 ```
 
