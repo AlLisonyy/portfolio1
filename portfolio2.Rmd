@@ -107,7 +107,7 @@ Thesis_scale <- Thesis_scale %>%
 ```
 I realized that I should have create new variables for the recoded ones, so that would be easier for me to keep track on if the numbers are already recoded. I had too many variables this time so I did not do that. 
 
-## Step 3: calculating scales that requires more than sum or mean
+## Step 3.1: calculating scales that requires more than sum or mean
 ```{r BS Thought rating and listing measurement calculation}
 ## For the thought listing and rating task, I need to first identify participants' valid responses. I coded 1 for all valid responses and 0 for all the invalid ones. The criteria is that if the participant answered NA, not sure, or answers suggesting they do not have answers, I code it as 0. I created variables such as CG_score, RC_score, and CR_score for each question. I verify all of the thought rating scores by sliding the thought rating variables next to their respective thought scores (e.g., “thought_rating1” should be next to “thought1_score”)
 ## How to compute: I Sum the total number of thoughts for each participant per the topic. In other words, if a participant wrote three valid thoughts for topic 1, they should have “3” for their “sum_recoded_TR_topic”.
@@ -158,60 +158,164 @@ Thesis_scale <- Thesis_scale %>%
 
 # Check if it worked
 head(Thesis_scale$BSthought_college)
-
 ```
 
-
-
-
-```{r computing mean, sd, and other descriptives for each scales and variables}
+## Step 3.2: calculating scales' basic descriptives (mean, sd, max, and mix) and cronbach alpha
+```{r cronbach alpha and other descriptives for each scales}
 ##Define the scales
 ##Bullshit Frequency scale general  
 bfs <- c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", "BFS_7", "BFS_8", "BFS_9", "BFS_10", "BFS_11", "BFS_12")
+Thesis_scale <- Thesis_scale %>%
+  mutate(BFS_score = rowMeans(Thesis_scale[,bfs],na.rm=TRUE)) 
+bfs_items <- Thesis_scale[, bfs]
+cronbach.alpha(bfs_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Bullshit Frequency scale evasive
 bfse <- c("BFS_9", "BFS_10", "BFS_11", "BFS_12")
+Thesis_scale <- Thesis_scale %>%
+  mutate(BFSe_score = rowMeans(Thesis_scale[,bfse],na.rm=TRUE)) 
+bfse_items <- Thesis_scale[, bfse]
+cronbach.alpha(bfse_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Bullshit Frequency scale persuasive
 bfsp <- c("BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", "BFS_7", "BFS_8")
+Thesis_scale <- Thesis_scale %>%
+  mutate(BFSp_score = rowMeans(Thesis_scale[,bfsp],na.rm=TRUE))
+bfsp_items <- Thesis_scale[, bfsp]
+cronbach.alpha(bfsp_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Bullshit Propensity scale 
 bps <- c("BPS_1", "BPS_2", "BPS_3", "BPS_4", "BPS_5", "BPS_6", "BPS_7", "BPS_8", "BPS_9", "BPS_10", "BPS_11", "BPS_12")
+Thesis_scale <- Thesis_scale %>%
+  mutate(BPS_score = rowMeans(Thesis_scale[,bps],na.rm=TRUE))
+bps_items <- Thesis_scale[, bps]
+cronbach.alpha(bps_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Lying in Everyday Situations Scale
 lie <- c("lies1", "lies2", "lies3", "lies4", "lies5", "lies6", "lies7", "lies8", "lies9", "lies10", "lies11", "lies12", "lies13", "lies14")
+Thesis_scale <- Thesis_scale %>%
+  mutate(LIE_score = rowMeans(Thesis_scale[,lie],na.rm=TRUE))
+lie_items <- Thesis_scale[, lie]
+cronbach.alpha(lie_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Short_dark_triad Narcissism
 sdtnarc <- c("DTS_Nar_1", "DTS_Nar_2", "DTS_Nar_3", "DTS_Nar_4", "DTS_Nar_5", "DTS_Nar_6", "DTS_Nar_7", "DTS_Nar_8", "DTS_Nar_9")
+Thesis_scale <- Thesis_scale %>%
+  mutate(sdtnarc_score = rowMeans(Thesis_scale[,sdtnarc],na.rm=TRUE))
+sdtnarc_items <- Thesis_scale[, sdtnarc]
+cronbach.alpha(sdtnarc_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Short_dark_triad Machiavellianism
 sdtmach <- c("DTS_MACH_1", "DTS_MACH_2", "DTS_MACH_3", "DTS_MACH_4", "DTS_MACH_5", "DTS_MACH_6", "DTS_MACH_7", "DTS_MACH_8", "DTS_MACH_9")
+Thesis_scale <- Thesis_scale %>%
+  mutate(sdtmach_score = rowMeans(Thesis_scale[,sdtmach],na.rm=TRUE))
+sdtmach_items <- Thesis_scale[, sdtmach]
+cronbach.alpha(sdtmach_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Short_dark_triad Psychopathy
 sdtpsych <- c("DTS_Path_1", "DTS_Path_2", "DTS_Path_3", "DTS_Path_4", "DTS_Path_5", "DTS_Path_6", "DTS_Path_7", "DTS_Path_8", "DTS_Path_9")
+Thesis_scale <- Thesis_scale %>%
+  mutate(sdtpsych_score = rowMeans(Thesis_scale[,sdtpsych],na.rm=TRUE))
+sdtpsych_items <- Thesis_scale[, sdtpsych]
+cronbach.alpha(sdtpsych_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
+##Narcissistic Personality Inventory
+narc <- c("NPI_1", "NPI_2", "NPI_3", "NPI_4", "NPI_5", "NPI_6", "NPI_7", "NPI_8", "NPI_9", "NPI_10", "NPI_11", "NPI_12", "NPI_13", "NPI_14", "NPI_15", "NPI_16")
+Thesis_scale <- Thesis_scale %>%
+  mutate(narc_score = rowMeans(Thesis_scale[,narc],na.rm=TRUE))
+narc_items <- Thesis_scale[, narc]
+cronbach.alpha(narc_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Machiavellianism Personality scale
-machi <- c("MPS_1", "MPS_2", "MPS_3", "MPS_4", "MPS_5", "MPS_6", "MPS_7", "MPS_8", "MPS_9", "MPS_10", "MPS_11", "MPS_12", "MPS_13", "MPS_14", "MPS_15", "MPS_16")
+mach <- c("MPS_1", "MPS_2", "MPS_3", "MPS_4", "MPS_5", "MPS_6", "MPS_7", "MPS_8", "MPS_9", "MPS_10", "MPS_11", "MPS_12", "MPS_13", "MPS_14", "MPS_15", "MPS_16")
+Thesis_scale <- Thesis_scale %>%
+  mutate(mach_score = rowMeans(Thesis_scale[,mach],na.rm=TRUE))
+mach_items <- Thesis_scale[, mach]
+cronbach.alpha(mach_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Levenson Self-Report Psychopathy Scale
 psycho <- c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", "LSRP_PPS_6", "LSRP_PPS_7", "LSRP_PPS_8", "LSRP_PPS_9", "LSRP_PPS_10", "LSRP_PPS_11", "LSRP_PPS_12", "LSRP_PPS_13", "LSRP_PPS_14", "LSRP_PPS_15", "LSRP_PPS_16", "LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10")
+Thesis_scale <- Thesis_scale %>%
+  mutate(psycho_score = rowMeans(Thesis_scale[,psycho],na.rm=TRUE)) 
+psycho_items <- Thesis_scale[, psycho]
+cronbach.alpha(psycho_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##primary factor of psychopathy scale
 psychopri <- c("LSRP_PPS_1", "LSRP_PPS_2", "LSRP_PPS_3", "LSRP_PPS_4", "LSRP_PPS_5", 
                     "LSRP_PPS_6", "LSRP_PPS_7", "LSRP_PPS_8", "LSRP_PPS_9", "LSRP_PPS_10", 
                     "LSRP_PPS_11", "LSRP_PPS_12", "LSRP_PPS_13", "LSRP_PPS_14", "LSRP_PPS_15", 
                     "LSRP_PPS_16")
+Thesis_scale <- Thesis_scale %>%
+  mutate(psychopri_score = rowMeans(Thesis_scale[,psychopri],na.rm=TRUE)) 
+psychopri_items <- Thesis_scale[, psychopri]
+cronbach.alpha(psychopri_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##secondary factor of psychopathy scale
 psychosec <- c("LSRP_SPS_1", "LSRP_SPS_2", "LSRP_SPS_3", "LSRP_SPS_4", "LSRP_SPS_5", 
                     "LSRP_SPS_6", "LSRP_SPS_7", "LSRP_SPS_8", "LSRP_SPS_9", "LSRP_SPS_10")
+Thesis_scale <- Thesis_scale %>%
+  mutate(psychosec_score = rowMeans(Thesis_scale[,psychosec],na.rm=TRUE)) 
+psychosec_items <- Thesis_scale[, psychosec]
+cronbach.alpha(psychosec_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Self-esteem (Rosenberg)
 se <- c("self_esteem_1", "self_esteem_2", "self_esteem_3", "self_esteem_4", "self_esteem_5", 
                      "self_esteem_6", "self_esteem_7", "self_esteem_8", "self_esteem_9", "self_esteem_10")
+Thesis_scale <- Thesis_scale %>%
+  mutate(se_score = rowMeans(Thesis_scale[,se],na.rm=TRUE)) 
+se_items <- Thesis_scale[, se]
+cronbach.alpha(se_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##HEXACO
 ##Honesty_humility
 hon <- c("hex6", "hex12", "hex18", "hex24", "hex30", "hex36", "hex42", "hex48", "hex54", "hex60")
+Thesis_scale <- Thesis_scale %>%
+  mutate(hon_score = rowMeans(Thesis_scale[,hon],na.rm=TRUE)) 
+hon_items <- Thesis_scale[, hon]
+cronbach.alpha(hon_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Emotionality
 emo <- c("hex5", "hex11", "hex17", "hex23", "hex29", "hex35", "hex41", "hex47", "hex53", "hex59")
+Thesis_scale <- Thesis_scale %>%
+  mutate(emo_score = rowMeans(Thesis_scale[,emo],na.rm=TRUE)) 
+emo_items <- Thesis_scale[, emo]
+cronbach.alpha(emo_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Extraversion
 extra <- c("hex4", "hex10", "hex16", "hex22", "hex28", "hex34", "hex40", "hex46", "hex52", "hex58")
+Thesis_scale <- Thesis_scale %>%
+  mutate(extra_score = rowMeans(Thesis_scale[,extra],na.rm=TRUE)) 
+extra_items <- Thesis_scale[, extra]
+cronbach.alpha(extra_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Agreeableness
 agree <- c("hex3", "hex9", "hex15", "hex21", "hex27", "hex33", "hex39", "hex45", "hex51", "hex57")
+Thesis_scale <- Thesis_scale %>%
+  mutate(agree_score = rowMeans(Thesis_scale[,agree],na.rm=TRUE)) 
+agree_items <- Thesis_scale[, agree]
+cronbach.alpha(agree_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##CONSCIENTIOUSNESS
 cons <- c("hex2", "hex8", "hex14", "hex20", "hex26", "hex32", "hex38", "hex44", "hex50", "hex56")
+Thesis_scale <- Thesis_scale %>%
+  mutate(cons_score = rowMeans(Thesis_scale[,cons],na.rm=TRUE)) 
+cons_items <- Thesis_scale[, cons]
+cronbach.alpha(cons_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Openness to Experience
 open <- c("hex1", "hex7", "hex13", "hex19", "hex25", "hex31", "hex37", "hex43", "hex49", "hex55")
+Thesis_scale <- Thesis_scale %>%
+  mutate(open_score = rowMeans(Thesis_scale[,open],na.rm=TRUE)) 
+open_items <- Thesis_scale[, open]
+cronbach.alpha(open_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Intellectual Humility Scale
 ihs <- c("IHS_1", "IHS_2", "IHS_3", "IHS_4", "IHS_5", "IHS_6")
+Thesis_scale <- Thesis_scale %>%
+  mutate(ihs_score = rowMeans(Thesis_scale[,ihs],na.rm=TRUE)) 
+ihs_items <- Thesis_scale[, ihs]
+cronbach.alpha(ihs_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Need for Closure
 nclos <- c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "nclos7", "nclos8", "nclos9", "nclos10", 
                                                  "nclos11", "nclos12", "nclos13", "nclos14", "nclos15", 
@@ -221,184 +325,62 @@ nclos <- c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "nclos7",
                                                  "nclos31", "nclos32", "nclos33", "nclos34", "nclos35", 
                                                  "nclos36", "nclos37", "nclos38", "nclos39", "nclos40", 
                                                  "nclos41", "nclos42")
+Thesis_scale <- Thesis_scale %>%
+  mutate(nclos_score = rowMeans(Thesis_scale[,nclos],na.rm=TRUE)) 
+nclos_items <- Thesis_scale[, nclos]
+cronbach.alpha(nclos_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Need for Cognition
 ncog <- c("ncog7", "ncog8", "ncog9", "ncog10", "ncog11", "ncog12", 
                                                "ncog13", "ncog14", "ncog15", "ncog16", "ncog17", "ncog18")
+Thesis_scale <- Thesis_scale %>%
+  mutate(ncog_score = rowMeans(Thesis_scale[,ncog],na.rm=TRUE)) 
+ncog_items <- Thesis_scale[, ncog]
+cronbach.alpha(ncog_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Actively Open Thinking Style
 openTS <- c("A4CTS_1", "A4CTS_2", "A4CTS_3", "A4CTS_4", "A4CTS_5", "A4CTS_6")
+Thesis_scale <- Thesis_scale %>%
+  mutate(openTS_score = rowMeans(Thesis_scale[,openTS],na.rm=TRUE)) 
+openTS_items <- Thesis_scale[, openTS]
+cronbach.alpha(openTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Close-minded Thinking Style
 closeTS <- c("A4CTS_7", "A4CTS_8", "A4CTS_9", "A4CTS_10", "A4CTS_11", "A4CTS_12")
+Thesis_scale <- Thesis_scale %>%
+  mutate(closeTS_score = rowMeans(Thesis_scale[,closeTS],na.rm=TRUE)) 
+closeTS_items <- Thesis_scale[, closeTS]
+cronbach.alpha(closeTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##prefer intuitive Thinking Style
 intuitiveTS <- c("A4CTS_13", "A4CTS_14", "A4CTS_15", "A4CTS_16", "A4CTS_17", "A4CTS_18")
+Thesis_scale <- Thesis_scale %>%
+  mutate(intuitiveTS_score = rowMeans(Thesis_scale[,intuitiveTS],na.rm=TRUE)) 
+intuitiveTS_items <- Thesis_scale[, intuitiveTS]
+cronbach.alpha(intuitiveTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##prefer effortful Thinking Style
 effortTS <- c("A4CTS_19", "A4CTS_20", "A4CTS_21", "A4CTS_22", "A4CTS_23", "A4CTS_24")
+Thesis_scale <- Thesis_scale %>%
+  mutate(effortTS_score = rowMeans(Thesis_scale[,effortTS],na.rm=TRUE)) 
+effortTS_items <- Thesis_scale[, effortTS]
+cronbach.alpha(effortTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Actively Open-Minded Thinking about Evidence Scale 
-Activeopen <- c("aopen1", "aopen2", "aopen3", "aopen4", "aopen5", "aopen6", "aopen7", "aopen8")
+activeopen <- c("aopen1", "aopen2", "aopen3", "aopen4", "aopen5", "aopen6", "aopen7", "aopen8")
+Thesis_scale <- Thesis_scale %>%
+  mutate(activeopen_score = rowMeans(Thesis_scale[,activeopen],na.rm=TRUE)) 
+activeopen_items <- Thesis_scale[, activeopen]
+cronbach.alpha(activeopen_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Faith in Intuition Scale
 fi <- c("fi1", "fi2", "fi3", "fi4", "fi5", "fi6", "fi7", "fi8", "fi9", "fi10", "fi11", "fi12")
-```
-
-
-```{r descriptives for each scale and variables}
-colnames(Thesis_scale)
-
 Thesis_scale <- Thesis_scale %>%
-  mutate(BFS_score = select(., all_of(bfs)) %>% rowMeans(na.rm = TRUE))
+  mutate(fi_score = rowMeans(Thesis_scale[,fi],na.rm=TRUE)) 
+fi_items <- Thesis_scale[, fi]
+cronbach.alpha(fi_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
 
-Thesis_scale %>%
-  select(BFS_score) %>%
-  psych::describe(BFS_score)
-
-
+## The descriptives information for each scales
+psych::describe(Thesis_scale %>% select(BFS_score, BFSe_score, BFSp_score, BPS_score, LIE_score, sdtnarc_score, sdtmach_score, sdtpsych_score, narc_score, mach_score, psycho_score, psychopri_score, psychosec_score, se_score, hon_score, emo_score, extra_score, agree_score, cons_score, open_score, ihs_score, nclos_score, ncog_score, openTS_score, closeTS_score, intuitiveTS_score, effortTS_score, activeopen_score, fi_score))
 ```
-
-
-```{r computing mean, sd, and other descriptives for each scales and variables}
-colnames(Thesis_clean)
-Thesis_clean$BFS_score <- Thesis_clean %>% 
-  rowMeans(BFS_1:BFS_12)
-psych::describe(Thesis_clean$BFS_score)
-
-df %>% 
-  psych::describe(var1, var2, ...)
-
-
-Thesis_scale$BFS_score <- rowMeans(Thesis_scale[,bfs],na.rm=TRUE)
-psych::describe(Thesis_scale$BFS_score)
-
-Thesis_scale$BS_TR_CG_3_r <- ifelse(Thesis_scale$CG3_score == 0, 0, Thesis_scale$BS_TR_CG_3)
-```
-
-
-```{r mean for each scale}
-Thesis_scale <- Thesis_scale %>%
-  mutate(
-    bfsmean = rowMeans(select(., all_of(bfs)), na.rm = TRUE),
-    bfsemean = rowMeans(select(., all_of(bfse)), na.rm = TRUE),
-    bfspmean = rowMeans(select(., all_of(bfsp)), na.rm = TRUE),
-    bpsmean = rowMeans(select(., all_of(bps)), na.rm = TRUE),
-    liemean = rowMeans(select(., all_of(lie)), na.rm = TRUE),
-    sdtnarcmean = rowMeans(select(., all_of(sdtnarc)), na.rm = TRUE),
-    sdtmachmean = rowMeans(select(., all_of(sdtmach)), na.rm = TRUE),
-    sdtpsychmean = rowMeans(select(., all_of(sdtpsych)), na.rm = TRUE),
-    machimean = rowMeans(select(., all_of(machi)), na.rm = TRUE),
-    psychomean = rowMeans(select(., all_of(psycho)), na.rm = TRUE),
-    psychoprimean = rowMeans(select(., all_of(psychopri)), na.rm = TRUE),
-    psychosecmean = rowMeans(select(., all_of(psychosec)), na.rm = TRUE),
-    semean = rowMeans(select(., all_of(se)), na.rm = TRUE),
-    honmean = rowMeans(select(., all_of(hon)), na.rm = TRUE),
-    emomena = rowMeans(select(., all_of(emo)), na.rm = TRUE),
-    extramean = rowMeans(select(., all_of(extra)), na.rm = TRUE),
-    agreemean = rowMeans(select(., all_of(agree)), na.rm = TRUE),
-    consmean = rowMeans(select(., all_of(cons)), na.rm = TRUE),
-    openmean = rowMeans(select(., all_of(open)), na.rm = TRUE),
-    ihsmean = rowMeans(select(., all_of(ihs)), na.rm = TRUE),
-    nclosmean = rowMeans(select(., all_of(nclos)), na.rm = TRUE),
-    ncogmean = rowMeans(select(., all_of(ncog)), na.rm = TRUE),
-    openTSmean = rowMeans(select(., all_of(openTS)), na.rm = TRUE),
-    closeTSmean = rowMeans(select(., all_of(closeTS)), na.rm = TRUE),
-    intuitiveTSmean = rowMeans(select(., all_of(intuitiveTS)), na.rm = TRUE),
-    effortTSmean = rowMeans(select(., all_of(effortTS)), na.rm = TRUE),
-    Activeopenmean = rowMeans(select(., all_of(Activeopen)), na.rm = TRUE),
-    fimean = rowMeans(select(., all_of(fi)), na.rm = TRUE)
-  )
-
-```
-
-```{r}
-##BFS and BPS
-partial_BFSBPS <- Thesis_scale %>% 
-  select(bfsmean, bpsmean, liemean) %>%
-  drop_na()
-
-partial_BFSBPS_result <- pcor.test(partial_BFSBPS$bfsmean, 
-                                 partial_BFSBPS$bpsmean, 
-                                 partial_BFSBPS$liemean)
-
-print(partial_corr_result)
-
-##BFS and mach
-partial_BFSmach<- Thesis_scale %>% 
-  select(bfsmean, sdtmachmean, liemean) %>% 
-  drop_na()
-
-partial_BFSmach_result <- pcor.test(partial_BFSmach$bfsmean, 
-                                 partial_BFSmach$sdtmachmean, 
-                                 partial_BFSmach$liemean)
-
-print(partial_BFSmach_result)
-
-##BFS and narc
-partial_BFSnarc<- Thesis_scale %>% 
-  select(bfsmean, sdtnarcmean, liemean) %>% 
-  drop_na()
-
-partial_BFSnarc_result <- pcor.test(
-  x = partial_BFSnarc$bfsmean,
-  y = partial_BFSnarc$sdtnarcmean,
-  z = partial_BFSnarc$liemean)
-
-print(partial_BFSnarc_result)
-
-##BFS and psychopathy
-partial_BFSpsych<- Thesis_scale %>% 
-  select(bfsmean, sdtpsychmean, liemean) %>%
-  drop_na()
-
-partial_BFSpsych_result <- pcor.test(
-  x = partial_BFSpsych$bfsmean,
-  y = partial_BFSpsych$sdtpsychmean,
-  z = partial_BFSpsych$liemean
-  )
-
-print(partial_BFSpsych_result)
-
-##BPS and mach
-partial_BPSmach<- Thesis_scale %>% 
-  select(bpsmean, sdtmachmean, liemean) %>%
-  drop_na()
-
-partial_BPSmach_result <- pcor.test(
-  x = partial_BPSmach$bpsmean,
-  y = partial_BPSmach$sdtmachmean,
-  z = partial_BPSmach$liemean
-  )
-
-print(partial_BPSmach_result)
-
-##BPS and narc
-partial_BPSnarc<- Thesis_scale %>% 
-  select(bpsmean, sdtnarcmean, liemean) %>%
-  drop_na()
-
-partial_BPSnarc_result <- pcor.test(
-  x = partial_BPSnarc$bpsmean,
-  y = partial_BPSnarc$sdtnarcmean,
-  z = partial_BPSnarc$liemean
-  )
-
-print(partial_BPSnarc_result)
-
-##BPS and psychopathy
-partial_BPSpsych<- Thesis_scale %>% 
-  select(bpsmean, sdtpsychmean, liemean) %>%
-  drop_na()
-
-partial_BPSpsych_result <- pcor.test(
-  x = partial_BPSpsych$bpsmean,
-  y = partial_BPSpsych$sdtpsychmean,
-  z = partial_BPSpsych$liemean
-  )
-
-print(partial_BPSpsych_result)
-
-```
-```{r}
-percentage correct
-```
-
-
-
-
-
 

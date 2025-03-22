@@ -377,16 +377,18 @@ div.tocify {
 <pre class="r"><code>##install packages
 ##install.packages(&quot;ltm&quot;)
 ##install.packages(&quot;psych&quot;)
+##install.packages(&quot;ppcor&quot;)
 ##For this portfolio, I would like to use the dataset from my thesis study.
 library(psych)
 library(haven)
 library(ggplot2)
 library(ltm)
+library(ppcor)
 library(tidyverse)
 library(dplyr)
 Thesis &lt;- read_sav(&quot;~/Downloads/Thesis.sav&quot;)</code></pre>
-<div id="step-1-clean-data" class="section level3">
-<h3>Step 1: clean data</h3>
+<div id="step-1-clean-data" class="section level2">
+<h2>Step 1: clean data</h2>
 <pre class="r"><code>##The first step is to clean data, and I started with getting rid of participants that did not finished the study, as well as deleting variable that does not have any data, such as recipient name.  
 Thesis_clean &lt;- Thesis %&gt;% 
   select(-RecipientLastName, -RecipientFirstName, -RecipientEmail, -ExternalReference, -DistributionChannel, -browser_info_Resolution, -StartDate, -EndDate, -browser_info_Browser, -browser_info_Version, -IPAddress, -RecordedDate, -LocationLatitude, -LocationLongitude, -ResponseId, -UserLanguage, -browser_info_Operating_System, -robot_timer_First_Click, -robot_timer_Last_Click, -robot_timer_Page_Submit, -robot_timer_Click_Count)
@@ -396,15 +398,16 @@ Thesis_clean &lt;- Thesis_clean %&gt;%
   filter(Progress &gt;= 50)
 ##Remove people&#39;s answers who did not give consent to participate in the study
 Thesis_clean &lt;- Thesis_clean %&gt;%
-  filter(Consent1 != 2)</code></pre>
-<pre class="r"><code>##Reverse coding for BPS
-##Define columns that should remain as text, which are my short-answer responses
+  filter(Consent1 != 2, (!is.na(difficulties)))</code></pre>
+</div>
+<div id="step-2-reverse-coding-the-scales" class="section level2">
+<h2>Step 2: reverse coding the scales</h2>
+<pre class="r"><code>##Define columns that should remain as text, which are my short-answer responses
 text_cols &lt;- c(&quot;BS_TL_CG_1&quot;, &quot;BS_TL_CG_2&quot;, &quot;BS_TL_CG_3&quot;, &quot;BS_TL_CG_4&quot;, &quot;BS_TL_CG_5&quot;, 
 &quot;BS_TL_Recycle_1&quot;, &quot;BS_TL_Recycling_2&quot;, &quot;BS_TL_Recycling_3&quot;, &quot;BS_TL_Recycling_4&quot;, &quot;BS_TL_Recycling_5&quot;, 
 &quot;BS_TL_Crime_1&quot;, &quot;BS_TL_Crime_2&quot;, &quot;BS_TL_Crime_3&quot;, &quot;BS_TL_Crime_4&quot;, &quot;BS_TL_Crime_5&quot;, 
 &quot;major&quot;, &quot;BS_shortanswer1&quot;, &quot;BS_shortanswer2&quot;, &quot;comment&quot;) 
 
-##Convert the numeric columns
 Thesis_clean &lt;- Thesis_clean %&gt;%
   mutate(across(-all_of(text_cols), ~ as.numeric(.)))</code></pre>
 <pre><code>## Warning: There were 3 warnings in `mutate()`.
@@ -413,11 +416,24 @@ Thesis_clean &lt;- Thesis_clean %&gt;%
 ## Caused by warning:
 ## ! NAs introduced by coercion
 ## ℹ Run `dplyr::last_dplyr_warnings()` to see the 2 remaining warnings.</code></pre>
-<pre class="r"><code>Thesis_scale &lt;- Thesis_clean %&gt;%
+<pre class="r"><code>##Convert the numeric columns: 
+##step I: I noticed that SPSS assigned the wrong value for the thought rating items, so I have to recoded the wrong value first before reverse-coding it
+Thesis_scale &lt;- Thesis_clean %&gt;%
+  mutate(
+    across(c(BS_TR_CG_1, BS_TR_CG_2, BS_TR_CG_3, BS_TR_CG_4, BS_TR_CG_5, BS_TR_Recylcing_1, BS_TR_Recylcing_2, BS_TR_Recylcing_3,
+             BS_TR_Recylcing_4, BS_TR_Recylcing_5, BS_TR_Crime_1, BS_TR_Crime_2, BS_TR_Crime_3, BS_TR_Crime_4, BS_TR_Crime_5), ~ recode(., 
+             `4` = 0, `5` = 1, `6` = 2, `7` = 3, `8` = 4, `9` = 5, `10` = 6, `11` = 7, `12` = 8, `13` = 9, `14` = 10))
+    )##Thought-Rating for the originally wrong value   
+                                                                                                                      
+##step II: 
+Thesis_scale &lt;- Thesis_scale %&gt;%
   mutate(
     across(c(BPS_1, BPS_2, BPS_3, BPS_6, BPS_9, BPS_11), ~ recode(., 
       `1` = 5, `2` = 4, `4` = 2, `5` = 1)), ##Bullshit Propensity Scale
-
+    
+    across(c(BS_TR_CG_1, BS_TR_CG_2, BS_TR_CG_3, BS_TR_CG_4, BS_TR_CG_5, BS_TR_Recylcing_1, BS_TR_Recylcing_2, BS_TR_Recylcing_3, BS_TR_Recylcing_4, BS_TR_Recylcing_5, BS_TR_Crime_1, BS_TR_Crime_2, BS_TR_Crime_3, BS_TR_Crime_4, BS_TR_Crime_5), ~ recode(., 
+      `10` = 0, `9` = 1, `8` = 2, `7` = 3, `6` = 4, `4` = 6, `3` = 7, `2` = 8, `1` = 9, `0` = 10)), ##Thought-Rating
+    
     across(c(self_esteem_2, self_esteem_5, self_esteem_6, self_esteem_8, self_esteem_9), ~ recode(., 
       `1` = 4, `11` = 3, `12` = 2, `13` = 1)), ##Rosenberg Self-esteem Scale
 
@@ -454,54 +470,413 @@ Thesis_clean &lt;- Thesis_clean %&gt;%
 ones, so that would be easier for me to keep track on if the numbers are
 already recoded. I had too many variables this time so I did not do
 that.</p>
+</div>
+<div
+id="step-3.1-calculating-scales-that-requires-more-than-sum-or-mean"
+class="section level2">
+<h2>Step 3.1: calculating scales that requires more than sum or
+mean</h2>
+<pre class="r"><code>## For the thought listing and rating task, I need to first identify participants&#39; valid responses. I coded 1 for all valid responses and 0 for all the invalid ones. The criteria is that if the participant answered NA, not sure, or answers suggesting they do not have answers, I code it as 0. I created variables such as CG_score, RC_score, and CR_score for each question. I verify all of the thought rating scores by sliding the thought rating variables next to their respective thought scores (e.g., “thought_rating1” should be next to “thought1_score”)
+## How to compute: I Sum the total number of thoughts for each participant per the topic. In other words, if a participant wrote three valid thoughts for topic 1, they should have “3” for their “sum_recoded_TR_topic”.
+
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(
+    recoded_college = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
+    recoded_recycling = rowSums(select(., RC1_score, RC2_score, RC3_score, RC4_score, RC5_score), na.rm = TRUE),
+    recoded_crime = rowSums(select(., CR1_score, CR2_score, CR3_score, CR4_score, CR5_score), na.rm = TRUE),
+    )
+
+## Next, I need to delete the scores in the BS_TR_topic items if I marked &quot;0&quot; in the accordingly topic_score variables. In other words, I need to put &quot;0&quot; in the BS_TR_topic when the participant did not provide valid answers.
+##topic: college graduate
+Thesis_scale$BS_TR_CG_1 &lt;- ifelse(Thesis_scale$CG1_score == 0, NA_integer_, Thesis_scale$BS_TR_CG_1)
+Thesis_scale$BS_TR_CG_2 &lt;- ifelse(Thesis_scale$CG2_score == 0, NA_integer_, Thesis_scale$BS_TR_CG_2)
+Thesis_scale$BS_TR_CG_3 &lt;- ifelse(Thesis_scale$CG3_score == 0, NA_integer_, Thesis_scale$BS_TR_CG_3)
+Thesis_scale$BS_TR_CG_4 &lt;- ifelse(Thesis_scale$CG4_score == 0, NA_integer_, Thesis_scale$BS_TR_CG_4)
+Thesis_scale$BS_TR_CG_5 &lt;- ifelse(Thesis_scale$CG5_score == 0, NA_integer_, Thesis_scale$BS_TR_CG_5)
+##topic: recycling
+Thesis_scale$BS_TR_Recylcing_1 &lt;- ifelse(Thesis_scale$RC1_score == 0, NA_integer_, Thesis_scale$BS_TR_Recylcing_1)
+Thesis_scale$BS_TR_Recylcing_2 &lt;- ifelse(Thesis_scale$RC2_score == 0, NA_integer_, Thesis_scale$BS_TR_Recylcing_2)
+Thesis_scale$BS_TR_Recylcing_3 &lt;- ifelse(Thesis_scale$RC3_score == 0, NA_integer_, Thesis_scale$BS_TR_Recylcing_3)
+Thesis_scale$BS_TR_Recylcing_4 &lt;- ifelse(Thesis_scale$RC4_score == 0, NA_integer_, Thesis_scale$BS_TR_Recylcing_4)
+Thesis_scale$BS_TR_Recylcing_5 &lt;- ifelse(Thesis_scale$RC5_score == 0, NA_integer_, Thesis_scale$BS_TR_Recylcing_5)
+##topic: retruning to crime after prison
+Thesis_scale$BS_TR_Crime_1 &lt;- ifelse(Thesis_scale$CR1_score == 0, NA_integer_, Thesis_scale$BS_TR_Crime_1)
+Thesis_scale$BS_TR_Crime_2 &lt;- ifelse(Thesis_scale$CR2_score == 0, NA_integer_, Thesis_scale$BS_TR_Crime_2)
+Thesis_scale$BS_TR_Crime_3 &lt;- ifelse(Thesis_scale$CR3_score == 0, NA_integer_, Thesis_scale$BS_TR_Crime_3)
+Thesis_scale$BS_TR_Crime_4 &lt;- ifelse(Thesis_scale$CR4_score == 0, NA_integer_, Thesis_scale$BS_TR_Crime_4)
+Thesis_scale$BS_TR_Crime_5 &lt;- ifelse(Thesis_scale$CR5_score == 0, NA_integer_, Thesis_scale$BS_TR_Crime_5)
+## Next, I sum the recoded_TR_topic variables separately for each topic. If the participants wrote about five answers, they should all have five “sum_recoded_TR_topic” scores (one for each topic).
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(
+    sum_recoded_TR_college = rowSums(select(., BS_TR_CG_1, BS_TR_CG_2, BS_TR_CG_3, BS_TR_CG_4, BS_TR_CG_5), na.rm = TRUE),
+    sum_recoded_TR_recycling = rowSums(select(., BS_TR_Recylcing_1, BS_TR_Recylcing_2, BS_TR_Recylcing_3, BS_TR_Recylcing_4, BS_TR_Recylcing_5), na.rm = TRUE),
+    sum_recoded_TR_crime = rowSums(select(., BS_TR_Crime_1, BS_TR_Crime_2, BS_TR_Crime_3, BS_TR_Crime_4, BS_TR_Crime_5), na.rm = TRUE)
+    )
+###I als0 just want to double check what does na.rm did for my data in terms of na.rm = TRUE/FALSE
+summary(Thesis_scale$recoded_college)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   5.000   5.000   4.488   5.000   5.000</code></pre>
+<pre class="r"><code>## Lastly, I use this equation to calculate the BS Proportion per topic, whereby each participant will have five individual BS Proportion scores (one for each topic): sum_recoded_thought_rating_topic1 / (sum thought_frequency_topic1 x 10)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(
+    BSthought_college = sum_recoded_TR_college / (recoded_college * 10),
+    BSthought_recycling = sum_recoded_TR_recycling / (recoded_recycling * 10),
+    BSthought_crime = sum_recoded_TR_crime / (recoded_crime * 10)
+    )
+
+# Check if it worked
+head(Thesis_scale$BSthought_college)</code></pre>
+<pre><code>## [1] 0.420 0.225 0.320 0.380 0.340 0.480</code></pre>
+</div>
+<div
+id="step-3.2-calculating-scales-basic-descriptives-mean-sd-max-and-mix-and-cronbach-alpha"
+class="section level2">
+<h2>Step 3.2: calculating scales’ basic descriptives (mean, sd, max, and
+mix) and cronbach alpha</h2>
 <pre class="r"><code>##Define the scales
 ##Bullshit Frequency scale general  
 bfs &lt;- c(&quot;BFS_1&quot;, &quot;BFS_2&quot;, &quot;BFS_3&quot;, &quot;BFS_4&quot;, &quot;BFS_5&quot;, &quot;BFS_6&quot;, &quot;BFS_7&quot;, &quot;BFS_8&quot;, &quot;BFS_9&quot;, &quot;BFS_10&quot;, &quot;BFS_11&quot;, &quot;BFS_12&quot;)
-##Bullshit Frequency scale evasive
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(BFS_score = rowMeans(Thesis_scale[,bfs],na.rm=TRUE)) 
+bfs_items &lt;- Thesis_scale[, bfs]
+cronbach.alpha(bfs_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;bfs_items&#39; data-set
+## 
+## Items: 12
+## Sample units: 418
+## alpha: 0.855
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.829 0.876</code></pre>
+<pre class="r"><code>##Bullshit Frequency scale evasive
 bfse &lt;- c(&quot;BFS_9&quot;, &quot;BFS_10&quot;, &quot;BFS_11&quot;, &quot;BFS_12&quot;)
-##Bullshit Frequency scale persuasive
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(BFSe_score = rowMeans(Thesis_scale[,bfse],na.rm=TRUE)) 
+bfse_items &lt;- Thesis_scale[, bfse]
+cronbach.alpha(bfse_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;bfse_items&#39; data-set
+## 
+## Items: 4
+## Sample units: 418
+## alpha: 0.721
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.668 0.767</code></pre>
+<pre class="r"><code>##Bullshit Frequency scale persuasive
 bfsp &lt;- c(&quot;BFS_1&quot;, &quot;BFS_2&quot;, &quot;BFS_3&quot;, &quot;BFS_4&quot;, &quot;BFS_5&quot;, &quot;BFS_6&quot;, &quot;BFS_7&quot;, &quot;BFS_8&quot;)
-##Bullshit Propensity scale 
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(BFSp_score = rowMeans(Thesis_scale[,bfsp],na.rm=TRUE))
+bfsp_items &lt;- Thesis_scale[, bfsp]
+cronbach.alpha(bfsp_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;bfsp_items&#39; data-set
+## 
+## Items: 8
+## Sample units: 418
+## alpha: 0.86
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.831 0.880</code></pre>
+<pre class="r"><code>##Bullshit Propensity scale 
 bps &lt;- c(&quot;BPS_1&quot;, &quot;BPS_2&quot;, &quot;BPS_3&quot;, &quot;BPS_4&quot;, &quot;BPS_5&quot;, &quot;BPS_6&quot;, &quot;BPS_7&quot;, &quot;BPS_8&quot;, &quot;BPS_9&quot;, &quot;BPS_10&quot;, &quot;BPS_11&quot;, &quot;BPS_12&quot;)
-##Lying in Everyday Situations Scale
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(BPS_score = rowMeans(Thesis_scale[,bps],na.rm=TRUE))
+bps_items &lt;- Thesis_scale[, bps]
+cronbach.alpha(bps_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;bps_items&#39; data-set
+## 
+## Items: 12
+## Sample units: 418
+## alpha: 0.759
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.715 0.795</code></pre>
+<pre class="r"><code>##Lying in Everyday Situations Scale
 lie &lt;- c(&quot;lies1&quot;, &quot;lies2&quot;, &quot;lies3&quot;, &quot;lies4&quot;, &quot;lies5&quot;, &quot;lies6&quot;, &quot;lies7&quot;, &quot;lies8&quot;, &quot;lies9&quot;, &quot;lies10&quot;, &quot;lies11&quot;, &quot;lies12&quot;, &quot;lies13&quot;, &quot;lies14&quot;)
-##Short_dark_triad Narcissism
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(LIE_score = rowMeans(Thesis_scale[,lie],na.rm=TRUE))
+lie_items &lt;- Thesis_scale[, lie]
+cronbach.alpha(lie_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;lie_items&#39; data-set
+## 
+## Items: 14
+## Sample units: 418
+## alpha: 0.911
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.897 0.924</code></pre>
+<pre class="r"><code>##Short_dark_triad Narcissism
 sdtnarc &lt;- c(&quot;DTS_Nar_1&quot;, &quot;DTS_Nar_2&quot;, &quot;DTS_Nar_3&quot;, &quot;DTS_Nar_4&quot;, &quot;DTS_Nar_5&quot;, &quot;DTS_Nar_6&quot;, &quot;DTS_Nar_7&quot;, &quot;DTS_Nar_8&quot;, &quot;DTS_Nar_9&quot;)
-##Short_dark_triad Machiavellianism
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(sdtnarc_score = rowMeans(Thesis_scale[,sdtnarc],na.rm=TRUE))
+sdtnarc_items &lt;- Thesis_scale[, sdtnarc]
+cronbach.alpha(sdtnarc_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;sdtnarc_items&#39; data-set
+## 
+## Items: 9
+## Sample units: 418
+## alpha: 0.709
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.656 0.755</code></pre>
+<pre class="r"><code>##Short_dark_triad Machiavellianism
 sdtmach &lt;- c(&quot;DTS_MACH_1&quot;, &quot;DTS_MACH_2&quot;, &quot;DTS_MACH_3&quot;, &quot;DTS_MACH_4&quot;, &quot;DTS_MACH_5&quot;, &quot;DTS_MACH_6&quot;, &quot;DTS_MACH_7&quot;, &quot;DTS_MACH_8&quot;, &quot;DTS_MACH_9&quot;)
-##Short_dark_triad Psychopathy
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(sdtmach_score = rowMeans(Thesis_scale[,sdtmach],na.rm=TRUE))
+sdtmach_items &lt;- Thesis_scale[, sdtmach]
+cronbach.alpha(sdtmach_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;sdtmach_items&#39; data-set
+## 
+## Items: 9
+## Sample units: 418
+## alpha: 0.79
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.755 0.820</code></pre>
+<pre class="r"><code>##Short_dark_triad Psychopathy
 sdtpsych &lt;- c(&quot;DTS_Path_1&quot;, &quot;DTS_Path_2&quot;, &quot;DTS_Path_3&quot;, &quot;DTS_Path_4&quot;, &quot;DTS_Path_5&quot;, &quot;DTS_Path_6&quot;, &quot;DTS_Path_7&quot;, &quot;DTS_Path_8&quot;, &quot;DTS_Path_9&quot;)
-##Machiavellianism Personality scale
-machi &lt;- c(&quot;MPS_1&quot;, &quot;MPS_2&quot;, &quot;MPS_3&quot;, &quot;MPS_4&quot;, &quot;MPS_5&quot;, &quot;MPS_6&quot;, &quot;MPS_7&quot;, &quot;MPS_8&quot;, &quot;MPS_9&quot;, &quot;MPS_10&quot;, &quot;MPS_11&quot;, &quot;MPS_12&quot;, &quot;MPS_13&quot;, &quot;MPS_14&quot;, &quot;MPS_15&quot;, &quot;MPS_16&quot;)
-##Levenson Self-Report Psychopathy Scale
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(sdtpsych_score = rowMeans(Thesis_scale[,sdtpsych],na.rm=TRUE))
+sdtpsych_items &lt;- Thesis_scale[, sdtpsych]
+cronbach.alpha(sdtpsych_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;sdtpsych_items&#39; data-set
+## 
+## Items: 9
+## Sample units: 418
+## alpha: 0.76
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.718 0.792</code></pre>
+<pre class="r"><code>##Narcissistic Personality Inventory
+narc &lt;- c(&quot;NPI_1&quot;, &quot;NPI_2&quot;, &quot;NPI_3&quot;, &quot;NPI_4&quot;, &quot;NPI_5&quot;, &quot;NPI_6&quot;, &quot;NPI_7&quot;, &quot;NPI_8&quot;, &quot;NPI_9&quot;, &quot;NPI_10&quot;, &quot;NPI_11&quot;, &quot;NPI_12&quot;, &quot;NPI_13&quot;, &quot;NPI_14&quot;, &quot;NPI_15&quot;, &quot;NPI_16&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(narc_score = rowMeans(Thesis_scale[,narc],na.rm=TRUE))
+narc_items &lt;- Thesis_scale[, narc]
+cronbach.alpha(narc_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;narc_items&#39; data-set
+## 
+## Items: 16
+## Sample units: 418
+## alpha: 0.748
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.705 0.781</code></pre>
+<pre class="r"><code>##Machiavellianism Personality scale
+mach &lt;- c(&quot;MPS_1&quot;, &quot;MPS_2&quot;, &quot;MPS_3&quot;, &quot;MPS_4&quot;, &quot;MPS_5&quot;, &quot;MPS_6&quot;, &quot;MPS_7&quot;, &quot;MPS_8&quot;, &quot;MPS_9&quot;, &quot;MPS_10&quot;, &quot;MPS_11&quot;, &quot;MPS_12&quot;, &quot;MPS_13&quot;, &quot;MPS_14&quot;, &quot;MPS_15&quot;, &quot;MPS_16&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(mach_score = rowMeans(Thesis_scale[,mach],na.rm=TRUE))
+mach_items &lt;- Thesis_scale[, mach]
+cronbach.alpha(mach_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;mach_items&#39; data-set
+## 
+## Items: 16
+## Sample units: 418
+## alpha: 0.836
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.809 0.856</code></pre>
+<pre class="r"><code>##Levenson Self-Report Psychopathy Scale
 psycho &lt;- c(&quot;LSRP_PPS_1&quot;, &quot;LSRP_PPS_2&quot;, &quot;LSRP_PPS_3&quot;, &quot;LSRP_PPS_4&quot;, &quot;LSRP_PPS_5&quot;, &quot;LSRP_PPS_6&quot;, &quot;LSRP_PPS_7&quot;, &quot;LSRP_PPS_8&quot;, &quot;LSRP_PPS_9&quot;, &quot;LSRP_PPS_10&quot;, &quot;LSRP_PPS_11&quot;, &quot;LSRP_PPS_12&quot;, &quot;LSRP_PPS_13&quot;, &quot;LSRP_PPS_14&quot;, &quot;LSRP_PPS_15&quot;, &quot;LSRP_PPS_16&quot;, &quot;LSRP_SPS_1&quot;, &quot;LSRP_SPS_2&quot;, &quot;LSRP_SPS_3&quot;, &quot;LSRP_SPS_4&quot;, &quot;LSRP_SPS_5&quot;, &quot;LSRP_SPS_6&quot;, &quot;LSRP_SPS_7&quot;, &quot;LSRP_SPS_8&quot;, &quot;LSRP_SPS_9&quot;, &quot;LSRP_SPS_10&quot;)
-##primary factor of psychopathy scale
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(psycho_score = rowMeans(Thesis_scale[,psycho],na.rm=TRUE)) 
+psycho_items &lt;- Thesis_scale[, psycho]
+cronbach.alpha(psycho_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;psycho_items&#39; data-set
+## 
+## Items: 26
+## Sample units: 418
+## alpha: 0.861
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.841 0.877</code></pre>
+<pre class="r"><code>##primary factor of psychopathy scale
 psychopri &lt;- c(&quot;LSRP_PPS_1&quot;, &quot;LSRP_PPS_2&quot;, &quot;LSRP_PPS_3&quot;, &quot;LSRP_PPS_4&quot;, &quot;LSRP_PPS_5&quot;, 
                     &quot;LSRP_PPS_6&quot;, &quot;LSRP_PPS_7&quot;, &quot;LSRP_PPS_8&quot;, &quot;LSRP_PPS_9&quot;, &quot;LSRP_PPS_10&quot;, 
                     &quot;LSRP_PPS_11&quot;, &quot;LSRP_PPS_12&quot;, &quot;LSRP_PPS_13&quot;, &quot;LSRP_PPS_14&quot;, &quot;LSRP_PPS_15&quot;, 
                     &quot;LSRP_PPS_16&quot;)
-##secondary factor of psychopathy scale
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(psychopri_score = rowMeans(Thesis_scale[,psychopri],na.rm=TRUE)) 
+psychopri_items &lt;- Thesis_scale[, psychopri]
+cronbach.alpha(psychopri_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;psychopri_items&#39; data-set
+## 
+## Items: 16
+## Sample units: 418
+## alpha: 0.812
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.786 0.832</code></pre>
+<pre class="r"><code>##secondary factor of psychopathy scale
 psychosec &lt;- c(&quot;LSRP_SPS_1&quot;, &quot;LSRP_SPS_2&quot;, &quot;LSRP_SPS_3&quot;, &quot;LSRP_SPS_4&quot;, &quot;LSRP_SPS_5&quot;, 
                     &quot;LSRP_SPS_6&quot;, &quot;LSRP_SPS_7&quot;, &quot;LSRP_SPS_8&quot;, &quot;LSRP_SPS_9&quot;, &quot;LSRP_SPS_10&quot;)
-##Self-esteem (Rosenberg)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(psychosec_score = rowMeans(Thesis_scale[,psychosec],na.rm=TRUE)) 
+psychosec_items &lt;- Thesis_scale[, psychosec]
+cronbach.alpha(psychosec_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;psychosec_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 418
+## alpha: 0.763
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.724 0.795</code></pre>
+<pre class="r"><code>##Self-esteem (Rosenberg)
 se &lt;- c(&quot;self_esteem_1&quot;, &quot;self_esteem_2&quot;, &quot;self_esteem_3&quot;, &quot;self_esteem_4&quot;, &quot;self_esteem_5&quot;, 
                      &quot;self_esteem_6&quot;, &quot;self_esteem_7&quot;, &quot;self_esteem_8&quot;, &quot;self_esteem_9&quot;, &quot;self_esteem_10&quot;)
-##HEXACO
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(se_score = rowMeans(Thesis_scale[,se],na.rm=TRUE)) 
+se_items &lt;- Thesis_scale[, se]
+cronbach.alpha(se_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;se_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 418
+## alpha: 0.901
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.885 0.914</code></pre>
+<pre class="r"><code>##HEXACO
 ##Honesty_humility
 hon &lt;- c(&quot;hex6&quot;, &quot;hex12&quot;, &quot;hex18&quot;, &quot;hex24&quot;, &quot;hex30&quot;, &quot;hex36&quot;, &quot;hex42&quot;, &quot;hex48&quot;, &quot;hex54&quot;, &quot;hex60&quot;)
-##Emotionality
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(hon_score = rowMeans(Thesis_scale[,hon],na.rm=TRUE)) 
+hon_items &lt;- Thesis_scale[, hon]
+cronbach.alpha(hon_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;hon_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 418
+## alpha: 0.523
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.443 0.584</code></pre>
+<pre class="r"><code>##Emotionality
 emo &lt;- c(&quot;hex5&quot;, &quot;hex11&quot;, &quot;hex17&quot;, &quot;hex23&quot;, &quot;hex29&quot;, &quot;hex35&quot;, &quot;hex41&quot;, &quot;hex47&quot;, &quot;hex53&quot;, &quot;hex59&quot;)
-##Extraversion
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(emo_score = rowMeans(Thesis_scale[,emo],na.rm=TRUE)) 
+emo_items &lt;- Thesis_scale[, emo]
+cronbach.alpha(emo_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;emo_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 418
+## alpha: 0.801
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.768 0.829</code></pre>
+<pre class="r"><code>##Extraversion
 extra &lt;- c(&quot;hex4&quot;, &quot;hex10&quot;, &quot;hex16&quot;, &quot;hex22&quot;, &quot;hex28&quot;, &quot;hex34&quot;, &quot;hex40&quot;, &quot;hex46&quot;, &quot;hex52&quot;, &quot;hex58&quot;)
-##Agreeableness
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(extra_score = rowMeans(Thesis_scale[,extra],na.rm=TRUE)) 
+extra_items &lt;- Thesis_scale[, extra]
+cronbach.alpha(extra_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;extra_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 418
+## alpha: 0.802
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.770 0.829</code></pre>
+<pre class="r"><code>##Agreeableness
 agree &lt;- c(&quot;hex3&quot;, &quot;hex9&quot;, &quot;hex15&quot;, &quot;hex21&quot;, &quot;hex27&quot;, &quot;hex33&quot;, &quot;hex39&quot;, &quot;hex45&quot;, &quot;hex51&quot;, &quot;hex57&quot;)
-##CONSCIENTIOUSNESS
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(agree_score = rowMeans(Thesis_scale[,agree],na.rm=TRUE)) 
+agree_items &lt;- Thesis_scale[, agree]
+cronbach.alpha(agree_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;agree_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 418
+## alpha: 0.784
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.746 0.816</code></pre>
+<pre class="r"><code>##CONSCIENTIOUSNESS
 cons &lt;- c(&quot;hex2&quot;, &quot;hex8&quot;, &quot;hex14&quot;, &quot;hex20&quot;, &quot;hex26&quot;, &quot;hex32&quot;, &quot;hex38&quot;, &quot;hex44&quot;, &quot;hex50&quot;, &quot;hex56&quot;)
-##Openness to Experience
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(cons_score = rowMeans(Thesis_scale[,cons],na.rm=TRUE)) 
+cons_items &lt;- Thesis_scale[, cons]
+cronbach.alpha(cons_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;cons_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 418
+## alpha: 0.802
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.774 0.829</code></pre>
+<pre class="r"><code>##Openness to Experience
 open &lt;- c(&quot;hex1&quot;, &quot;hex7&quot;, &quot;hex13&quot;, &quot;hex19&quot;, &quot;hex25&quot;, &quot;hex31&quot;, &quot;hex37&quot;, &quot;hex43&quot;, &quot;hex49&quot;, &quot;hex55&quot;)
-##Intellectual Humility Scale
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(open_score = rowMeans(Thesis_scale[,open],na.rm=TRUE)) 
+open_items &lt;- Thesis_scale[, open]
+cronbach.alpha(open_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;open_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 418
+## alpha: 0.675
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.611 0.724</code></pre>
+<pre class="r"><code>##Intellectual Humility Scale
 ihs &lt;- c(&quot;IHS_1&quot;, &quot;IHS_2&quot;, &quot;IHS_3&quot;, &quot;IHS_4&quot;, &quot;IHS_5&quot;, &quot;IHS_6&quot;)
-##Need for Closure
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(ihs_score = rowMeans(Thesis_scale[,ihs],na.rm=TRUE)) 
+ihs_items &lt;- Thesis_scale[, ihs]
+cronbach.alpha(ihs_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;ihs_items&#39; data-set
+## 
+## Items: 6
+## Sample units: 418
+## alpha: 0.446
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.342 0.529</code></pre>
+<pre class="r"><code>##Need for Closure
 nclos &lt;- c(&quot;nclos1&quot;, &quot;nclos2&quot;, &quot;nclos3&quot;, &quot;nclos4&quot;, &quot;nclos5&quot;, &quot;nclos6&quot;, &quot;nclos7&quot;, &quot;nclos8&quot;, &quot;nclos9&quot;, &quot;nclos10&quot;, 
                                                  &quot;nclos11&quot;, &quot;nclos12&quot;, &quot;nclos13&quot;, &quot;nclos14&quot;, &quot;nclos15&quot;, 
                                                  &quot;nclos16&quot;, &quot;nclos17&quot;, &quot;nclos18&quot;, &quot;nclos19&quot;, &quot;nclos20&quot;, 
@@ -510,84 +885,195 @@ nclos &lt;- c(&quot;nclos1&quot;, &quot;nclos2&quot;, &quot;nclos3&quot;, &quot;
                                                  &quot;nclos31&quot;, &quot;nclos32&quot;, &quot;nclos33&quot;, &quot;nclos34&quot;, &quot;nclos35&quot;, 
                                                  &quot;nclos36&quot;, &quot;nclos37&quot;, &quot;nclos38&quot;, &quot;nclos39&quot;, &quot;nclos40&quot;, 
                                                  &quot;nclos41&quot;, &quot;nclos42&quot;)
-##Need for Cognition
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(nclos_score = rowMeans(Thesis_scale[,nclos],na.rm=TRUE)) 
+nclos_items &lt;- Thesis_scale[, nclos]
+cronbach.alpha(nclos_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;nclos_items&#39; data-set
+## 
+## Items: 42
+## Sample units: 418
+## alpha: 0.838
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.811 0.859</code></pre>
+<pre class="r"><code>##Need for Cognition
 ncog &lt;- c(&quot;ncog7&quot;, &quot;ncog8&quot;, &quot;ncog9&quot;, &quot;ncog10&quot;, &quot;ncog11&quot;, &quot;ncog12&quot;, 
                                                &quot;ncog13&quot;, &quot;ncog14&quot;, &quot;ncog15&quot;, &quot;ncog16&quot;, &quot;ncog17&quot;, &quot;ncog18&quot;)
-##Actively Open Thinking Style
-openTS &lt;- c(&quot;A4CTS_1&quot;, &quot;A4CTS_2&quot;, &quot;A4CTS_3&quot;, &quot;A4CTS_4&quot;, &quot;A4CTS_5&quot;, &quot;A4CTS_6&quot;)
-##Close-minded Thinking Style
-closeTS &lt;- c(&quot;A4CTS_7&quot;, &quot;A4CTS_8&quot;, &quot;A4CTS_9&quot;, &quot;A4CTS_10&quot;, &quot;A4CTS_11&quot;, &quot;A4CTS_12&quot;)
-##prefer intuitive Thinking Style
-intuitiveTS &lt;- c(&quot;A4CTS_13&quot;, &quot;A4CTS_14&quot;, &quot;A4CTS_15&quot;, &quot;A4CTS_16&quot;, &quot;A4CTS_17&quot;, &quot;A4CTS_18&quot;)
-##prefer effortful Thinking Style
-effortTS &lt;- c(&quot;A4CTS_19&quot;, &quot;A4CTS_20&quot;, &quot;A4CTS_21&quot;, &quot;A4CTS_22&quot;, &quot;A4CTS_23&quot;, &quot;A4CTS_24&quot;)
-##Actively Open-Minded Thinking about Evidence Scale 
-Activeopen &lt;- c(&quot;aopen1&quot;, &quot;aopen2&quot;, &quot;aopen3&quot;, &quot;aopen4&quot;, &quot;aopen5&quot;, &quot;aopen6&quot;, &quot;aopen7&quot;, &quot;aopen8&quot;)
-##Faith in Intuition Scale
-fi &lt;- c(&quot;fi1&quot;, &quot;fi2&quot;, &quot;fi3&quot;, &quot;fi4&quot;, &quot;fi5&quot;, &quot;fi6&quot;, &quot;fi7&quot;, &quot;fi8&quot;, &quot;fi9&quot;, &quot;fi10&quot;, &quot;fi11&quot;, &quot;fi12&quot;)</code></pre>
-<pre class="r"><code>Thesis_scale &lt;- Thesis_scale %&gt;%
-  mutate(
-    bfsmean = rowMeans(select(., all_of(bfs)), na.rm = TRUE),
-    bfsemean = rowMeans(select(., all_of(bfse)), na.rm = TRUE),
-    bfspmean = rowMeans(select(., all_of(bfsp)), na.rm = TRUE),
-    bpsmean = rowMeans(select(., all_of(bps)), na.rm = TRUE),
-    liemean = rowMeans(select(., all_of(lie)), na.rm = TRUE),
-    sdtnarcmean = rowMeans(select(., all_of(sdtnarc)), na.rm = TRUE),
-    sdtmachmean = rowMeans(select(., all_of(sdtmach)), na.rm = TRUE),
-    sdtpsychmean = rowMeans(select(., all_of(sdtpsych)), na.rm = TRUE),
-    machimean = rowMeans(select(., all_of(machi)), na.rm = TRUE),
-    psychomean = rowMeans(select(., all_of(psycho)), na.rm = TRUE),
-    psychoprimean = rowMeans(select(., all_of(psychopri)), na.rm = TRUE),
-    psychosecmean = rowMeans(select(., all_of(psychosec)), na.rm = TRUE),
-    semean = rowMeans(select(., all_of(se)), na.rm = TRUE),
-    honmean = rowMeans(select(., all_of(hon)), na.rm = TRUE),
-    emomena = rowMeans(select(., all_of(emo)), na.rm = TRUE),
-    extramean = rowMeans(select(., all_of(extra)), na.rm = TRUE),
-    agreemean = rowMeans(select(., all_of(agree)), na.rm = TRUE),
-    consmean = rowMeans(select(., all_of(cons)), na.rm = TRUE),
-    openmean = rowMeans(select(., all_of(open)), na.rm = TRUE),
-    ihsmean = rowMeans(select(., all_of(ihs)), na.rm = TRUE),
-    nclosmean = rowMeans(select(., all_of(nclos)), na.rm = TRUE),
-    ncogmean = rowMeans(select(., all_of(ncog)), na.rm = TRUE),
-    openTSmean = rowMeans(select(., all_of(openTS)), na.rm = TRUE),
-    closeTSmean = rowMeans(select(., all_of(closeTS)), na.rm = TRUE),
-    intuitiveTSmean = rowMeans(select(., all_of(intuitiveTS)), na.rm = TRUE),
-    effortTSmean = rowMeans(select(., all_of(effortTS)), na.rm = TRUE),
-    Activeopenmean = rowMeans(select(., all_of(Activeopen)), na.rm = TRUE),
-    fimean = rowMeans(select(., all_of(fi)), na.rm = TRUE)
-  )</code></pre>
-<pre class="r"><code>##install.packages(&quot;ppcor&quot;)
-library(ppcor)
-partial_corr_data &lt;- Thesis_scale %&gt;% select(bfsmean, bpsmean, liemean)
-partial_corr_data &lt;- partial_corr_data %&gt;% drop_na()
-
-# Compute the partial correlation between BFS and BPS while controlling for LIE
-partial_corr_result &lt;- pcor.test(partial_corr_data$bfsmean, 
-                                 partial_corr_data$bpsmean, 
-                                 partial_corr_data$liemean)
-
-# Print the result
-print(partial_corr_result)</code></pre>
-<pre><code>##    estimate      p.value statistic   n gp  Method
-## 1 0.1945711 6.216537e-05  4.045808 419  1 pearson</code></pre>
-<pre class="r"><code>correlation_data &lt;- Thesis_scale %&gt;% select(bfsmean, bpsmean) %&gt;% drop_na()
-
-# Compute Pearson correlation
-correlation_result &lt;- cor.test(correlation_data$bfsmean, correlation_data$bpsmean, method = &quot;pearson&quot;)
-
-# Print the result
-print(correlation_result)</code></pre>
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(ncog_score = rowMeans(Thesis_scale[,ncog],na.rm=TRUE)) 
+ncog_items &lt;- Thesis_scale[, ncog]
+cronbach.alpha(ncog_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
 <pre><code>## 
-##  Pearson&#39;s product-moment correlation
+## Standardized Cronbach&#39;s alpha for the &#39;ncog_items&#39; data-set
 ## 
-## data:  correlation_data$bfsmean and correlation_data$bpsmean
-## t = 4.884, df = 418, p-value = 1.483e-06
-## alternative hypothesis: true correlation is not equal to 0
-## 95 percent confidence interval:
-##  0.1397660 0.3208968
-## sample estimates:
-##       cor 
-## 0.2323449</code></pre>
+## Items: 12
+## Sample units: 418
+## alpha: 0.724
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.672 0.769</code></pre>
+<pre class="r"><code>##Actively Open Thinking Style
+openTS &lt;- c(&quot;A4CTS_1&quot;, &quot;A4CTS_2&quot;, &quot;A4CTS_3&quot;, &quot;A4CTS_4&quot;, &quot;A4CTS_5&quot;, &quot;A4CTS_6&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(openTS_score = rowMeans(Thesis_scale[,openTS],na.rm=TRUE)) 
+openTS_items &lt;- Thesis_scale[, openTS]
+cronbach.alpha(openTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;openTS_items&#39; data-set
+## 
+## Items: 6
+## Sample units: 418
+## alpha: 0.84
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.805 0.867</code></pre>
+<pre class="r"><code>##Close-minded Thinking Style
+closeTS &lt;- c(&quot;A4CTS_7&quot;, &quot;A4CTS_8&quot;, &quot;A4CTS_9&quot;, &quot;A4CTS_10&quot;, &quot;A4CTS_11&quot;, &quot;A4CTS_12&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(closeTS_score = rowMeans(Thesis_scale[,closeTS],na.rm=TRUE)) 
+closeTS_items &lt;- Thesis_scale[, closeTS]
+cronbach.alpha(closeTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;closeTS_items&#39; data-set
+## 
+## Items: 6
+## Sample units: 418
+## alpha: 0.825
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.790 0.854</code></pre>
+<pre class="r"><code>##prefer intuitive Thinking Style
+intuitiveTS &lt;- c(&quot;A4CTS_13&quot;, &quot;A4CTS_14&quot;, &quot;A4CTS_15&quot;, &quot;A4CTS_16&quot;, &quot;A4CTS_17&quot;, &quot;A4CTS_18&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(intuitiveTS_score = rowMeans(Thesis_scale[,intuitiveTS],na.rm=TRUE)) 
+intuitiveTS_items &lt;- Thesis_scale[, intuitiveTS]
+cronbach.alpha(intuitiveTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;intuitiveTS_items&#39; data-set
+## 
+## Items: 6
+## Sample units: 418
+## alpha: 0.874
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.850 0.895</code></pre>
+<pre class="r"><code>##prefer effortful Thinking Style
+effortTS &lt;- c(&quot;A4CTS_19&quot;, &quot;A4CTS_20&quot;, &quot;A4CTS_21&quot;, &quot;A4CTS_22&quot;, &quot;A4CTS_23&quot;, &quot;A4CTS_24&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(effortTS_score = rowMeans(Thesis_scale[,effortTS],na.rm=TRUE)) 
+effortTS_items &lt;- Thesis_scale[, effortTS]
+cronbach.alpha(effortTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;effortTS_items&#39; data-set
+## 
+## Items: 6
+## Sample units: 418
+## alpha: 0.832
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.799 0.859</code></pre>
+<pre class="r"><code>##Actively Open-Minded Thinking about Evidence Scale 
+activeopen &lt;- c(&quot;aopen1&quot;, &quot;aopen2&quot;, &quot;aopen3&quot;, &quot;aopen4&quot;, &quot;aopen5&quot;, &quot;aopen6&quot;, &quot;aopen7&quot;, &quot;aopen8&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(activeopen_score = rowMeans(Thesis_scale[,activeopen],na.rm=TRUE)) 
+activeopen_items &lt;- Thesis_scale[, activeopen]
+cronbach.alpha(activeopen_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;activeopen_items&#39; data-set
+## 
+## Items: 8
+## Sample units: 418
+## alpha: 0.749
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.707 0.780</code></pre>
+<pre class="r"><code>##Faith in Intuition Scale
+fi &lt;- c(&quot;fi1&quot;, &quot;fi2&quot;, &quot;fi3&quot;, &quot;fi4&quot;, &quot;fi5&quot;, &quot;fi6&quot;, &quot;fi7&quot;, &quot;fi8&quot;, &quot;fi9&quot;, &quot;fi10&quot;, &quot;fi11&quot;, &quot;fi12&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(fi_score = rowMeans(Thesis_scale[,fi],na.rm=TRUE)) 
+fi_items &lt;- Thesis_scale[, fi]
+cronbach.alpha(fi_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;fi_items&#39; data-set
+## 
+## Items: 12
+## Sample units: 418
+## alpha: 0.86
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.835 0.879</code></pre>
+<pre class="r"><code>## The descriptives information for each scales
+psych::describe(Thesis_scale %&gt;% select(BFS_score, BFSe_score, BFSp_score, BPS_score, LIE_score, sdtnarc_score, sdtmach_score, sdtpsych_score, narc_score, mach_score, psycho_score, psychopri_score, psychosec_score, se_score, hon_score, emo_score, extra_score, agree_score, cons_score, open_score, ihs_score, nclos_score, ncog_score, openTS_score, closeTS_score, intuitiveTS_score, effortTS_score, activeopen_score, fi_score))</code></pre>
+<pre><code>##                   vars   n mean   sd median trimmed  mad  min  max range  skew
+## BFS_score            1 418 3.11 0.58   3.08    3.12 0.49 1.08 4.83  3.75 -0.21
+## BFSe_score           2 418 3.18 0.69   3.25    3.20 0.74 1.00 5.00  4.00 -0.30
+## BFSp_score           3 418 3.08 0.66   3.12    3.09 0.56 1.12 5.00  3.88 -0.12
+## BPS_score            4 418 2.65 0.49   2.67    2.66 0.49 1.00 4.17  3.17 -0.23
+## LIE_score            5 418 2.91 1.08   3.00    2.88 1.06 1.00 7.00  6.00  0.24
+## sdtnarc_score        6 417 3.01 0.54   3.00    3.00 0.49 1.44 4.89  3.44  0.11
+## sdtmach_score        7 418 3.06 0.61   3.00    3.06 0.66 1.44 5.00  3.56 -0.04
+## sdtpsych_score       8 418 2.27 0.57   2.22    2.26 0.49 1.00 4.33  3.33  0.33
+## narc_score           9 418 1.31 0.21   1.31    1.30 0.19 1.00 1.94  0.94  0.60
+## mach_score          10 418 2.85 0.58   2.81    2.83 0.56 1.56 4.81  3.25  0.28
+## psycho_score        11 418 2.07 0.38   2.04    2.06 0.40 1.31 3.42  2.12  0.28
+## psychopri_score     12 418 2.06 0.41   2.06    2.05 0.46 1.19 3.44  2.25  0.24
+## psychosec_score     13 417 2.08 0.45   2.10    2.08 0.44 1.00 3.50  2.50  0.11
+## se_score            14 418 2.95 0.51   2.90    2.94 0.44 1.40 4.00  2.60  0.11
+## hon_score           15 417 3.20 0.49   3.20    3.20 0.44 1.60 4.50  2.90 -0.06
+## emo_score           16 417 3.45 0.66   3.40    3.45 0.59 1.30 5.00  3.70 -0.05
+## extra_score         17 417 3.38 0.62   3.40    3.39 0.59 1.70 4.80  3.10 -0.11
+## agree_score         18 417 3.10 0.60   3.10    3.10 0.59 1.50 4.80  3.30 -0.09
+## cons_score          19 417 3.53 0.61   3.50    3.52 0.59 1.80 5.00  3.20  0.14
+## open_score          20 417 3.06 0.57   3.00    3.05 0.44 1.20 4.90  3.70  0.24
+## ihs_score           21 417 3.60 0.46   3.67    3.58 0.49 2.17 5.00  2.83  0.28
+## nclos_score         22 418 3.87 0.41   3.83    3.86 0.39 2.57 5.17  2.60  0.26
+## ncog_score          23 417 3.09 0.49   3.08    3.08 0.37 1.50 4.83  3.33  0.26
+## openTS_score        24 417 3.46 0.83   3.50    3.45 0.74 1.00 6.00  5.00  0.11
+## closeTS_score       25 418 3.02 0.90   3.00    2.99 0.74 1.00 6.00  5.00  0.35
+## intuitiveTS_score   26 417 3.99 0.77   4.00    4.00 0.74 1.83 6.00  4.17 -0.10
+## effortTS_score      27 418 3.95 0.87   4.00    3.96 0.99 1.00 6.00  5.00 -0.19
+## activeopen_score    28 417 3.98 0.68   3.88    3.95 0.74 2.50 5.75  3.25  0.47
+## fi_score            29 418 3.76 0.60   3.75    3.75 0.62 1.75 5.00  3.25  0.04
+##                   kurtosis   se
+## BFS_score             0.39 0.03
+## BFSe_score            0.27 0.03
+## BFSp_score            0.21 0.03
+## BPS_score             0.18 0.02
+## LIE_score            -0.19 0.05
+## sdtnarc_score         0.27 0.03
+## sdtmach_score        -0.08 0.03
+## sdtpsych_score        0.09 0.03
+## narc_score           -0.11 0.01
+## mach_score           -0.15 0.03
+## psycho_score         -0.31 0.02
+## psychopri_score      -0.46 0.02
+## psychosec_score      -0.19 0.02
+## se_score             -0.31 0.03
+## hon_score            -0.03 0.02
+## emo_score            -0.17 0.03
+## extra_score          -0.28 0.03
+## agree_score          -0.21 0.03
+## cons_score           -0.58 0.03
+## open_score            0.52 0.03
+## ihs_score             0.57 0.02
+## nclos_score           0.43 0.02
+## ncog_score            0.66 0.02
+## openTS_score          0.41 0.04
+## closeTS_score         0.12 0.04
+## intuitiveTS_score     0.12 0.04
+## effortTS_score       -0.04 0.04
+## activeopen_score     -0.46 0.03
+## fi_score             -0.19 0.03</code></pre>
 </div>
 
 
@@ -639,7 +1125,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2,h3",
+      selectors: "h1,h2,h3,h4",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
