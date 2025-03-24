@@ -11,19 +11,20 @@ output:
     toc_depth: 4
     fig_caption: true
 ---
+## Goal
+For this portfolio, I will continue to use the dataset from my thesis study. This portfolio will focus on analyzing the descriptive information for each scale and visual representation of the demographic information for the participants.
 
-##For this portfolio, I will continue to use the dataset from my thesis study.
 ```{r}
 ##install packages
-##install.packages("ltm")
-##install.packages("psych")
-##install.packages("ppcor")
+##install.packages(c("tidytext", "stringr"))
+library(tidytext)
 library(psych)
-library(haven)
 library(ggplot2)
 library(ltm)
 library(ppcor)
 library(tidyverse)
+library(haven)
+library(stringr)
 library(dplyr)
 Thesis_scale <- readRDS("Thesis_scale.rds")
 ```
@@ -251,102 +252,105 @@ cronbach.alpha(fi_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
 psych::describe(Thesis_scale %>% select(BFS_score, BFSe_score, BFSp_score, BPS_score, LIE_score, sdtnarc_score, sdtmach_score, sdtpsych_score, narc_score, mach_score, psycho_score, psychopri_score, psychosec_score, se_score, hon_score, emo_score, extra_score, agree_score, cons_score, open_score, ihs_score, nclos_score, ncog_score, openTS_score, closeTS_score, intuitiveTS_score, effortTS_score, activeopen_score, fi_score, crt_score, word_score, NS_score))
 ```
 
-## Bullshit Frequency scales and other variables's partial correlation when controled for lying tendency
-```{r BFS and others}
-##BFS and BPS
-partial_BFSBPS <- Thesis_scale %>% 
-  select(bfsmean, bpsmean, liemean) %>%
-  drop_na()
+## Step 2: Demographic information
+For this part, I would like to know the demographic information so I might be able to use for exploratory analysis. I selected the variables I am interested in, including: gender, year in college, major, and if the participant is currently a member of a fraternity or sorority.
 
-partial_BFSBPS_result <- pcor.test(partial_BFSBPS$bfsmean, 
-                                 partial_BFSBPS$bpsmean, 
-                                 partial_BFSBPS$liemean)
-
-print(partial_corr_result)
-
-##BFS and mach
-partial_BFSmach<- Thesis_scale %>% 
-  select(bfsmean, sdtmachmean, liemean) %>% 
-  drop_na()
-
-partial_BFSmach_result <- pcor.test(partial_BFSmach$bfsmean, 
-                                 partial_BFSmach$sdtmachmean, 
-                                 partial_BFSmach$liemean)
-
-print(partial_BFSmach_result)
-
-##BFS and narc
-partial_BFSnarc<- Thesis_scale %>% 
-  select(bfsmean, sdtnarcmean, liemean) %>% 
-  drop_na()
-
-partial_BFSnarc_result <- pcor.test(
-  x = partial_BFSnarc$bfsmean,
-  y = partial_BFSnarc$sdtnarcmean,
-  z = partial_BFSnarc$liemean)
-
-print(partial_BFSnarc_result)
-
-##BFS and psychopathy
-partial_BFSpsych<- Thesis_scale %>% 
-  select(bfsmean, sdtpsychmean, liemean) %>%
-  drop_na()
-
-partial_BFSpsych_result <- pcor.test(
-  x = partial_BFSpsych$bfsmean,
-  y = partial_BFSpsych$sdtpsychmean,
-  z = partial_BFSpsych$liemean
-  )
-
-print(partial_BFSpsych_result)
-
-##BPS and mach
-partial_BPSmach<- Thesis_scale %>% 
-  select(bpsmean, sdtmachmean, liemean) %>%
-  drop_na()
-
-partial_BPSmach_result <- pcor.test(
-  x = partial_BPSmach$bpsmean,
-  y = partial_BPSmach$sdtmachmean,
-  z = partial_BPSmach$liemean
-  )
-
-print(partial_BPSmach_result)
-
-##BPS and narc
-partial_BPSnarc<- Thesis_scale %>% 
-  select(bpsmean, sdtnarcmean, liemean) %>%
-  drop_na()
-
-partial_BPSnarc_result <- pcor.test(
-  x = partial_BPSnarc$bpsmean,
-  y = partial_BPSnarc$sdtnarcmean,
-  z = partial_BPSnarc$liemean
-  )
-
-print(partial_BPSnarc_result)
-
-##BPS and psychopathy
-partial_BPSpsych<- Thesis_scale %>% 
-  select(bpsmean, sdtpsychmean, liemean) %>%
-  drop_na()
-
-partial_BPSpsych_result <- pcor.test(
-  x = partial_BPSpsych$bpsmean,
-  y = partial_BPSpsych$sdtpsychmean,
-  z = partial_BPSpsych$liemean
-  )
-
-print(partial_BPSpsych_result)
+###Gender
+```{r gender}
+##For gender, I would like to do a pie chart. So I will start with coverting gender codes to labels
+Thesis_scale$gender_label <- factor(Thesis_scale$gender,
+                                    levels = c(1, 2, 3),
+                                    labels = c("Male", "Female", "Non-binary"))
+##Then I create a summary table for further plotting
+genders <- Thesis_scale %>%
+  count(gender_label) %>%
+  mutate(perc = round(n / sum(n) * 100, 1), 
+         label = paste0(perc, "%"))
+##Now I can create the pie chart 
+ggplot(genders, aes(x = "", y = n, fill = gender_label)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y") + 
+  labs(title = "Participant Gender Distribution") +
+  scale_fill_manual(values = c("Male" = "#90D6FF",       
+                               "Female" = "#ff69b4",   
+                               "Non-binary" = "#6c08db") 
+                    )+
+  geom_text(aes(label = label), 
+            position = position_stack(vjust = 0.5), 
+            color = "white", size = 5)+
+  theme_void()
 
 ```
 
-## Bullshit Propensity scales and other variables's partial correlation when controled for lying tendency
-```{r BPS and others}
+###Year in college
 
+```{r year in college}
+##For year in college, I would like to do a pie chart. So I will start with coverting gender codes to labels
+Thesis_scale$year_label <- factor(Thesis_scale$year,
+                                  levels = c(1, 2, 3, 4),
+                                  labels = c("Freshman", "Sophomore", "Junior", "Senior"))
+years <- Thesis_scale %>%
+  count(year_label)
+
+##Now I can create a bar chart
+ggplot(years, aes(x = year_label, y = n, fill = year_label)) +
+  geom_col() +
+  geom_text(aes(label = n), vjust = -0.5, size = 3) +
+  labs(title = "Participants by Year in College",
+       x = "Year in College",
+       y = "Number of Participants") +
+  scale_fill_manual(values = c("#7a4d9f", "#eb68a0", "#feb326", "#64c5eb")) +
+  theme_minimal() +
+  theme(legend.position = "none")
 ```
+
+###Greek Life
 
 ```{r}
-percenrage correct
+##Although this is not the focus of my thesis study, I asked the participants if they are currently a member of a fraternity or sorority. I added this question just want to explore if certain personality traits might be related with one's greek life involvement.  
+##In terms of visualization, I want to present gender and involvement in greek life.
+
+Thesis_scale <- Thesis_scale %>%
+  mutate(
+    greek = factor(Greek1, levels = c(1, 2),
+                         labels = c("Not Involved", "Greek Life"))
+  )
+
+##count combinations
+gender_greek <- Thesis_scale %>%
+  count(gender_label, greek)
+
+##create the bar chart
+ggplot(gender_greek, aes(x = gender_label, y = n, fill = greek)) +
+  geom_col(position = "dodge") +
+  labs(title = "Greek Life Involvement by Gender",
+       x = "Gender",
+       y = "Number of Participants",
+       fill = "Greek Life") +
+  scale_fill_manual(values = c("Not Involved" = "#FFDE21", "Greek Life" = "#64c5eb")) +
+  theme_minimal() +
+  coord_flip()
 ```
 
+Looking at the graph, I can tell that most of the students in the study are involved in greek life. In addition, the number of male students involved in a fraternity is more than twice the number of male students who are not involved in Greek life. For the two non-binary students, both of them are involed in greek life. 
+
+```{r}
+## Now I would like to add year in college as another vairable for visualization. I want to know whether male students are more involved in greek life despite of year in college
+
+##I start with combining
+gender_year_greek <- Thesis_scale %>%
+  count(year_label, gender_label, greek)
+
+##And then I grouped bars by gender and greek life involvement, faceted by year in college
+ggplot(gender_year_greek, aes(x = gender_label, y = n, fill = greek)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~ year_label) +
+  labs(title = "Greek Life Involvement by Gender and Year",
+       x = "Gender",
+       y = "Number of Participants",
+       fill = "Greek Life") +
+  scale_fill_manual(values = c("Not Involved" = "#FFDE21", "Greek Life" = "#64c5eb")) +
+  theme_minimal()
+```
+
+We can see that for both female and male freshman students at Wake, most of them are members of a sorority or a fraternity. However, for sophomore, junior, and senior, the difference between the number of students that are involved or not involved in greek life is smaller. Sophomore male students are slightly more likely to be involved in greek life, while there is still a significantly larger proportion of female students involving in greek life. 

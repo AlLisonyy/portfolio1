@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Allison Li" />
+
+
+<title>Thesis data descriptives and demographic information</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Portfolio</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="p01.html">Portfolio 1</a>
+</li>
+<li>
+  <a href="p02.html">Portfolio 2</a>
+</li>
+<li>
+  <a href="p03.html">Portfolio 3</a>
+</li>
+<li>
+  <a href="p04.html">Portfolio 4</a>
+</li>
+<li>
+  <a href="p05.html">Portfolio 5</a>
+</li>
+<li>
+  <a href="p06.html">Portfolio 6</a>
+</li>
+<li>
+  <a href="p07.html">Portfolio 7</a>
+</li>
+<li>
+  <a href="p08.html">Portfolio 8</a>
+</li>
+<li>
+  <a href="p09.html">Portfolio 9</a>
+</li>
+<li>
+  <a href="p10.html">Portfolio 10</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Thesis data descriptives and demographic
+information</h1>
+<h4 class="author">Allison Li</h4>
+<h4 class="date">03222025</h4>
+
+</div>
+
+
+<div id="goal" class="section level2">
+<h2>Goal</h2>
+<p>For this portfolio, I will continue to use the dataset from my thesis
+study. This portfolio will focus on analyzing the descriptive
+information for each scale and visual representation of the demographic
+information for the participants.</p>
+<pre class="r"><code>##install packages
+##install.packages(c(&quot;tidytext&quot;, &quot;stringr&quot;))
+library(tidytext)
+library(psych)
+library(ggplot2)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;ggplot2&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:psych&#39;:
+## 
+##     %+%, alpha</code></pre>
+<pre class="r"><code>library(ltm)</code></pre>
+<pre><code>## Loading required package: MASS</code></pre>
+<pre><code>## Loading required package: msm</code></pre>
+<pre><code>## Loading required package: polycor</code></pre>
+<pre><code>## 
+## Attaching package: &#39;polycor&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:psych&#39;:
+## 
+##     polyserial</code></pre>
+<pre><code>## 
+## Attaching package: &#39;ltm&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:psych&#39;:
+## 
+##     factor.scores</code></pre>
+<pre class="r"><code>library(ppcor)
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ lubridate 1.9.4     ✔ tibble    3.2.1
+## ✔ purrr     1.0.2     ✔ tidyr     1.3.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ ggplot2::%+%()   masks psych::%+%()
+## ✖ ggplot2::alpha() masks psych::alpha()
+## ✖ dplyr::filter()  masks stats::filter()
+## ✖ dplyr::lag()     masks stats::lag()
+## ✖ dplyr::select()  masks MASS::select()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(haven)
+library(stringr)
+library(dplyr)
+Thesis_scale &lt;- readRDS(&quot;Thesis_scale.rds&quot;)</code></pre>
+</div>
+<div
+id="step-1-calculating-scales-basic-descriptives-mean-sd-max-and-mix-and-cronbach-alpha"
+class="section level2">
+<h2>Step 1: calculating scales’ basic descriptives (mean, sd, max, and
+mix) and cronbach alpha</h2>
+<pre class="r"><code>##Bullshit Frequency scale general  
+bfs &lt;- c(&quot;BFS_1&quot;, &quot;BFS_2&quot;, &quot;BFS_3&quot;, &quot;BFS_4&quot;, &quot;BFS_5&quot;, &quot;BFS_6&quot;, &quot;BFS_7&quot;, &quot;BFS_8&quot;, &quot;BFS_9&quot;, &quot;BFS_10&quot;, &quot;BFS_11&quot;, &quot;BFS_12&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(BFS_score = rowMeans(Thesis_scale[,bfs],na.rm=TRUE)) 
+bfs_items &lt;- Thesis_scale[, bfs]
+cronbach.alpha(bfs_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;bfs_items&#39; data-set
+## 
+## Items: 12
+## Sample units: 417
+## alpha: 0.855
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.828 0.878</code></pre>
+<pre class="r"><code>##Bullshit Frequency scale evasive
+bfse &lt;- c(&quot;BFS_9&quot;, &quot;BFS_10&quot;, &quot;BFS_11&quot;, &quot;BFS_12&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(BFSe_score = rowMeans(Thesis_scale[,bfse],na.rm=TRUE)) 
+bfse_items &lt;- Thesis_scale[, bfse]
+cronbach.alpha(bfse_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;bfse_items&#39; data-set
+## 
+## Items: 4
+## Sample units: 417
+## alpha: 0.721
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.666 0.765</code></pre>
+<pre class="r"><code>##Bullshit Frequency scale persuasive
+bfsp &lt;- c(&quot;BFS_1&quot;, &quot;BFS_2&quot;, &quot;BFS_3&quot;, &quot;BFS_4&quot;, &quot;BFS_5&quot;, &quot;BFS_6&quot;, &quot;BFS_7&quot;, &quot;BFS_8&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(BFSp_score = rowMeans(Thesis_scale[,bfsp],na.rm=TRUE))
+bfsp_items &lt;- Thesis_scale[, bfsp]
+cronbach.alpha(bfsp_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;bfsp_items&#39; data-set
+## 
+## Items: 8
+## Sample units: 417
+## alpha: 0.86
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.835 0.880</code></pre>
+<pre class="r"><code>##Bullshit Propensity scale 
+bps &lt;- c(&quot;BPS_1&quot;, &quot;BPS_2&quot;, &quot;BPS_3&quot;, &quot;BPS_4&quot;, &quot;BPS_5&quot;, &quot;BPS_6&quot;, &quot;BPS_7&quot;, &quot;BPS_8&quot;, &quot;BPS_9&quot;, &quot;BPS_10&quot;, &quot;BPS_11&quot;, &quot;BPS_12&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(BPS_score = rowMeans(Thesis_scale[,bps],na.rm=TRUE))
+bps_items &lt;- Thesis_scale[, bps]
+cronbach.alpha(bps_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;bps_items&#39; data-set
+## 
+## Items: 12
+## Sample units: 417
+## alpha: 0.756
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+##  0.71  0.79</code></pre>
+<pre class="r"><code>##Lying in Everyday Situations Scale
+lie &lt;- c(&quot;lies1&quot;, &quot;lies2&quot;, &quot;lies3&quot;, &quot;lies4&quot;, &quot;lies5&quot;, &quot;lies6&quot;, &quot;lies7&quot;, &quot;lies8&quot;, &quot;lies9&quot;, &quot;lies10&quot;, &quot;lies11&quot;, &quot;lies12&quot;, &quot;lies13&quot;, &quot;lies14&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(LIE_score = rowMeans(Thesis_scale[,lie],na.rm=TRUE))
+lie_items &lt;- Thesis_scale[, lie]
+cronbach.alpha(lie_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;lie_items&#39; data-set
+## 
+## Items: 14
+## Sample units: 417
+## alpha: 0.911
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.895 0.923</code></pre>
+<pre class="r"><code>##Short_dark_triad Narcissism
+sdtnarc &lt;- c(&quot;DTS_Nar_1&quot;, &quot;DTS_Nar_2&quot;, &quot;DTS_Nar_3&quot;, &quot;DTS_Nar_4&quot;, &quot;DTS_Nar_5&quot;, &quot;DTS_Nar_6&quot;, &quot;DTS_Nar_7&quot;, &quot;DTS_Nar_8&quot;, &quot;DTS_Nar_9&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(sdtnarc_score = rowMeans(Thesis_scale[,sdtnarc],na.rm=TRUE))
+sdtnarc_items &lt;- Thesis_scale[, sdtnarc]
+cronbach.alpha(sdtnarc_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;sdtnarc_items&#39; data-set
+## 
+## Items: 9
+## Sample units: 417
+## alpha: 0.709
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.653 0.751</code></pre>
+<pre class="r"><code>##Short_dark_triad Machiavellianism
+sdtmach &lt;- c(&quot;DTS_MACH_1&quot;, &quot;DTS_MACH_2&quot;, &quot;DTS_MACH_3&quot;, &quot;DTS_MACH_4&quot;, &quot;DTS_MACH_5&quot;, &quot;DTS_MACH_6&quot;, &quot;DTS_MACH_7&quot;, &quot;DTS_MACH_8&quot;, &quot;DTS_MACH_9&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(sdtmach_score = rowMeans(Thesis_scale[,sdtmach],na.rm=TRUE))
+sdtmach_items &lt;- Thesis_scale[, sdtmach]
+cronbach.alpha(sdtmach_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;sdtmach_items&#39; data-set
+## 
+## Items: 9
+## Sample units: 417
+## alpha: 0.791
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.755 0.820</code></pre>
+<pre class="r"><code>##Short_dark_triad Psychopathy
+sdtpsych &lt;- c(&quot;DTS_Path_1&quot;, &quot;DTS_Path_2&quot;, &quot;DTS_Path_3&quot;, &quot;DTS_Path_4&quot;, &quot;DTS_Path_5&quot;, &quot;DTS_Path_6&quot;, &quot;DTS_Path_7&quot;, &quot;DTS_Path_8&quot;, &quot;DTS_Path_9&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(sdtpsych_score = rowMeans(Thesis_scale[,sdtpsych],na.rm=TRUE))
+sdtpsych_items &lt;- Thesis_scale[, sdtpsych]
+cronbach.alpha(sdtpsych_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;sdtpsych_items&#39; data-set
+## 
+## Items: 9
+## Sample units: 417
+## alpha: 0.759
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.718 0.790</code></pre>
+<pre class="r"><code>##Narcissistic Personality Inventory
+narc &lt;- c(&quot;NPI_1&quot;, &quot;NPI_2&quot;, &quot;NPI_3&quot;, &quot;NPI_4&quot;, &quot;NPI_5&quot;, &quot;NPI_6&quot;, &quot;NPI_7&quot;, &quot;NPI_8&quot;, &quot;NPI_9&quot;, &quot;NPI_10&quot;, &quot;NPI_11&quot;, &quot;NPI_12&quot;, &quot;NPI_13&quot;, &quot;NPI_14&quot;, &quot;NPI_15&quot;, &quot;NPI_16&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(narc_score = rowMeans(Thesis_scale[,narc],na.rm=TRUE))
+narc_items &lt;- Thesis_scale[, narc]
+cronbach.alpha(narc_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;narc_items&#39; data-set
+## 
+## Items: 16
+## Sample units: 417
+## alpha: 0.749
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.704 0.783</code></pre>
+<pre class="r"><code>##Machiavellianism Personality scale
+mach &lt;- c(&quot;MPS_1&quot;, &quot;MPS_2&quot;, &quot;MPS_3&quot;, &quot;MPS_4&quot;, &quot;MPS_5&quot;, &quot;MPS_6&quot;, &quot;MPS_7&quot;, &quot;MPS_8&quot;, &quot;MPS_9&quot;, &quot;MPS_10&quot;, &quot;MPS_11&quot;, &quot;MPS_12&quot;, &quot;MPS_13&quot;, &quot;MPS_14&quot;, &quot;MPS_15&quot;, &quot;MPS_16&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(mach_score = rowMeans(Thesis_scale[,mach],na.rm=TRUE))
+mach_items &lt;- Thesis_scale[, mach]
+cronbach.alpha(mach_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;mach_items&#39; data-set
+## 
+## Items: 16
+## Sample units: 417
+## alpha: 0.837
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.812 0.858</code></pre>
+<pre class="r"><code>##Levenson Self-Report Psychopathy Scale
+psycho &lt;- c(&quot;LSRP_PPS_1&quot;, &quot;LSRP_PPS_2&quot;, &quot;LSRP_PPS_3&quot;, &quot;LSRP_PPS_4&quot;, &quot;LSRP_PPS_5&quot;, &quot;LSRP_PPS_6&quot;, &quot;LSRP_PPS_7&quot;, &quot;LSRP_PPS_8&quot;, &quot;LSRP_PPS_9&quot;, &quot;LSRP_PPS_10&quot;, &quot;LSRP_PPS_11&quot;, &quot;LSRP_PPS_12&quot;, &quot;LSRP_PPS_13&quot;, &quot;LSRP_PPS_14&quot;, &quot;LSRP_PPS_15&quot;, &quot;LSRP_PPS_16&quot;, &quot;LSRP_SPS_1&quot;, &quot;LSRP_SPS_2&quot;, &quot;LSRP_SPS_3&quot;, &quot;LSRP_SPS_4&quot;, &quot;LSRP_SPS_5&quot;, &quot;LSRP_SPS_6&quot;, &quot;LSRP_SPS_7&quot;, &quot;LSRP_SPS_8&quot;, &quot;LSRP_SPS_9&quot;, &quot;LSRP_SPS_10&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(psycho_score = rowMeans(Thesis_scale[,psycho],na.rm=TRUE)) 
+psycho_items &lt;- Thesis_scale[, psycho]
+cronbach.alpha(psycho_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;psycho_items&#39; data-set
+## 
+## Items: 26
+## Sample units: 417
+## alpha: 0.861
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.843 0.876</code></pre>
+<pre class="r"><code>##primary factor of psychopathy scale
+psychopri &lt;- c(&quot;LSRP_PPS_1&quot;, &quot;LSRP_PPS_2&quot;, &quot;LSRP_PPS_3&quot;, &quot;LSRP_PPS_4&quot;, &quot;LSRP_PPS_5&quot;, 
+                    &quot;LSRP_PPS_6&quot;, &quot;LSRP_PPS_7&quot;, &quot;LSRP_PPS_8&quot;, &quot;LSRP_PPS_9&quot;, &quot;LSRP_PPS_10&quot;, 
+                    &quot;LSRP_PPS_11&quot;, &quot;LSRP_PPS_12&quot;, &quot;LSRP_PPS_13&quot;, &quot;LSRP_PPS_14&quot;, &quot;LSRP_PPS_15&quot;, 
+                    &quot;LSRP_PPS_16&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(psychopri_score = rowMeans(Thesis_scale[,psychopri],na.rm=TRUE)) 
+psychopri_items &lt;- Thesis_scale[, psychopri]
+cronbach.alpha(psychopri_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;psychopri_items&#39; data-set
+## 
+## Items: 16
+## Sample units: 417
+## alpha: 0.812
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.786 0.832</code></pre>
+<pre class="r"><code>##secondary factor of psychopathy scale
+psychosec &lt;- c(&quot;LSRP_SPS_1&quot;, &quot;LSRP_SPS_2&quot;, &quot;LSRP_SPS_3&quot;, &quot;LSRP_SPS_4&quot;, &quot;LSRP_SPS_5&quot;, 
+                    &quot;LSRP_SPS_6&quot;, &quot;LSRP_SPS_7&quot;, &quot;LSRP_SPS_8&quot;, &quot;LSRP_SPS_9&quot;, &quot;LSRP_SPS_10&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(psychosec_score = rowMeans(Thesis_scale[,psychosec],na.rm=TRUE)) 
+psychosec_items &lt;- Thesis_scale[, psychosec]
+cronbach.alpha(psychosec_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;psychosec_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 417
+## alpha: 0.763
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.725 0.796</code></pre>
+<pre class="r"><code>##Self-esteem (Rosenberg)
+se &lt;- c(&quot;self_esteem_1&quot;, &quot;self_esteem_2&quot;, &quot;self_esteem_3&quot;, &quot;self_esteem_4&quot;, &quot;self_esteem_5&quot;, 
+                     &quot;self_esteem_6&quot;, &quot;self_esteem_7&quot;, &quot;self_esteem_8&quot;, &quot;self_esteem_9&quot;, &quot;self_esteem_10&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(se_score = rowMeans(Thesis_scale[,se],na.rm=TRUE)) 
+se_items &lt;- Thesis_scale[, se]
+cronbach.alpha(se_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;se_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 417
+## alpha: 0.901
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.885 0.915</code></pre>
+<pre class="r"><code>##HEXACO
+##Honesty_humility
+hon &lt;- c(&quot;hex6&quot;, &quot;hex12&quot;, &quot;hex18&quot;, &quot;hex24&quot;, &quot;hex30&quot;, &quot;hex36&quot;, &quot;hex42&quot;, &quot;hex48&quot;, &quot;hex54&quot;, &quot;hex60&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(hon_score = rowMeans(Thesis_scale[,hon],na.rm=TRUE)) 
+hon_items &lt;- Thesis_scale[, hon]
+cronbach.alpha(hon_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;hon_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 417
+## alpha: 0.523
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.444 0.591</code></pre>
+<pre class="r"><code>##Emotionality
+emo &lt;- c(&quot;hex5&quot;, &quot;hex11&quot;, &quot;hex17&quot;, &quot;hex23&quot;, &quot;hex29&quot;, &quot;hex35&quot;, &quot;hex41&quot;, &quot;hex47&quot;, &quot;hex53&quot;, &quot;hex59&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(emo_score = rowMeans(Thesis_scale[,emo],na.rm=TRUE)) 
+emo_items &lt;- Thesis_scale[, emo]
+cronbach.alpha(emo_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;emo_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 417
+## alpha: 0.801
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.767 0.828</code></pre>
+<pre class="r"><code>##Extraversion
+extra &lt;- c(&quot;hex4&quot;, &quot;hex10&quot;, &quot;hex16&quot;, &quot;hex22&quot;, &quot;hex28&quot;, &quot;hex34&quot;, &quot;hex40&quot;, &quot;hex46&quot;, &quot;hex52&quot;, &quot;hex58&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(extra_score = rowMeans(Thesis_scale[,extra],na.rm=TRUE)) 
+extra_items &lt;- Thesis_scale[, extra]
+cronbach.alpha(extra_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;extra_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 417
+## alpha: 0.802
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.769 0.828</code></pre>
+<pre class="r"><code>##Agreeableness
+agree &lt;- c(&quot;hex3&quot;, &quot;hex9&quot;, &quot;hex15&quot;, &quot;hex21&quot;, &quot;hex27&quot;, &quot;hex33&quot;, &quot;hex39&quot;, &quot;hex45&quot;, &quot;hex51&quot;, &quot;hex57&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(agree_score = rowMeans(Thesis_scale[,agree],na.rm=TRUE)) 
+agree_items &lt;- Thesis_scale[, agree]
+cronbach.alpha(agree_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;agree_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 417
+## alpha: 0.784
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.747 0.813</code></pre>
+<pre class="r"><code>##CONSCIENTIOUSNESS
+cons &lt;- c(&quot;hex2&quot;, &quot;hex8&quot;, &quot;hex14&quot;, &quot;hex20&quot;, &quot;hex26&quot;, &quot;hex32&quot;, &quot;hex38&quot;, &quot;hex44&quot;, &quot;hex50&quot;, &quot;hex56&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(cons_score = rowMeans(Thesis_scale[,cons],na.rm=TRUE)) 
+cons_items &lt;- Thesis_scale[, cons]
+cronbach.alpha(cons_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;cons_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 417
+## alpha: 0.802
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.772 0.828</code></pre>
+<pre class="r"><code>##Openness to Experience
+open &lt;- c(&quot;hex1&quot;, &quot;hex7&quot;, &quot;hex13&quot;, &quot;hex19&quot;, &quot;hex25&quot;, &quot;hex31&quot;, &quot;hex37&quot;, &quot;hex43&quot;, &quot;hex49&quot;, &quot;hex55&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(open_score = rowMeans(Thesis_scale[,open],na.rm=TRUE)) 
+open_items &lt;- Thesis_scale[, open]
+cronbach.alpha(open_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;open_items&#39; data-set
+## 
+## Items: 10
+## Sample units: 417
+## alpha: 0.676
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.613 0.723</code></pre>
+<pre class="r"><code>##Intellectual Humility Scale
+ihs &lt;- c(&quot;IHS_1&quot;, &quot;IHS_2&quot;, &quot;IHS_3&quot;, &quot;IHS_4&quot;, &quot;IHS_5&quot;, &quot;IHS_6&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(ihs_score = rowMeans(Thesis_scale[,ihs],na.rm=TRUE)) 
+ihs_items &lt;- Thesis_scale[, ihs]
+cronbach.alpha(ihs_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;ihs_items&#39; data-set
+## 
+## Items: 6
+## Sample units: 417
+## alpha: 0.45
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.358 0.534</code></pre>
+<pre class="r"><code>##Need for Closure
+nclos &lt;- c(&quot;nclos1&quot;, &quot;nclos2&quot;, &quot;nclos3&quot;, &quot;nclos4&quot;, &quot;nclos5&quot;, &quot;nclos6&quot;, &quot;nclos7&quot;, &quot;nclos8&quot;, &quot;nclos9&quot;, &quot;nclos10&quot;, 
+                                                 &quot;nclos11&quot;, &quot;nclos12&quot;, &quot;nclos13&quot;, &quot;nclos14&quot;, &quot;nclos15&quot;, 
+                                                 &quot;nclos16&quot;, &quot;nclos17&quot;, &quot;nclos18&quot;, &quot;nclos19&quot;, &quot;nclos20&quot;, 
+                                                 &quot;nclos21&quot;, &quot;nclos22&quot;, &quot;nclos23&quot;, &quot;nclos24&quot;, &quot;nclos25&quot;, 
+                                                 &quot;nclos26&quot;, &quot;nclos27&quot;, &quot;nclos28&quot;, &quot;nclos29&quot;, &quot;nclos30&quot;, 
+                                                 &quot;nclos31&quot;, &quot;nclos32&quot;, &quot;nclos33&quot;, &quot;nclos34&quot;, &quot;nclos35&quot;, 
+                                                 &quot;nclos36&quot;, &quot;nclos37&quot;, &quot;nclos38&quot;, &quot;nclos39&quot;, &quot;nclos40&quot;, 
+                                                 &quot;nclos41&quot;, &quot;nclos42&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(nclos_score = rowMeans(Thesis_scale[,nclos],na.rm=TRUE)) 
+nclos_items &lt;- Thesis_scale[, nclos]
+cronbach.alpha(nclos_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;nclos_items&#39; data-set
+## 
+## Items: 42
+## Sample units: 417
+## alpha: 0.838
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.811 0.858</code></pre>
+<pre class="r"><code>##Need for Cognition
+ncog &lt;- c(&quot;ncog7&quot;, &quot;ncog8&quot;, &quot;ncog9&quot;, &quot;ncog10&quot;, &quot;ncog11&quot;, &quot;ncog12&quot;, 
+                                               &quot;ncog13&quot;, &quot;ncog14&quot;, &quot;ncog15&quot;, &quot;ncog16&quot;, &quot;ncog17&quot;, &quot;ncog18&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(ncog_score = rowMeans(Thesis_scale[,ncog],na.rm=TRUE)) 
+ncog_items &lt;- Thesis_scale[, ncog]
+cronbach.alpha(ncog_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;ncog_items&#39; data-set
+## 
+## Items: 12
+## Sample units: 417
+## alpha: 0.721
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.661 0.763</code></pre>
+<pre class="r"><code>##Actively Open Thinking Style
+openTS &lt;- c(&quot;A4CTS_1&quot;, &quot;A4CTS_2&quot;, &quot;A4CTS_3&quot;, &quot;A4CTS_4&quot;, &quot;A4CTS_5&quot;, &quot;A4CTS_6&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(openTS_score = rowMeans(Thesis_scale[,openTS],na.rm=TRUE)) 
+openTS_items &lt;- Thesis_scale[, openTS]
+cronbach.alpha(openTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;openTS_items&#39; data-set
+## 
+## Items: 6
+## Sample units: 417
+## alpha: 0.839
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.806 0.866</code></pre>
+<pre class="r"><code>##Close-minded Thinking Style
+closeTS &lt;- c(&quot;A4CTS_7&quot;, &quot;A4CTS_8&quot;, &quot;A4CTS_9&quot;, &quot;A4CTS_10&quot;, &quot;A4CTS_11&quot;, &quot;A4CTS_12&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(closeTS_score = rowMeans(Thesis_scale[,closeTS],na.rm=TRUE)) 
+closeTS_items &lt;- Thesis_scale[, closeTS]
+cronbach.alpha(closeTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;closeTS_items&#39; data-set
+## 
+## Items: 6
+## Sample units: 417
+## alpha: 0.826
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.789 0.856</code></pre>
+<pre class="r"><code>##prefer intuitive Thinking Style
+intuitiveTS &lt;- c(&quot;A4CTS_13&quot;, &quot;A4CTS_14&quot;, &quot;A4CTS_15&quot;, &quot;A4CTS_16&quot;, &quot;A4CTS_17&quot;, &quot;A4CTS_18&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(intuitiveTS_score = rowMeans(Thesis_scale[,intuitiveTS],na.rm=TRUE)) 
+intuitiveTS_items &lt;- Thesis_scale[, intuitiveTS]
+cronbach.alpha(intuitiveTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;intuitiveTS_items&#39; data-set
+## 
+## Items: 6
+## Sample units: 417
+## alpha: 0.873
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.847 0.894</code></pre>
+<pre class="r"><code>##prefer effortful Thinking Style
+effortTS &lt;- c(&quot;A4CTS_19&quot;, &quot;A4CTS_20&quot;, &quot;A4CTS_21&quot;, &quot;A4CTS_22&quot;, &quot;A4CTS_23&quot;, &quot;A4CTS_24&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(effortTS_score = rowMeans(Thesis_scale[,effortTS],na.rm=TRUE)) 
+effortTS_items &lt;- Thesis_scale[, effortTS]
+cronbach.alpha(effortTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;effortTS_items&#39; data-set
+## 
+## Items: 6
+## Sample units: 417
+## alpha: 0.83
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+##  0.80  0.86</code></pre>
+<pre class="r"><code>##Actively Open-Minded Thinking about Evidence Scale 
+activeopen &lt;- c(&quot;aopen1&quot;, &quot;aopen2&quot;, &quot;aopen3&quot;, &quot;aopen4&quot;, &quot;aopen5&quot;, &quot;aopen6&quot;, &quot;aopen7&quot;, &quot;aopen8&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(activeopen_score = rowMeans(Thesis_scale[,activeopen],na.rm=TRUE)) 
+activeopen_items &lt;- Thesis_scale[, activeopen]
+cronbach.alpha(activeopen_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;activeopen_items&#39; data-set
+## 
+## Items: 8
+## Sample units: 417
+## alpha: 0.747
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.709 0.780</code></pre>
+<pre class="r"><code>##Faith in Intuition Scale
+fi &lt;- c(&quot;fi1&quot;, &quot;fi2&quot;, &quot;fi3&quot;, &quot;fi4&quot;, &quot;fi5&quot;, &quot;fi6&quot;, &quot;fi7&quot;, &quot;fi8&quot;, &quot;fi9&quot;, &quot;fi10&quot;, &quot;fi11&quot;, &quot;fi12&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(fi_score = rowMeans(Thesis_scale[,fi],na.rm=TRUE)) 
+fi_items &lt;- Thesis_scale[, fi]
+cronbach.alpha(fi_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;fi_items&#39; data-set
+## 
+## Items: 12
+## Sample units: 417
+## alpha: 0.86
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.838 0.880</code></pre>
+<pre class="r"><code>## The descriptives information for each scales
+psych::describe(Thesis_scale %&gt;% select(BFS_score, BFSe_score, BFSp_score, BPS_score, LIE_score, sdtnarc_score, sdtmach_score, sdtpsych_score, narc_score, mach_score, psycho_score, psychopri_score, psychosec_score, se_score, hon_score, emo_score, extra_score, agree_score, cons_score, open_score, ihs_score, nclos_score, ncog_score, openTS_score, closeTS_score, intuitiveTS_score, effortTS_score, activeopen_score, fi_score, crt_score, word_score, NS_score))</code></pre>
+<pre><code>##                   vars   n mean   sd median trimmed  mad  min  max range  skew
+## BFS_score            1 417 3.11 0.58   3.08    3.13 0.49 1.08 4.83  3.75 -0.21
+## BFSe_score           2 417 3.18 0.69   3.25    3.20 0.74 1.00 5.00  4.00 -0.29
+## BFSp_score           3 417 3.08 0.66   3.12    3.09 0.56 1.12 5.00  3.88 -0.13
+## BPS_score            4 417 2.65 0.49   2.67    2.66 0.49 1.00 4.17  3.17 -0.22
+## LIE_score            5 417 2.91 1.08   3.00    2.88 1.06 1.00 7.00  6.00  0.24
+## sdtnarc_score        6 416 3.01 0.54   3.00    3.00 0.49 1.44 4.89  3.44  0.11
+## sdtmach_score        7 417 3.06 0.61   3.00    3.06 0.66 1.44 5.00  3.56 -0.04
+## sdtpsych_score       8 417 2.27 0.57   2.22    2.26 0.49 1.00 4.33  3.33  0.34
+## narc_score           9 417 1.31 0.21   1.31    1.30 0.19 1.00 1.94  0.94  0.59
+## mach_score          10 417 2.85 0.58   2.81    2.83 0.56 1.56 4.81  3.25  0.27
+## psycho_score        11 417 2.07 0.38   2.04    2.06 0.40 1.31 3.42  2.12  0.28
+## psychopri_score     12 417 2.06 0.41   2.06    2.05 0.46 1.19 3.44  2.25  0.24
+## psychosec_score     13 416 2.08 0.45   2.10    2.08 0.44 1.00 3.50  2.50  0.11
+## se_score            14 417 2.95 0.51   2.90    2.94 0.44 1.40 4.00  2.60  0.11
+## hon_score           15 416 3.20 0.49   3.20    3.21 0.44 1.60 4.50  2.90 -0.06
+## emo_score           16 416 3.45 0.66   3.40    3.45 0.59 1.30 5.00  3.70 -0.06
+## extra_score         17 416 3.38 0.62   3.40    3.39 0.59 1.70 4.80  3.10 -0.11
+## agree_score         18 416 3.10 0.60   3.10    3.11 0.59 1.50 4.80  3.30 -0.09
+## cons_score          19 416 3.53 0.61   3.50    3.52 0.59 1.80 5.00  3.20  0.14
+## open_score          20 416 3.06 0.57   3.00    3.05 0.44 1.20 4.90  3.70  0.24
+## ihs_score           21 416 3.59 0.46   3.67    3.58 0.49 2.17 5.00  2.83  0.28
+## nclos_score         22 417 3.87 0.41   3.83    3.85 0.39 2.57 5.17  2.60  0.26
+## ncog_score          23 416 3.09 0.49   3.08    3.07 0.37 1.50 4.83  3.33  0.26
+## openTS_score        24 416 3.46 0.82   3.50    3.45 0.74 1.00 6.00  5.00  0.10
+## closeTS_score       25 417 3.02 0.90   3.00    2.99 0.74 1.00 6.00  5.00  0.35
+## intuitiveTS_score   26 416 4.00 0.77   4.00    4.00 0.74 1.83 6.00  4.17 -0.09
+## effortTS_score      27 417 3.94 0.87   4.00    3.96 0.99 1.00 6.00  5.00 -0.20
+## activeopen_score    28 416 3.98 0.68   3.88    3.94 0.74 2.50 5.75  3.25  0.47
+## fi_score            29 417 3.76 0.60   3.75    3.75 0.62 1.75 5.00  3.25  0.04
+## crt_score           30 391 0.34 0.36   0.33    0.30 0.49 0.00 1.00  1.00  0.59
+## word_score          31 416 0.58 0.20   0.60    0.60 0.15 0.00 1.00  1.00 -0.77
+## NS_score            32 411 0.85 0.19   0.90    0.89 0.15 0.00 1.00  1.00 -1.80
+##                   kurtosis   se
+## BFS_score             0.38 0.03
+## BFSe_score            0.27 0.03
+## BFSp_score            0.22 0.03
+## BPS_score             0.18 0.02
+## LIE_score            -0.19 0.05
+## sdtnarc_score         0.27 0.03
+## sdtmach_score        -0.08 0.03
+## sdtpsych_score        0.10 0.03
+## narc_score           -0.12 0.01
+## mach_score           -0.16 0.03
+## psycho_score         -0.31 0.02
+## psychopri_score      -0.45 0.02
+## psychosec_score      -0.19 0.02
+## se_score             -0.31 0.03
+## hon_score            -0.04 0.02
+## emo_score            -0.17 0.03
+## extra_score          -0.28 0.03
+## agree_score          -0.21 0.03
+## cons_score           -0.58 0.03
+## open_score            0.51 0.03
+## ihs_score             0.56 0.02
+## nclos_score           0.45 0.02
+## ncog_score            0.68 0.02
+## openTS_score          0.42 0.04
+## closeTS_score         0.13 0.04
+## intuitiveTS_score     0.13 0.04
+## effortTS_score       -0.04 0.04
+## activeopen_score     -0.45 0.03
+## fi_score             -0.20 0.03
+## crt_score            -1.01 0.02
+## word_score            0.31 0.01
+## NS_score              3.51 0.01</code></pre>
+</div>
+<div id="step-2-demographic-information" class="section level2">
+<h2>Step 2: Demographic information</h2>
+<p>For this part, I would like to know the demographic information so I
+might be able to use for exploratory analysis. I selected the variables
+I am interested in, including: gender, year in college, major, and if
+the participant is currently a member of a fraternity or sorority.</p>
+<p>###Gender</p>
+<pre class="r"><code>##For gender, I would like to do a pie chart. So I will start with coverting gender codes to labels
+Thesis_scale$gender_label &lt;- factor(Thesis_scale$gender,
+                                    levels = c(1, 2, 3),
+                                    labels = c(&quot;Male&quot;, &quot;Female&quot;, &quot;Non-binary&quot;))
+##Then I create a summary table for further plotting
+genders &lt;- Thesis_scale %&gt;%
+  count(gender_label) %&gt;%
+  mutate(perc = round(n / sum(n) * 100, 1), 
+         label = paste0(perc, &quot;%&quot;))
+##Now I can create the pie chart 
+ggplot(genders, aes(x = &quot;&quot;, y = n, fill = gender_label)) +
+  geom_bar(width = 1, stat = &quot;identity&quot;) +
+  coord_polar(&quot;y&quot;) + 
+  labs(title = &quot;Participant Gender Distribution&quot;) +
+  scale_fill_manual(values = c(&quot;Male&quot; = &quot;#90D6FF&quot;,       
+                               &quot;Female&quot; = &quot;#ff69b4&quot;,   
+                               &quot;Non-binary&quot; = &quot;#6c08db&quot;) 
+                    )+
+  geom_text(aes(label = label), 
+            position = position_stack(vjust = 0.5), 
+            color = &quot;white&quot;, size = 5)+
+  theme_void()</code></pre>
+<p><img src="portfolio3_files/figure-html/gender-1.png" width="672" /></p>
+<p>###Year in college</p>
+<pre class="r"><code>##For year in college, I would like to do a pie chart. So I will start with coverting gender codes to labels
+Thesis_scale$year_label &lt;- factor(Thesis_scale$year,
+                                  levels = c(1, 2, 3, 4),
+                                  labels = c(&quot;Freshman&quot;, &quot;Sophomore&quot;, &quot;Junior&quot;, &quot;Senior&quot;))
+years &lt;- Thesis_scale %&gt;%
+  count(year_label)
+
+##Now I can create a bar chart
+ggplot(years, aes(x = year_label, y = n, fill = year_label)) +
+  geom_col() +
+  geom_text(aes(label = n), vjust = -0.5, size = 3) +
+  labs(title = &quot;Participants by Year in College&quot;,
+       x = &quot;Year in College&quot;,
+       y = &quot;Number of Participants&quot;) +
+  scale_fill_manual(values = c(&quot;#7a4d9f&quot;, &quot;#eb68a0&quot;, &quot;#feb326&quot;, &quot;#64c5eb&quot;)) +
+  theme_minimal() +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="portfolio3_files/figure-html/year%20in%20college-1.png" width="672" /></p>
+<p>###Greek Life</p>
+<pre class="r"><code>##Although this is not the focus of my thesis study, I asked the participants if they are currently a member of a fraternity or sorority. I added this question just want to explore if certain personality traits might be related with one&#39;s greek life involvement.  
+##In terms of visualization, I want to present gender and involvement in greek life.
+
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(
+    greek = factor(Greek1, levels = c(1, 2),
+                         labels = c(&quot;Not Involved&quot;, &quot;Greek Life&quot;))
+  )
+
+##count combinations
+gender_greek &lt;- Thesis_scale %&gt;%
+  count(gender_label, greek)
+
+##create the bar chart
+ggplot(gender_greek, aes(x = gender_label, y = n, fill = greek)) +
+  geom_col(position = &quot;dodge&quot;) +
+  labs(title = &quot;Greek Life Involvement by Gender&quot;,
+       x = &quot;Gender&quot;,
+       y = &quot;Number of Participants&quot;,
+       fill = &quot;Greek Life&quot;) +
+  scale_fill_manual(values = c(&quot;Not Involved&quot; = &quot;#FFDE21&quot;, &quot;Greek Life&quot; = &quot;#64c5eb&quot;)) +
+  theme_minimal() +
+  coord_flip()</code></pre>
+<p><img src="portfolio3_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Looking at the graph, I can tell that most of the students in the
+study are involved in greek life. In addition, the number of male
+students involved in a fraternity is more than twice the number of male
+students who are not involved in Greek life. For the two non-binary
+students, both of them are involed in greek life.</p>
+<pre class="r"><code>## Now I would like to add year in college as another vairable for visualization. I want to know whether male students are more involved in greek life despite of year in college
+
+##I start with combining
+gender_year_greek &lt;- Thesis_scale %&gt;%
+  count(year_label, gender_label, greek)
+
+##And then I grouped bars by gender and greek life involvement, faceted by year in college
+ggplot(gender_year_greek, aes(x = gender_label, y = n, fill = greek)) +
+  geom_col(position = &quot;dodge&quot;) +
+  facet_wrap(~ year_label) +
+  labs(title = &quot;Greek Life Involvement by Gender and Year&quot;,
+       x = &quot;Gender&quot;,
+       y = &quot;Number of Participants&quot;,
+       fill = &quot;Greek Life&quot;) +
+  scale_fill_manual(values = c(&quot;Not Involved&quot; = &quot;#FFDE21&quot;, &quot;Greek Life&quot; = &quot;#64c5eb&quot;)) +
+  theme_minimal()</code></pre>
+<p><img src="portfolio3_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>We can see that for both female and male freshman students at Wake,
+most of them are members of a sorority or a fraternity. However, for
+sophomore, junior, and senior, the difference between the number of
+students that are involved or not involved in greek life is smaller.
+Sophomore male students are slightly more likely to be involved in greek
+life, while there is still a significantly larger proportion of female
+students involving in greek life.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

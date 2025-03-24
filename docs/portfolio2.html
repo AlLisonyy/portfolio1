@@ -374,8 +374,8 @@ div.tocify {
 </div>
 
 
-<div id="goal" class="section level3">
-<h3>Goal</h3>
+<div id="goal" class="section level2">
+<h2>Goal</h2>
 <p>For this portfolio, I plan to use the dataset from my thesis study.
 The study is a correlational design, so there are many scales and
 variables that need to be cleaned and organized, such as reverse coding.
@@ -405,7 +405,10 @@ Thesis_clean &lt;- Thesis_clean %&gt;%
   filter(Progress &gt;= 50)
 ##Remove people&#39;s answers who did not give consent to participate in the study
 Thesis_clean &lt;- Thesis_clean %&gt;%
-  filter(Consent1 != 2, (!is.na(difficulties)))</code></pre>
+  filter(Consent1 != 2, (!is.na(difficulties)))
+##Remove participants whose status is not 0
+Thesis_clean &lt;- Thesis_clean %&gt;%
+  filter(Status == 0)</code></pre>
 </div>
 <div id="step-2-reverse-coding-the-scales" class="section level2">
 <h2>Step 2: reverse coding the scales</h2>
@@ -520,7 +523,7 @@ Thesis_scale &lt;- Thesis_scale %&gt;%
 ###I als0 just want to double check what does na.rm did for my data in terms of na.rm = TRUE/FALSE
 summary(Thesis_scale$recoded_college)</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   0.000   5.000   5.000   4.488   5.000   5.000</code></pre>
+##   0.000   5.000   5.000   4.487   5.000   5.000</code></pre>
 <pre class="r"><code>## Lastly, I use this equation to calculate the BS Proportion per topic, whereby each participant will have five individual BS Proportion scores (one for each topic): sum_recoded_thought_rating_topic1 / (sum thought_frequency_topic1 x 10)
 Thesis_scale &lt;- Thesis_scale %&gt;%
   mutate(
@@ -533,7 +536,7 @@ Thesis_scale &lt;- Thesis_scale %&gt;%
   mutate(BSthought = (BSthought_college + BSthought_recycling + BSthought_crime)/ 3)
 ## Check if it worked for one
 head(Thesis_scale$BSthought_college)</code></pre>
-<pre><code>## [1] 0.420 0.225 0.320 0.380 0.340 0.480</code></pre>
+<pre><code>## [1] 0.225 0.320 0.380 0.340 0.480 0.180</code></pre>
 </div>
 <div id="step-3.2-calculating-the-cogntive-ability-measurements"
 class="section level2">

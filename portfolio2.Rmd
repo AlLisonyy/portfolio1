@@ -42,6 +42,9 @@ Thesis_clean <- Thesis_clean %>%
 ##Remove people's answers who did not give consent to participate in the study
 Thesis_clean <- Thesis_clean %>%
   filter(Consent1 != 2, (!is.na(difficulties)))
+##Remove participants whose status is not 0
+Thesis_clean <- Thesis_clean %>%
+  filter(Status == 0)
 ```
 
 ## Step 2: reverse coding the scales
