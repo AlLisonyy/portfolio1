@@ -169,6 +169,7 @@ head(Thesis_scale$BSthought_college)
 
 ## Step 3.2: calculating the cogntive ability measurements
 ```{r cognitive ability}
+##For measuring cognitive ability, the scales are mainly short questions asking word/ math problems and is not likert scales. So I will need to calculate and code the participants' answers into numeric values. 
 ##Numeracy scale
 ##compute their answers, if they answer one question right, they will get one point.
 Thesis_scale$ns1 <- ifelse(Thesis_scale$NS1 == 500, 1, 0)

@@ -354,3 +354,8 @@ ggplot(gender_year_greek, aes(x = gender_label, y = n, fill = greek)) +
 ```
 
 We can see that for both female and male freshman students at Wake, most of them are members of a sorority or a fraternity. However, for sophomore, junior, and senior, the difference between the number of students that are involved or not involved in greek life is smaller. Sophomore male students are slightly more likely to be involved in greek life, while there is still a significantly larger proportion of female students involving in greek life. 
+
+```{r save}
+saveRDS(Thesis_scale, file = "Thesis_scale.rds")
+```
+

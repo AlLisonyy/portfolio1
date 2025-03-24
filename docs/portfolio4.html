@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Allison Li" />
+
+
+<title>Thesis data Main Analysis</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Portfolio</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="p01.html">Portfolio 1</a>
+</li>
+<li>
+  <a href="p02.html">Portfolio 2</a>
+</li>
+<li>
+  <a href="p03.html">Portfolio 3</a>
+</li>
+<li>
+  <a href="p04.html">Portfolio 4</a>
+</li>
+<li>
+  <a href="p05.html">Portfolio 5</a>
+</li>
+<li>
+  <a href="p06.html">Portfolio 6</a>
+</li>
+<li>
+  <a href="p07.html">Portfolio 7</a>
+</li>
+<li>
+  <a href="p08.html">Portfolio 8</a>
+</li>
+<li>
+  <a href="p09.html">Portfolio 9</a>
+</li>
+<li>
+  <a href="p10.html">Portfolio 10</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Thesis data Main Analysis</h1>
+<h4 class="author">Allison Li</h4>
+<h4 class="date">03242025</h4>
+
+</div>
+
+
+<blockquote>
+<p>The projects should be numbered consecutively (i.e., in the order in
+which you began them), and should include for each project a description
+of the goal, the product (computer program, hand graph, computer graph,
+etc.), the data, and some interpretation. Reports must be reproducible
+and of high quality in terms of writing, grammar, presentation, etc.</p>
+</blockquote>
+<pre class="r"><code>##install packages
+
+library(psych)
+library(ggplot2)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;ggplot2&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:psych&#39;:
+## 
+##     %+%, alpha</code></pre>
+<pre class="r"><code>library(ltm)</code></pre>
+<pre><code>## Loading required package: MASS</code></pre>
+<pre><code>## Loading required package: msm</code></pre>
+<pre><code>## Loading required package: polycor</code></pre>
+<pre><code>## 
+## Attaching package: &#39;polycor&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:psych&#39;:
+## 
+##     polyserial</code></pre>
+<pre><code>## 
+## Attaching package: &#39;ltm&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:psych&#39;:
+## 
+##     factor.scores</code></pre>
+<pre class="r"><code>library(ppcor)
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ lubridate 1.9.4     ✔ tibble    3.2.1
+## ✔ purrr     1.0.2     ✔ tidyr     1.3.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ ggplot2::%+%()   masks psych::%+%()
+## ✖ ggplot2::alpha() masks psych::alpha()
+## ✖ dplyr::filter()  masks stats::filter()
+## ✖ dplyr::lag()     masks stats::lag()
+## ✖ dplyr::select()  masks MASS::select()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(haven)
+library(dplyr)
+Thesis_scale &lt;- readRDS(&quot;Thesis_scale.rds&quot;)</code></pre>
+<div id="step-1-partial-correlations" class="section level2">
+<h2>Step 1: partial correlations</h2>
+<div
+id="bullshit-frequency-scales-and-other-variabless-partial-correlation-when-controled-for-lying-tendency"
+class="section level3">
+<h3>Bullshit Frequency scales and other variables’s partial correlation
+when controled for lying tendency</h3>
+<pre class="r"><code>##1. BFS and BPS
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$BPS_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##    estimate      p.value statistic   n gp  Method
+## 1 0.1965404 5.436469e-05  4.078555 417  1 pearson</code></pre>
+<pre class="r"><code>##2. BFS and narcissism (short scale)
+partial_BFSsdtnarc &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, sdtnarc_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSsdtnarc$BFS_score, partial_BFSsdtnarc$sdtnarc_score, partial_BFSsdtnarc$LIE_score)</code></pre>
+<pre><code>##    estimate     p.value statistic   n gp  Method
+## 1 0.1480524 0.002497544  3.042308 416  1 pearson</code></pre>
+<pre class="r"><code>##3, BFS and machiavellianism (short scale)
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##    estimate      p.value statistic   n gp  Method
+## 1 0.2438125 4.802929e-07  5.115216 417  1 pearson</code></pre>
+<pre class="r"><code>##4. BFS and psychopathy (short scale)
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$sdtpsych_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##   estimate     p.value statistic   n gp  Method
+## 1 0.141914 0.003725995  2.917047 417  1 pearson</code></pre>
+<pre class="r"><code>##5. BFS and Narcissistic Personality Inventory
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$narc_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##    estimate     p.value statistic   n gp  Method
+## 1 0.1498232 0.002184556  3.083253 417  1 pearson</code></pre>
+<pre class="r"><code>##6. BFS and Machiavellianism Personality scale
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$mach_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##    estimate      p.value statistic   n gp  Method
+## 1 0.2640329 4.594391e-08  5.569932 417  1 pearson</code></pre>
+<pre class="r"><code>##7. BFS and Levenson Self-Report Psychopathy Scale
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$psycho_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##    estimate     p.value statistic   n gp  Method
+## 1 0.1811911 0.000202992  3.748742 417  1 pearson</code></pre>
+<pre class="r"><code>##7.1
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$psychopri_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##   estimate      p.value statistic   n gp  Method
+## 1 0.166816 0.0006352032  3.442438 417  1 pearson</code></pre>
+<pre class="r"><code>partial_BFSpsychosec &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, psychosec_score, LIE_score) %&gt;% 
+  drop_na()
+##7.2
+pcor.test(partial_BFSpsychosec$BFS_score, partial_BFSpsychosec$psychosec_score, partial_BFSpsychosec$LIE_score)</code></pre>
+<pre><code>##    estimate     p.value statistic   n gp  Method
+## 1 0.1453326 0.003002406  2.985203 416  1 pearson</code></pre>
+<pre class="r"><code>##8. BFS and self-esteem
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$se_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value statistic   n gp  Method
+## 1 -0.07890241 0.1080624 -1.610447 417  1 pearson</code></pre>
+<pre class="r"><code>##BFS and HEXACO
+##9. Honesty-Humility
+partial_BFShon&lt;- Thesis_scale %&gt;% 
+  select(BFS_score, hon_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFShon$BFS_score, partial_BFShon$hon_score, partial_BFShon$LIE_score)</code></pre>
+<pre><code>##    estimate     p.value statistic   n gp  Method
+## 1 -0.238912 8.48755e-07  -5.00006 416  1 pearson</code></pre>
+<pre class="r"><code>##10. Emotionality
+partial_BFSemo &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, emo_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSemo$BFS_score, partial_BFSemo$emo_score, partial_BFSemo$LIE_score)</code></pre>
+<pre><code>##     estimate    p.value statistic   n gp  Method
+## 1 0.09729685 0.04761247  1.986732 416  1 pearson</code></pre>
+<pre class="r"><code>##11. Extraversion
+partial_BFSextra &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, extra_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSextra$BFS_score, partial_BFSextra$extra_score, partial_BFSextra$LIE_score)</code></pre>
+<pre><code>##     estimate   p.value statistic   n gp  Method
+## 1 0.01186298 0.8095963 0.2411013 416  1 pearson</code></pre>
+<pre class="r"><code>##12. Agreeableness
+partial_BFSagree &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, agree_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSagree$BFS_score, partial_BFSagree$agree_score, partial_BFSagree$LIE_score)</code></pre>
+<pre><code>##     estimate     p.value statistic   n gp  Method
+## 1 -0.1268451 0.009690186 -2.598789 416  1 pearson</code></pre>
+<pre class="r"><code>##13. CONSCIENTIOUSNESS
+partial_BFScons &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, cons_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFScons$BFS_score, partial_BFScons$cons_score, partial_BFScons$LIE_score)</code></pre>
+<pre><code>##     estimate      p.value statistic   n gp  Method
+## 1 -0.1728528 0.0004042115 -3.566467 416  1 pearson</code></pre>
+<pre class="r"><code>##14. Openness
+partial_BFSopen &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, open_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSopen$BFS_score, partial_BFSopen$open_score, partial_BFSopen$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value  statistic   n gp  Method
+## 1 -0.03077178 0.5318883 -0.6256528 416  1 pearson</code></pre>
+<pre class="r"><code>##15. BFS and Intellectual Humility Scale
+partial_BFSih &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, ihs_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSih$BFS_score, partial_BFSih$ihs_score, partial_BFSih$LIE_score)</code></pre>
+<pre><code>##     estimate   p.value statistic   n gp  Method
+## 1 0.02916891 0.5534826 0.5930346 416  1 pearson</code></pre>
+<pre class="r"><code>##16. BFS and Need for Closure
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$nclos_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##     estimate   p.value statistic   n gp  Method
+## 1 0.04073323 0.4073069  0.829487 417  1 pearson</code></pre>
+<pre class="r"><code>##17. BFS and Need for Cognition
+partial_BFSncog &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, ncog_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSncog$BFS_score, partial_BFSncog$ncog_score, partial_BFSncog$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value  statistic   n gp  Method
+## 1 -0.02215745 0.6526561 -0.4504031 416  1 pearson</code></pre>
+<pre class="r"><code>##18. BFS and Actively Open Thinking Style
+partial_BFSopenTS &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, openTS_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSopenTS$BFS_score, partial_BFSopenTS$openTS_score, partial_BFSopenTS$LIE_score)</code></pre>
+<pre><code>##     estimate      p.value statistic   n gp  Method
+## 1 -0.2304123 2.098764e-06 -4.812007 416  1 pearson</code></pre>
+<pre class="r"><code>##19. BFS and Close-minded Thinking Style
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$closeTS_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##     estimate    p.value statistic   n gp  Method
+## 1 0.09288445 0.05837491  1.898125 417  1 pearson</code></pre>
+<pre class="r"><code>##20. BFS and prefer intuitive Thinking Style
+partial_BFSintuitiveTS &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, intuitiveTS_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSintuitiveTS$BFS_score, partial_BFSintuitiveTS$intuitiveTS_score, partial_BFSintuitiveTS$LIE_score)</code></pre>
+<pre><code>##    estimate     p.value statistic   n gp  Method
+## 1 0.1593803 0.001122483  3.280929 416  1 pearson</code></pre>
+<pre class="r"><code>##21. BFS and prefer effortful Thinking Style
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$effortTS_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##     estimate    p.value statistic   n gp  Method
+## 1 -0.1013629 0.03878032 -2.073108 417  1 pearson</code></pre>
+<pre class="r"><code>##22. BFS and Actively Open-Minded Thinking about Evidence Scale 
+partial_BFSactiveopen &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, activeopen_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSactiveopen$BFS_score, partial_BFSactiveopen$activeopen_score, partial_BFSactiveopen$LIE_score)</code></pre>
+<pre><code>##     estimate     p.value statistic   n gp  Method
+## 1 -0.1353853 0.005737482 -2.776922 416  1 pearson</code></pre>
+<pre class="r"><code>##23. BFS and Faith in Intuition Scale
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$fi_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##    estimate     p.value statistic   n gp  Method
+## 1 0.1426406 0.003551459  2.932291 417  1 pearson</code></pre>
+<pre class="r"><code>##24. BFS and BS thought listing and rating task
+partial_BFSthoughlist &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, BSthought, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSthoughlist$BFS_score, partial_BFSthoughlist$BSthought, partial_BFSthoughlist$LIE_score)</code></pre>
+<pre><code>##     estimate   p.value statistic   n gp  Method
+## 1 0.03360933 0.4968317 0.6800908 412  1 pearson</code></pre>
+<pre class="r"><code>##25. BFS and Wordsum Vocabulary Test
+partial_BFSns &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, NS_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSns$BFS_score, partial_BFSns$NS_score, partial_BFSns$LIE_score)</code></pre>
+<pre><code>##       estimate   p.value   statistic   n gp  Method
+## 1 -0.002647266 0.9573817 -0.05347234 411  1 pearson</code></pre>
+<pre class="r"><code>##26. BFS and Numeracy scale
+partial_BFSword &lt;- Thesis_scale %&gt;% 
+  select(BFS_score, word_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFSword$BFS_score, partial_BFSword$word_score, partial_BFSword$LIE_score)</code></pre>
+<pre><code>##       estimate   p.value  statistic   n gp  Method
+## 1 -0.009697813 0.8438524 -0.1970921 416  1 pearson</code></pre>
+<pre class="r"><code>##27. BFS and Cognitive Reflection Test
+partial_BFScrt&lt;- Thesis_scale %&gt;% 
+  select(BFS_score, crt_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BFScrt$BFS_score, partial_BFScrt$crt_score, partial_BFScrt$LIE_score)</code></pre>
+<pre><code>##     estimate    p.value statistic   n gp  Method
+## 1 -0.1054837 0.03731863 -2.089444 391  1 pearson</code></pre>
+</div>
+<div
+id="bullshit-propensity-scales-and-other-variabless-partial-correlation-when-controled-for-lying-tendency"
+class="section level3">
+<h3>Bullshit Propensity scales and other variables’s partial correlation
+when controled for lying tendency</h3>
+<pre class="r"><code>##1. BPS and Thought listing and rating task
+partial_BPSthoughlist &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, BSthought, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSthoughlist$BPS_score, partial_BPSthoughlist$BSthought, partial_BPSthoughlist$LIE_score)</code></pre>
+<pre><code>##    estimate      p.value statistic   n gp  Method
+## 1 0.2552807 1.547974e-07  5.339651 412  1 pearson</code></pre>
+<pre class="r"><code>##2. BPS and narcissism (short scale)
+partial_BPSsdtnarc &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, sdtnarc_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSsdtnarc$BPS_score, partial_BPSsdtnarc$sdtnarc_score, partial_BPSsdtnarc$LIE_score)</code></pre>
+<pre><code>##     estimate    p.value statistic   n gp  Method
+## 1 0.08114849 0.09876762  1.654589 416  1 pearson</code></pre>
+<pre class="r"><code>##3, BPS and machiavellianism (short scale)
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##   estimate    p.value statistic   n gp  Method
+## 1 0.110723 0.02391652  2.266817 417  1 pearson</code></pre>
+<pre class="r"><code>##4. BPS and psychopathy (short scale)
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$sdtpsych_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##    estimate      p.value statistic   n gp  Method
+## 1 0.1796262 0.0002308291  3.715282 417  1 pearson</code></pre>
+<pre class="r"><code>##5. BPS and Narcissistic Personality Inventory
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$narc_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##    estimate      p.value statistic   n gp  Method
+## 1 0.1828917 0.0001763189   3.78514 417  1 pearson</code></pre>
+<pre class="r"><code>##6. BPS and Machiavellianism Personality scale
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$mach_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##    estimate      p.value statistic   n gp  Method
+## 1 0.1789717 0.0002434981  3.701296 417  1 pearson</code></pre>
+<pre class="r"><code>##7. BPS and Levenson Self-Report Psychopathy Scale
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$psycho_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##    estimate      p.value statistic   n gp  Method
+## 1 0.2609065 6.691853e-08  5.499129 417  1 pearson</code></pre>
+<pre class="r"><code>##7.1
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$psychopri_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##    estimate      p.value statistic   n gp  Method
+## 1 0.2137661 1.093497e-05  4.452414 417  1 pearson</code></pre>
+<pre class="r"><code>partial_BPSpsychosec &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, psychosec_score, LIE_score) %&gt;% 
+  drop_na()
+##7.2
+pcor.test(partial_BPSpsychosec$BPS_score, partial_BPSpsychosec$psychosec_score, partial_BPSpsychosec$LIE_score)</code></pre>
+<pre><code>##    estimate      p.value statistic   n gp  Method
+## 1 0.2456668 4.033246e-07  5.150376 416  1 pearson</code></pre>
+<pre class="r"><code>##8. BPS and self-esteem
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$se_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##       estimate   p.value  statistic   n gp  Method
+## 1 -0.006815272 0.8897756 -0.1386735 417  1 pearson</code></pre>
+<pre class="r"><code>##BPS and HEXACO
+##9. Honesty-Humility
+partial_BPShon&lt;- Thesis_scale %&gt;% 
+  select(BPS_score, hon_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPShon$BPS_score, partial_BPShon$hon_score, partial_BPShon$LIE_score)</code></pre>
+<pre><code>##     estimate      p.value statistic   n gp  Method
+## 1 -0.1852308 0.0001476752 -3.830623 416  1 pearson</code></pre>
+<pre class="r"><code>##10. Emotionality
+partial_BPSemo &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, emo_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSemo$BPS_score, partial_BPSemo$emo_score, partial_BPSemo$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value statistic   n gp  Method
+## 1 -0.07990162 0.1040753 -1.629001 416  1 pearson</code></pre>
+<pre class="r"><code>##11. Extraversion
+partial_BPSextra &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, extra_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSextra$BPS_score, partial_BPSextra$extra_score, partial_BPSextra$LIE_score)</code></pre>
+<pre><code>##     estimate   p.value statistic   n gp  Method
+## 1 0.06670536 0.1750025  1.358639 416  1 pearson</code></pre>
+<pre class="r"><code>##12. Agreeableness
+partial_BPSagree &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, agree_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSagree$BPS_score, partial_BPSagree$agree_score, partial_BPSagree$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value  statistic   n gp  Method
+## 1 -0.03324866 0.4993769 -0.6760663 416  1 pearson</code></pre>
+<pre class="r"><code>##13. CONSCIENTIOUSNESS
+partial_BPScons &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, cons_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPScons$BPS_score, partial_BPScons$cons_score, partial_BPScons$LIE_score)</code></pre>
+<pre><code>##     estimate      p.value statistic   n gp  Method
+## 1 -0.2877373 2.362292e-09 -6.105727 416  1 pearson</code></pre>
+<pre class="r"><code>##14. Openness
+partial_BPSopen &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, open_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSopen$BPS_score, partial_BPSopen$open_score, partial_BPSopen$LIE_score)</code></pre>
+<pre><code>##     estimate      p.value statistic   n gp  Method
+## 1 -0.1813124 0.0002045784 -3.746804 416  1 pearson</code></pre>
+<pre class="r"><code>##15. BPS and Intellectual Humility Scale
+partial_BPSih &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, ihs_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSih$BPS_score, partial_BPSih$ihs_score, partial_BPSih$LIE_score)</code></pre>
+<pre><code>##     estimate      p.value statistic   n gp  Method
+## 1 -0.2131667 1.187453e-05  -4.43397 416  1 pearson</code></pre>
+<pre class="r"><code>##16. BPS and Need for Closure
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$nclos_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##     estimate     p.value statistic   n gp  Method
+## 1 -0.1548461 0.001535559 -3.189118 417  1 pearson</code></pre>
+<pre class="r"><code>##17. BPS and Need for Cognition
+partial_BPSncog &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, ncog_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSncog$BPS_score, partial_BPSncog$ncog_score, partial_BPSncog$LIE_score)</code></pre>
+<pre><code>##     estimate      p.value statistic   n gp  Method
+## 1 -0.2894104 1.890077e-09 -6.144465 416  1 pearson</code></pre>
+<pre class="r"><code>##18. BPS and Actively Open Thinking Style
+partial_BPSopenTS &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, openTS_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSopenTS$BPS_score, partial_BPSopenTS$openTS_score, partial_BPSopenTS$LIE_score)</code></pre>
+<pre><code>##     estimate     p.value statistic   n gp  Method
+## 1 -0.3361009 2.03824e-12 -7.252271 416  1 pearson</code></pre>
+<pre class="r"><code>##19. BPS and Close-minded Thinking Style
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$closeTS_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##    estimate     p.value statistic   n gp  Method
+## 1 0.1320181 0.007010169   2.70989 417  1 pearson</code></pre>
+<pre class="r"><code>##20. BPS and prefer intuitive Thinking Style
+partial_BPSintuitiveTS &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, intuitiveTS_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSintuitiveTS$BPS_score, partial_BPSintuitiveTS$intuitiveTS_score, partial_BPSintuitiveTS$LIE_score)</code></pre>
+<pre><code>##    estimate      p.value statistic   n gp  Method
+## 1 0.1839469 0.0001644401  3.803139 416  1 pearson</code></pre>
+<pre class="r"><code>##21. BPS and prefer effortful Thinking Style
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$effortTS_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##     estimate      p.value statistic   n gp  Method
+## 1 -0.3363985 1.828378e-12 -7.268295 417  1 pearson</code></pre>
+<pre class="r"><code>##22. BPS and Actively Open-Minded Thinking about Evidence Scale 
+partial_BPSactiveopen &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, activeopen_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSactiveopen$BPS_score, partial_BPSactiveopen$activeopen_score, partial_BPSactiveopen$LIE_score)</code></pre>
+<pre><code>##     estimate      p.value statistic   n gp  Method
+## 1 -0.3651437 1.554154e-14 -7.970984 416  1 pearson</code></pre>
+<pre class="r"><code>##23. BPS and Faith in Intuition Scale
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$fi_score, Thesis_scale$LIE_score)</code></pre>
+<pre><code>##       estimate   p.value   statistic   n gp  Method
+## 1 0.0002770085 0.9955056 0.005636289 417  1 pearson</code></pre>
+<pre class="r"><code>##24. BPS and Wordsum Vocabulary Test
+partial_BPSns &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, NS_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSns$BPS_score, partial_BPSns$NS_score, partial_BPSns$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value statistic   n gp  Method
+## 1 -0.07307312 0.1396553 -1.479961 411  1 pearson</code></pre>
+<pre class="r"><code>##25. BPS and Numeracy scale
+partial_BPSword &lt;- Thesis_scale %&gt;% 
+  select(BPS_score, word_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPSword$BPS_score, partial_BPSword$word_score, partial_BPSword$LIE_score)</code></pre>
+<pre><code>##     estimate    p.value statistic   n gp  Method
+## 1 -0.1207141 0.01386582 -2.471272 416  1 pearson</code></pre>
+<pre class="r"><code>##26. BPS and Cognitive Reflection Test
+partial_BPScrt&lt;- Thesis_scale %&gt;% 
+  select(BPS_score, crt_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BPScrt$BPS_score, partial_BPScrt$crt_score, partial_BPScrt$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value statistic   n gp  Method
+## 1 -0.08308423 0.1013489 -1.642248 391  1 pearson</code></pre>
+</div>
+<div
+id="bullshit-thought-listing-and-rating-tasks-and-other-variabless-partial-correlation-when-controled-for-lying-tendency"
+class="section level3">
+<h3>Bullshit Thought Listing and Rating tasks and other variables’s
+partial correlation when controled for lying tendency</h3>
+<pre class="r"><code>##1. BSthought rating and listing and narcissism (short scale)
+partial_BSthoughtsdtnarc &lt;- Thesis_scale %&gt;% 
+  select(BSthought, sdtnarc_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtsdtnarc$BSthought, partial_BSthoughtsdtnarc$sdtnarc_score, partial_BSthoughtsdtnarc$LIE_score)</code></pre>
+<pre><code>##     estimate   p.value statistic   n gp  Method
+## 1 0.02956604 0.5505278 0.5974659 411  1 pearson</code></pre>
+<pre class="r"><code>##2, BSthought and machiavellianism (short scale)
+partial_BSthoughtsdtmach &lt;- Thesis_scale %&gt;% 
+  select(BSthought, sdtmach_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtsdtmach$BSthought, partial_BSthoughtsdtmach$sdtmach_score, partial_BSthoughtsdtmach$LIE_score)</code></pre>
+<pre><code>##     estimate    p.value statistic   n gp  Method
+## 1 0.08877441 0.07220789  1.802468 412  1 pearson</code></pre>
+<pre class="r"><code>##3. BSthought and psychopathy (short scale)
+partial_BSthoughtsdtpsych &lt;- Thesis_scale %&gt;% 
+  select(BSthought, sdtpsych_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtsdtpsych$BSthought, partial_BSthoughtsdtpsych$sdtpsych_score, partial_BSthoughtsdtpsych$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value statistic   n gp  Method
+## 1 0.008279879 0.8670941 0.1674559 412  1 pearson</code></pre>
+<pre class="r"><code>##4. BSthought and Narcissistic Personality Inventory
+partial_BSthoughtnarc &lt;- Thesis_scale %&gt;% 
+  select(BSthought, narc_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtnarc$BSthought, partial_BSthoughtnarc$narc_score, partial_BSthoughtnarc$LIE_score)</code></pre>
+<pre><code>##     estimate   p.value statistic   n gp  Method
+## 1 0.01420799 0.7739763 0.2873677 412  1 pearson</code></pre>
+<pre class="r"><code>##5. BSthought and Machiavellianism Personality scale
+partial_BSthoughtmach &lt;- Thesis_scale %&gt;% 
+  select(BSthought, mach_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtmach$BSthought, partial_BSthoughtmach$mach_score, partial_BSthoughtmach$LIE_score)</code></pre>
+<pre><code>##    estimate    p.value statistic   n gp  Method
+## 1 0.1153942 0.01927864  2.349397 412  1 pearson</code></pre>
+<pre class="r"><code>##6. BSthought and Levenson Self-Report Psychopathy Scale
+partial_BSthoughtpsych &lt;- Thesis_scale %&gt;% 
+  select(BSthought, psycho_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtpsych$BSthought, partial_BSthoughtpsych$psycho_score, partial_BSthoughtpsych$LIE_score)</code></pre>
+<pre><code>##   estimate   p.value statistic   n gp  Method
+## 1 0.056603 0.2522326  1.146563 412  1 pearson</code></pre>
+<pre class="r"><code>##7. 
+partial_BSthoughtpsychopri &lt;- Thesis_scale %&gt;% 
+  select(BSthought, psychopri_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtpsychopri$BSthought, partial_BSthoughtpsychopri$psychopri_score, partial_BSthoughtpsychopri$LIE_score)</code></pre>
+<pre><code>##     estimate   p.value statistic   n gp  Method
+## 1 0.05415758 0.2733397  1.096879 412  1 pearson</code></pre>
+<pre class="r"><code>##8.
+partial_BSthoughtpsychosec &lt;- Thesis_scale %&gt;% 
+  select(BSthought, psychosec_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtpsychosec$BSthought, partial_BSthoughtpsychosec$psychosec_score, partial_BSthoughtpsychosec$LIE_score)</code></pre>
+<pre><code>##     estimate   p.value statistic   n gp  Method
+## 1 0.03738384 0.4502983 0.7556447 411  1 pearson</code></pre>
+<pre class="r"><code>##9. BSthought and self-esteem
+partial_BSthoughtse &lt;- Thesis_scale %&gt;% 
+  select(BSthought, se_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtse$BSthought, partial_BSthoughtse$se_score, partial_BSthoughtse$LIE_score)</code></pre>
+<pre><code>##      estimate  p.value statistic   n gp  Method
+## 1 -0.03493001 0.480064 -0.706847 412  1 pearson</code></pre>
+<pre class="r"><code>##BSthought and HEXACO
+##10. Honesty-Humility
+partial_BSthoughthon&lt;- Thesis_scale %&gt;% 
+  select(BSthought, hon_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughthon$BSthought, partial_BSthoughthon$hon_score, partial_BSthoughthon$LIE_score)</code></pre>
+<pre><code>##    estimate    p.value statistic   n gp  Method
+## 1 -0.105936 0.03199047 -2.151912 411  1 pearson</code></pre>
+<pre class="r"><code>##11. Emotionality
+partial_BSthoughtemo &lt;- Thesis_scale %&gt;% 
+  select(BSthought, emo_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtemo$BSthought, partial_BSthoughtemo$emo_score, partial_BSthoughtemo$LIE_score)</code></pre>
+<pre><code>##    estimate   p.value statistic   n gp  Method
+## 1 0.0364267 0.4619883  0.736272 411  1 pearson</code></pre>
+<pre class="r"><code>##12. Extraversion
+partial_BSthoughtextra &lt;- Thesis_scale %&gt;% 
+  select(BSthought, extra_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtextra$BSthought, partial_BSthoughtextra$extra_score, partial_BSthoughtextra$LIE_score)</code></pre>
+<pre><code>##     estimate   p.value statistic   n gp  Method
+## 1 0.03470231 0.4834691 0.7013747 411  1 pearson</code></pre>
+<pre class="r"><code>##13. Agreeableness
+partial_BSthoughtagree &lt;- Thesis_scale %&gt;% 
+  select(BSthought, agree_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtagree$BSthought, partial_BSthoughtagree$agree_score, partial_BSthoughtagree$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value  statistic   n gp  Method
+## 1 -0.03416912 0.4902186 -0.6905857 411  1 pearson</code></pre>
+<pre class="r"><code>##14. CONSCIENTIOUSNESS
+partial_BSthoughtcons &lt;- Thesis_scale %&gt;% 
+  select(BSthought, cons_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtcons$BSthought, partial_BSthoughtcons$cons_score, partial_BSthoughtcons$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value  statistic   n gp  Method
+## 1 -0.02490133 0.6151385 -0.5031383 411  1 pearson</code></pre>
+<pre class="r"><code>##15. Openness
+partial_BSthoughtopen &lt;- Thesis_scale %&gt;% 
+  select(BSthought, open_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtopen$BSthought, partial_BSthoughtopen$open_score, partial_BSthoughtopen$LIE_score)</code></pre>
+<pre><code>##      estimate  p.value statistic   n gp  Method
+## 1 -0.08126107 0.100361 -1.646839 411  1 pearson</code></pre>
+<pre class="r"><code>##16. BSthought and Intellectual Humility Scale
+partial_BSthoughtih &lt;- Thesis_scale %&gt;% 
+  select(BSthought, ihs_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtih$BSthought, partial_BSthoughtih$ihs_score, partial_BSthoughtih$LIE_score)</code></pre>
+<pre><code>##     estimate      p.value statistic   n gp  Method
+## 1 -0.1626622 0.0009475846 -3.329964 411  1 pearson</code></pre>
+<pre class="r"><code>##17. BSthought and Need for Closure
+partial_BSthoughtnclos &lt;- Thesis_scale %&gt;% 
+  select(BSthought, nclos_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtnclos$BSthought, partial_BSthoughtnclos$nclos_score, partial_BSthoughtnclos$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value  statistic   n gp  Method
+## 1 -0.04599435 0.3523183 -0.9311635 412  1 pearson</code></pre>
+<pre class="r"><code>##18. BSthought and Need for Cognition
+partial_BSthoughtncog &lt;- Thesis_scale %&gt;% 
+  select(BSthought, ncog_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtncog$BSthought, partial_BSthoughtncog$ncog_score, partial_BSthoughtncog$LIE_score)</code></pre>
+<pre><code>##     estimate    p.value statistic   n gp  Method
+## 1 -0.1259402 0.01069591 -2.564285 411  1 pearson</code></pre>
+<pre class="r"><code>##19. BSthought and Actively Open Thinking Style
+partial_BSthoughtopenTS &lt;- Thesis_scale %&gt;% 
+  select(BSthought, openTS_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtopenTS$BSthought, partial_BSthoughtopenTS$openTS_score, partial_BSthoughtopenTS$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value  statistic   n gp  Method
+## 1 -0.02549255 0.6067679 -0.5150917 411  1 pearson</code></pre>
+<pre class="r"><code>##20. BSthought and Close-minded Thinking Style
+partial_BSthoughtcloseTS &lt;- Thesis_scale %&gt;% 
+  select(BSthought, closeTS_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtcloseTS$BSthought, partial_BSthoughtcloseTS$closeTS_score, partial_BSthoughtcloseTS$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value statistic   n gp  Method
+## 1 -0.06402104 0.1952225 -1.297407 412  1 pearson</code></pre>
+<pre class="r"><code>##21. BSthought and prefer intuitive Thinking Style
+partial_BSthoughtintuitiveTS &lt;- Thesis_scale %&gt;% 
+  select(BSthought, intuitiveTS_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtintuitiveTS$BSthought, partial_BSthoughtintuitiveTS$intuitiveTS_score, partial_BSthoughtintuitiveTS$LIE_score)</code></pre>
+<pre><code>##      estimate  p.value  statistic   n gp  Method
+## 1 -0.04269756 0.388515 -0.8632357 411  1 pearson</code></pre>
+<pre class="r"><code>##22. BSthought and prefer effortful Thinking Style
+partial_BSthoughteffortTS &lt;- Thesis_scale %&gt;% 
+  select(BSthought, effortTS_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughteffortTS$BSthought, partial_BSthoughteffortTS$effortTS_score, partial_BSthoughteffortTS$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value statistic   n gp  Method
+## 1 -0.06157436 0.2128798 -1.247632 412  1 pearson</code></pre>
+<pre class="r"><code>##23. BSthought and Actively Open-Minded Thinking about Evidence Scale 
+partial_BSthoughtactiveopen &lt;- Thesis_scale %&gt;% 
+  select(BSthought, activeopen_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtactiveopen$BSthought, partial_BSthoughtactiveopen$activeopen_score, partial_BSthoughtactiveopen$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value statistic   n gp  Method
+## 1 -0.06447071 0.1926422 -1.304959 411  1 pearson</code></pre>
+<pre class="r"><code>##24. BSthought and Faith in Intuition Scale
+partial_BSthoughtfi &lt;- Thesis_scale %&gt;% 
+  select(BSthought, fi_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtfi$BSthought, partial_BSthoughtfi$fi_score, partial_BSthoughtfi$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value  statistic   n gp  Method
+## 1 -0.03339252 0.4996138 -0.6756987 412  1 pearson</code></pre>
+<pre class="r"><code>##25. BSthought and Wordsum Vocabulary Test
+partial_BSthoughtns &lt;- Thesis_scale %&gt;% 
+  select(BSthought, NS_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtns$BSthought, partial_BSthoughtns$NS_score, partial_BSthoughtns$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value statistic   n gp  Method
+## 1 0.009920118 0.8420488 0.1994017 407  1 pearson</code></pre>
+<pre class="r"><code>##26. BSthought and Numeracy scale
+partial_BSthoughtword &lt;- Thesis_scale %&gt;% 
+  select(BSthought, word_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtword$BSthought, partial_BSthoughtword$word_score, partial_BSthoughtword$LIE_score)</code></pre>
+<pre><code>##      estimate   p.value statistic   n gp  Method
+## 1 -0.05535336 0.2634578   -1.1198 411  1 pearson</code></pre>
+<pre class="r"><code>##27. BSthought and Cognitive Reflection Test
+partial_BSthoughtcrt&lt;- Thesis_scale %&gt;% 
+  select(BSthought, crt_score, LIE_score) %&gt;% 
+  drop_na()
+pcor.test(partial_BSthoughtcrt$BSthought, partial_BSthoughtcrt$crt_score, partial_BSthoughtcrt$LIE_score)</code></pre>
+<pre><code>##     estimate   p.value statistic   n gp  Method
+## 1 -0.0656532 0.1980642 -1.289316 387  1 pearson</code></pre>
+</div>
+</div>
+<div id="section" class="section level2">
+<h2></h2>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

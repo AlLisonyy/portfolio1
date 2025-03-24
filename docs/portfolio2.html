@@ -541,7 +541,8 @@ head(Thesis_scale$BSthought_college)</code></pre>
 <div id="step-3.2-calculating-the-cogntive-ability-measurements"
 class="section level2">
 <h2>Step 3.2: calculating the cogntive ability measurements</h2>
-<pre class="r"><code>##Numeracy scale
+<pre class="r"><code>##For measuring cognitive ability, the scales are mainly short questions asking word/ math problems and is not likert scales. So I will need to calculate and code the participants&#39; answers into numeric values. 
+##Numeracy scale
 ##compute their answers, if they answer one question right, they will get one point.
 Thesis_scale$ns1 &lt;- ifelse(Thesis_scale$NS1 == 500, 1, 0)
 Thesis_scale$ns2 &lt;- ifelse(Thesis_scale$NS2 == 10, 1, 0)
