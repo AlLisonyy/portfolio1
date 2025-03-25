@@ -397,18 +397,15 @@ Thesis &lt;- read_sav(&quot;~/Downloads/Thesis.sav&quot;)</code></pre>
 <div id="step-1-clean-data" class="section level2">
 <h2>Step 1: clean data</h2>
 <pre class="r"><code>##The first step is to clean data, and I started with getting rid of participants that did not finished the study, as well as deleting variable that does not have any data, such as recipient name.  
+library(dplyr)
 Thesis_clean &lt;- Thesis %&gt;% 
-  select(-RecipientLastName, -RecipientFirstName, -RecipientEmail, -ExternalReference, -DistributionChannel, -browser_info_Resolution, -StartDate, -EndDate, -browser_info_Browser, -browser_info_Version, -IPAddress, -RecordedDate, -LocationLatitude, -LocationLongitude, -ResponseId, -UserLanguage, -browser_info_Operating_System, -robot_timer_First_Click, -robot_timer_Last_Click, -robot_timer_Page_Submit, -robot_timer_Click_Count)
-Thesis_clean &lt;- Thesis_clean[-c(1), ]
-##Keep only participants with progress &gt;= 50
-Thesis_clean &lt;- Thesis_clean %&gt;% 
-  filter(Progress &gt;= 50)
-##Remove people&#39;s answers who did not give consent to participate in the study
-Thesis_clean &lt;- Thesis_clean %&gt;%
-  filter(Consent1 != 2, (!is.na(difficulties)))
-##Remove participants whose status is not 0
-Thesis_clean &lt;- Thesis_clean %&gt;%
-  filter(Status == 0)</code></pre>
+  select(-StartDate, -EndDate, -IPAddress, -RecordedDate, -ResponseId, -RecipientLastName, -RecipientFirstName, -RecipientEmail, -ExternalReference, -LocationLatitude, -LocationLongitude, -DistributionChannel, -UserLanguage, -robot_timer_First_Click, -robot_timer_Last_Click, -robot_timer_Page_Submit, -robot_timer_Click_Count, -browser_info_Browser, -browser_info_Version, -browser_info_Operating_System, -browser_info_Resolution) %&gt;%
+  filter(Progress &gt;= 50,  ##Keep only participants with progress &gt;= 50
+  Consent1 != 2,  ##Remove people&#39;s answers who did not give consent to participate in the study
+  (!is.na(difficulties)),  ##Remove people&#39;s answers who had difficulties when answering questions, their data might be invalid
+  Status == 0,  ##Remove participants whose status is not 0
+  Finished == 1
+  )</code></pre>
 </div>
 <div id="step-2-reverse-coding-the-scales" class="section level2">
 <h2>Step 2: reverse coding the scales</h2>
