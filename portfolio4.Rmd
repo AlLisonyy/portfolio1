@@ -11,8 +11,7 @@ output:
     toc_depth: 4
     fig_caption: true
 ---
-
-> The projects should be numbered consecutively (i.e., in the order in which you began them), and should include for each project a description of the goal, the product (computer program, hand graph, computer graph, etc.), the data, and some interpretation. Reports must be reproducible and of high quality in terms of writing, grammar, presentation, etc.
+For this portfolio, I will continue to use the dataset from my thesis study. This portfolio will focus on the main analysis for my thesis study's data, which is mainly correlation analysis. In addition, I would like to create some visualization for presenting the correlations since I have around 30 variables. 
 
 ```{r load-data, include=FALSE}
 ##install packages
@@ -155,9 +154,9 @@ pcor.test(partial_BFSthoughlist$BFS_score, partial_BFSthoughlist$BSthought, part
 
 ##25. BFS and Wordsum Vocabulary Test
 partial_BFSns <- Thesis_scale %>% 
-  select(BFS_score, NS_score, LIE_score) %>% 
+  select(BFS_score, ns_score, LIE_score) %>% 
   drop_na()
-pcor.test(partial_BFSns$BFS_score, partial_BFSns$NS_score, partial_BFSns$LIE_score)
+pcor.test(partial_BFSns$BFS_score, partial_BFSns$ns_score, partial_BFSns$LIE_score)
 
 ##26. BFS and Numeracy scale
 partial_BFSword <- Thesis_scale %>% 
@@ -289,9 +288,9 @@ pcor.test(Thesis_scale$BPS_score, Thesis_scale$fi_score, Thesis_scale$LIE_score)
 
 ##24. BPS and Numeracy scale
 partial_BPSns <- Thesis_scale %>% 
-  select(BPS_score, NS_score, LIE_score) %>% 
+  select(BPS_score, ns_score, LIE_score) %>% 
   drop_na()
-pcor.test(partial_BPSns$BPS_score, partial_BPSns$NS_score, partial_BPSns$LIE_score)
+pcor.test(partial_BPSns$BPS_score, partial_BPSns$ns_score, partial_BPSns$LIE_score)
 
 ##25. BPS and Wordsum Vocabulary Test
 partial_BPSword <- Thesis_scale %>% 
@@ -451,9 +450,9 @@ pcor.test(partial_BSthoughtfi$BSthought, partial_BSthoughtfi$fi_score, partial_B
 
 ##25. BSthought and Wordsum Vocabulary Test
 partial_BSthoughtns <- Thesis_scale %>% 
-  select(BSthought, NS_score, LIE_score) %>% 
+  select(BSthought, ns_score, LIE_score) %>% 
   drop_na()
-pcor.test(partial_BSthoughtns$BSthought, partial_BSthoughtns$NS_score, partial_BSthoughtns$LIE_score)
+pcor.test(partial_BSthoughtns$BSthought, partial_BSthoughtns$ns_score, partial_BSthoughtns$LIE_score)
 
 ##26. BSthought and Numeracy scale
 partial_BSthoughtword <- Thesis_scale %>% 
@@ -479,7 +478,7 @@ colnames(Thesis_scale)
 cor.test(Thesis_scale$BPS_score, Thesis_scale$BFS_score, method=c("pearson"))
 
 # create the dataframe with 4 columns 
-bs_variables <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narc_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "ihs_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "NS_score", "BSthought" )
+bs_variables <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narc_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "ihs_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score", "BSthought" )
 
 correlates_bs <- Thesis_scale[, bs_variables]
 correlates <- round(cor(correlates_bs, use = "pairwise.complete.obs"), 2)

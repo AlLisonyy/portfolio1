@@ -170,20 +170,20 @@ head(Thesis_scale$BSthought_college)
 ##For measuring cognitive ability, the scales are mainly short questions asking word/ math problems and is not likert scales. So I will need to calculate and code the participants' answers into numeric values. 
 ##Numeracy scale
 ##compute their answers, if they answer one question right, they will get one point.
-Thesis_scale$ns1 <- ifelse(Thesis_scale$NS1 == 500, 1, 0)
-Thesis_scale$ns2 <- ifelse(Thesis_scale$NS2 == 10, 1, 0)
-Thesis_scale$ns3 <- ifelse(Thesis_scale$NS3 == 0.1, 1, 0)
-Thesis_scale$ns4 <- ifelse(Thesis_scale$NS4 == 9, 1, 0)
-Thesis_scale$ns5 <- ifelse(Thesis_scale$NS5 == 8, 1, 0)
-Thesis_scale$ns6 <- ifelse(Thesis_scale$NS6 == 2, 1, 0)
-Thesis_scale$ns7 <- ifelse(Thesis_scale$NS7 == 2, 1, 0)
-Thesis_scale$ns8 <- ifelse(Thesis_scale$NS8 == 10, 1, 0)
-Thesis_scale$ns9 <- ifelse(Thesis_scale$NS9 == 100, 1, 0)
-Thesis_scale$ns10 <- ifelse(Thesis_scale$NS10 == 20, 1, 0)
-Thesis_scale$ns11 <- ifelse(Thesis_scale$NS11 == 5, 1, 0)
+Thesis_scale$ns_1 <- ifelse(Thesis_scale$NS1 == 500, 1, 0)
+Thesis_scale$ns_2 <- ifelse(Thesis_scale$NS2 == 10, 1, 0)
+Thesis_scale$ns_3 <- ifelse(Thesis_scale$NS3 == 0.1, 1, 0)
+Thesis_scale$ns_4 <- ifelse(Thesis_scale$NS4 == 9, 1, 0)
+Thesis_scale$ns_5 <- ifelse(Thesis_scale$NS5 == 8, 1, 0)
+Thesis_scale$ns_6 <- ifelse(Thesis_scale$NS6 == 2, 1, 0)
+Thesis_scale$ns_7 <- ifelse(Thesis_scale$NS7 == 2, 1, 0)
+Thesis_scale$ns_8 <- ifelse(Thesis_scale$NS8 == 10, 1, 0)
+Thesis_scale$ns_9 <- ifelse(Thesis_scale$NS9 == 100, 1, 0)
+Thesis_scale$ns_10 <- ifelse(Thesis_scale$NS10 == 20, 1, 0)
+Thesis_scale$ns_11 <- ifelse(Thesis_scale$NS11 == 5, 1, 0)
 ##calculate the mean of each question they got right
 Thesis_scale <- Thesis_scale %>%
-  mutate(NS_score = (ns1 + ns2 + ns3 + ns4 + ns5 + ns6 + ns7 + ns8 + ns9 + ns10)/ 10)
+  mutate(ns_score = (ns_1 + ns_2 + ns_3 + ns_4 + ns_5 + ns_6 + ns_7 + ns_8 + ns_9 + ns_10)/ 10)
 
 ##General Social Survey Wordsum Vocabulary Test
 ##compute their answers, if they answer one question right, they will get one point.
@@ -216,6 +216,5 @@ Thesis_scale <- Thesis_scale %>%
 ```{r save}
 saveRDS(Thesis_scale, file = "Thesis_scale.rds")
 saveRDS(Thesis_clean, file = "Thesis_clean.rds")
-
 ```
 
