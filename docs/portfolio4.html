@@ -381,46 +381,6 @@ of the goal, the product (computer program, hand graph, computer graph,
 etc.), the data, and some interpretation. Reports must be reproducible
 and of high quality in terms of writing, grammar, presentation, etc.</p>
 </blockquote>
-<pre class="r"><code>##install packages
-
-library(psych)
-library(ggplot2)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;ggplot2&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:psych&#39;:
-## 
-##     %+%, alpha</code></pre>
-<pre class="r"><code>library(ltm)</code></pre>
-<pre><code>## Loading required package: MASS</code></pre>
-<pre><code>## Loading required package: msm</code></pre>
-<pre><code>## Loading required package: polycor</code></pre>
-<pre><code>## 
-## Attaching package: &#39;polycor&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:psych&#39;:
-## 
-##     polyserial</code></pre>
-<pre><code>## 
-## Attaching package: &#39;ltm&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:psych&#39;:
-## 
-##     factor.scores</code></pre>
-<pre class="r"><code>library(ppcor)
-library(tidyverse)</code></pre>
-<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ lubridate 1.9.4     ✔ tibble    3.2.1
-## ✔ purrr     1.0.2     ✔ tidyr     1.3.1</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ ggplot2::%+%()   masks psych::%+%()
-## ✖ ggplot2::alpha() masks psych::alpha()
-## ✖ dplyr::filter()  masks stats::filter()
-## ✖ dplyr::lag()     masks stats::lag()
-## ✖ dplyr::select()  masks MASS::select()
-## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>library(haven)
-library(dplyr)
-Thesis_scale &lt;- readRDS(&quot;Thesis_scale.rds&quot;)</code></pre>
 <div id="step-1-partial-correlations" class="section level2">
 <h2>Step 1: partial correlations</h2>
 <div
@@ -745,14 +705,14 @@ pcor.test(partial_BPSactiveopen$BPS_score, partial_BPSactiveopen$activeopen_scor
 pcor.test(Thesis_scale$BPS_score, Thesis_scale$fi_score, Thesis_scale$LIE_score)</code></pre>
 <pre><code>##       estimate   p.value   statistic   n gp  Method
 ## 1 0.0002770085 0.9955056 0.005636289 417  1 pearson</code></pre>
-<pre class="r"><code>##24. BPS and Wordsum Vocabulary Test
+<pre class="r"><code>##24. BPS and Numeracy scale
 partial_BPSns &lt;- Thesis_scale %&gt;% 
   select(BPS_score, NS_score, LIE_score) %&gt;% 
   drop_na()
 pcor.test(partial_BPSns$BPS_score, partial_BPSns$NS_score, partial_BPSns$LIE_score)</code></pre>
 <pre><code>##      estimate   p.value statistic   n gp  Method
 ## 1 -0.07307312 0.1396553 -1.479961 411  1 pearson</code></pre>
-<pre class="r"><code>##25. BPS and Numeracy scale
+<pre class="r"><code>##25. BPS and Wordsum Vocabulary Test
 partial_BPSword &lt;- Thesis_scale %&gt;% 
   select(BPS_score, word_score, LIE_score) %&gt;% 
   drop_na()
@@ -964,8 +924,949 @@ pcor.test(partial_BSthoughtcrt$BSthought, partial_BSthoughtcrt$crt_score, partia
 ## 1 -0.0656532 0.1980642 -1.289316 387  1 pearson</code></pre>
 </div>
 </div>
-<div id="section" class="section level2">
-<h2></h2>
+<div id="step-2-pearson-correlation" class="section level2">
+<h2>Step 2: pearson correlation</h2>
+<div id="bsf-and-others" class="section level3">
+<h3>BSF and others</h3>
+<pre class="r"><code>cor(Thesis_scale$BFS_score, Thesis_scale$BPS_score, use = &quot;complete.obs&quot;)</code></pre>
+<pre><code>## [1] 0.2311697</code></pre>
+<pre class="r"><code>cor(Thesis_scale$BFS_score, Thesis_scale$BSthought, use = &quot;complete.obs&quot;)</code></pre>
+<pre><code>## [1] 0.02232843</code></pre>
+<pre class="r"><code>cor(Thesis_scale$BPS_score, Thesis_scale$BSthought, use = &quot;complete.obs&quot;)</code></pre>
+<pre><code>## [1] 0.2511822</code></pre>
+<pre class="r"><code>cor.test(Thesis_scale$BPS_score, Thesis_scale$BSthought, method=c(&quot;pearson&quot;))</code></pre>
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  Thesis_scale$BPS_score and Thesis_scale$BSthought
+## t = 5.2545, df = 410, p-value = 2.392e-07
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.1584148 0.3395539
+## sample estimates:
+##       cor 
+## 0.2511822</code></pre>
+<pre class="r"><code>colnames(Thesis_scale) </code></pre>
+<pre><code>##   [1] &quot;Status&quot;                   &quot;Progress&quot;                
+##   [3] &quot;Duration__in_seconds_&quot;    &quot;Finished&quot;                
+##   [5] &quot;Consent1&quot;                 &quot;BFS_1&quot;                   
+##   [7] &quot;BFS_2&quot;                    &quot;BFS_3&quot;                   
+##   [9] &quot;BFS_4&quot;                    &quot;BFS_5&quot;                   
+##  [11] &quot;BFS_6&quot;                    &quot;BFS_7&quot;                   
+##  [13] &quot;BFS_8&quot;                    &quot;BFS_9&quot;                   
+##  [15] &quot;BFS_10&quot;                   &quot;BFS_11&quot;                  
+##  [17] &quot;BFS_12&quot;                   &quot;BS_ADD_1&quot;                
+##  [19] &quot;BS_ADD_2&quot;                 &quot;BS_ADD_3&quot;                
+##  [21] &quot;BS_ADD_4&quot;                 &quot;BS_ADD_5&quot;                
+##  [23] &quot;BS_ADD_6&quot;                 &quot;BS_ADD_7&quot;                
+##  [25] &quot;BS_ADD_8&quot;                 &quot;BPS_1&quot;                   
+##  [27] &quot;BPS_2&quot;                    &quot;BPS_3&quot;                   
+##  [29] &quot;BPS_4&quot;                    &quot;BPS_5&quot;                   
+##  [31] &quot;BPS_6&quot;                    &quot;BPS_7&quot;                   
+##  [33] &quot;BPS_8&quot;                    &quot;BPS_9&quot;                   
+##  [35] &quot;BPS_10&quot;                   &quot;ATT_CHECK&quot;               
+##  [37] &quot;BPS_11&quot;                   &quot;BPS_12&quot;                  
+##  [39] &quot;BS_TL_CG_1&quot;               &quot;CG1_score&quot;               
+##  [41] &quot;BS_TR_CG_1&quot;               &quot;BS_TL_CG_2&quot;              
+##  [43] &quot;CG2_score&quot;                &quot;BS_TR_CG_2&quot;              
+##  [45] &quot;BS_TL_CG_3&quot;               &quot;CG3_score&quot;               
+##  [47] &quot;BS_TR_CG_3&quot;               &quot;BS_TL_CG_4&quot;              
+##  [49] &quot;CG4_score&quot;                &quot;BS_TR_CG_4&quot;              
+##  [51] &quot;BS_TL_CG_5&quot;               &quot;CG5_score&quot;               
+##  [53] &quot;BS_TR_CG_5&quot;               &quot;BS_TL_Recycle_1&quot;         
+##  [55] &quot;RC1_score&quot;                &quot;BS_TR_Recylcing_1&quot;       
+##  [57] &quot;BS_TL_Recycling_2&quot;        &quot;RC2_score&quot;               
+##  [59] &quot;BS_TR_Recylcing_2&quot;        &quot;BS_TL_Recycling_3&quot;       
+##  [61] &quot;RC3_score&quot;                &quot;BS_TR_Recylcing_3&quot;       
+##  [63] &quot;BS_TL_Recycling_4&quot;        &quot;RC4_score&quot;               
+##  [65] &quot;BS_TR_Recylcing_4&quot;        &quot;BS_TL_Recycling_5&quot;       
+##  [67] &quot;RC5_score&quot;                &quot;BS_TR_Recylcing_5&quot;       
+##  [69] &quot;BS_TL_Crime_1&quot;            &quot;CR1_score&quot;               
+##  [71] &quot;BS_TR_Crime_1&quot;            &quot;BS_TL_Crime_2&quot;           
+##  [73] &quot;CR2_score&quot;                &quot;BS_TR_Crime_2&quot;           
+##  [75] &quot;BS_TL_Crime_3&quot;            &quot;CR3_score&quot;               
+##  [77] &quot;BS_TR_Crime_3&quot;            &quot;BS_TL_Crime_4&quot;           
+##  [79] &quot;CR4_score&quot;                &quot;BS_TR_Crime_4&quot;           
+##  [81] &quot;BS_TL_Crime_5&quot;            &quot;CR5_score&quot;               
+##  [83] &quot;BS_TR_Crime_5&quot;            &quot;Knowledge_CG&quot;            
+##  [85] &quot;Knowledge_recycle&quot;        &quot;Knowledge_Crime&quot;         
+##  [87] &quot;self_esteem_1&quot;            &quot;self_esteem_2&quot;           
+##  [89] &quot;self_esteem_3&quot;            &quot;self_esteem_4&quot;           
+##  [91] &quot;self_esteem_5&quot;            &quot;self_esteem_6&quot;           
+##  [93] &quot;self_esteem_7&quot;            &quot;self_esteem_8&quot;           
+##  [95] &quot;self_esteem_9&quot;            &quot;self_esteem_10&quot;          
+##  [97] &quot;wordsum_1&quot;                &quot;wordsum_2&quot;               
+##  [99] &quot;wordsum_3&quot;                &quot;wordsum_4&quot;               
+## [101] &quot;wordsum_5&quot;                &quot;wordsum_6&quot;               
+## [103] &quot;wordsum_7&quot;                &quot;wordsum_8&quot;               
+## [105] &quot;wordsum_9&quot;                &quot;wordsum_10&quot;              
+## [107] &quot;ncog1&quot;                    &quot;ncog2&quot;                   
+## [109] &quot;ncog3&quot;                    &quot;ncog4&quot;                   
+## [111] &quot;ncog5&quot;                    &quot;ncog6&quot;                   
+## [113] &quot;ncog7&quot;                    &quot;ncog8&quot;                   
+## [115] &quot;ncog9&quot;                    &quot;ncog10&quot;                  
+## [117] &quot;ncog11&quot;                   &quot;ncog12&quot;                  
+## [119] &quot;ncog13&quot;                   &quot;ncog14&quot;                  
+## [121] &quot;ncog15&quot;                   &quot;ncog16&quot;                  
+## [123] &quot;ncog17&quot;                   &quot;ncog18&quot;                  
+## [125] &quot;ncog_ATT&quot;                 &quot;DTS_MACH_1&quot;              
+## [127] &quot;DTS_MACH_2&quot;               &quot;DTS_MACH_3&quot;              
+## [129] &quot;DTS_MACH_4&quot;               &quot;DTS_MACH_5&quot;              
+## [131] &quot;DTS_MACH_6&quot;               &quot;DTS_MACH_7&quot;              
+## [133] &quot;DTS_MACH_8&quot;               &quot;DTS_MACH_9&quot;              
+## [135] &quot;DTS_Nar_1&quot;                &quot;DTS_Nar_2&quot;               
+## [137] &quot;DTS_Nar_3&quot;                &quot;DTS_Nar_4&quot;               
+## [139] &quot;DTS_Nar_5&quot;                &quot;DTS_Nar_6&quot;               
+## [141] &quot;DTS_Nar_7&quot;                &quot;DTS_Nar_8&quot;               
+## [143] &quot;DTS_Nar_9&quot;                &quot;DTS_Path_1&quot;              
+## [145] &quot;DTS_Path_2&quot;               &quot;DTS_Path_3&quot;              
+## [147] &quot;DTS_Path_4&quot;               &quot;DTS_Path_5&quot;              
+## [149] &quot;DTS_Path_6&quot;               &quot;DTS_Path_7&quot;              
+## [151] &quot;DTS_Path_8&quot;               &quot;DTS_Path_9&quot;              
+## [153] &quot;MPS_1&quot;                    &quot;MPS_2&quot;                   
+## [155] &quot;MPS_3&quot;                    &quot;MPS_4&quot;                   
+## [157] &quot;MPS_5&quot;                    &quot;MPS_6&quot;                   
+## [159] &quot;MPS_7&quot;                    &quot;MPS_8&quot;                   
+## [161] &quot;MPS_9&quot;                    &quot;MPS_10&quot;                  
+## [163] &quot;MPS_11&quot;                   &quot;MPS_12&quot;                  
+## [165] &quot;MPS_13&quot;                   &quot;MPS_14&quot;                  
+## [167] &quot;MPS_15&quot;                   &quot;MPS_16&quot;                  
+## [169] &quot;A4CTS_1&quot;                  &quot;A4CTS_2&quot;                 
+## [171] &quot;A4CTS_3&quot;                  &quot;A4CTS_4&quot;                 
+## [173] &quot;A4CTS_5&quot;                  &quot;A4CTS_6&quot;                 
+## [175] &quot;A4CTS_7&quot;                  &quot;A4CTS_8&quot;                 
+## [177] &quot;A4CTS_9&quot;                  &quot;A4CTS_10&quot;                
+## [179] &quot;A4CTS_11&quot;                 &quot;A4CTS_12&quot;                
+## [181] &quot;A4CTS_13&quot;                 &quot;A4CTS_14&quot;                
+## [183] &quot;A4CTS_15&quot;                 &quot;A4CTS_16&quot;                
+## [185] &quot;A4CTS_17&quot;                 &quot;A4CTS_18&quot;                
+## [187] &quot;A4CTS_19&quot;                 &quot;A4CTS_20&quot;                
+## [189] &quot;A4CTS_21&quot;                 &quot;A4CTS_22&quot;                
+## [191] &quot;A4CTS_23&quot;                 &quot;A4CTS_24&quot;                
+## [193] &quot;HNS_1&quot;                    &quot;HNS_2&quot;                   
+## [195] &quot;HNS_3&quot;                    &quot;HNS_4&quot;                   
+## [197] &quot;HNS_5&quot;                    &quot;HNS_6&quot;                   
+## [199] &quot;HNS_7&quot;                    &quot;HNS_8&quot;                   
+## [201] &quot;HNS_9&quot;                    &quot;HNS_10&quot;                  
+## [203] &quot;NPI_1&quot;                    &quot;NPI_2&quot;                   
+## [205] &quot;NPI_3&quot;                    &quot;NPI_4&quot;                   
+## [207] &quot;NPI_5&quot;                    &quot;NPI_6&quot;                   
+## [209] &quot;NPI_7&quot;                    &quot;NPI_8&quot;                   
+## [211] &quot;NPI_9&quot;                    &quot;NPI_10&quot;                  
+## [213] &quot;NPI_11&quot;                   &quot;NPI_12&quot;                  
+## [215] &quot;NPI_13&quot;                   &quot;NPI_14&quot;                  
+## [217] &quot;NPI_15&quot;                   &quot;NPI_16&quot;                  
+## [219] &quot;LSRP_PPS_1&quot;               &quot;LSRP_PPS_2&quot;              
+## [221] &quot;LSRP_PPS_3&quot;               &quot;LSRP_PPS_4&quot;              
+## [223] &quot;LSRP_PPS_5&quot;               &quot;LSRP_PPS_6&quot;              
+## [225] &quot;LSRP_PPS_7&quot;               &quot;LSRP_PPS_8&quot;              
+## [227] &quot;LSRP_PPS_9&quot;               &quot;LSRP_PPS_10&quot;             
+## [229] &quot;LSRP_PPS_11&quot;              &quot;LSRP_PPS_12&quot;             
+## [231] &quot;LSRP_PPS_13&quot;              &quot;LSRP_PPS_14&quot;             
+## [233] &quot;LSRP_PPS_15&quot;              &quot;LSRP_PPS_16&quot;             
+## [235] &quot;LSRP_SPS_1&quot;               &quot;LSRP_SPS_2&quot;              
+## [237] &quot;LSRP_SPS_3&quot;               &quot;LSRP_SPS_4&quot;              
+## [239] &quot;LSRP_SPS_5&quot;               &quot;LSRP_SPS_6&quot;              
+## [241] &quot;LSRP_SPS_7&quot;               &quot;LSRP_SPS_8&quot;              
+## [243] &quot;LSRP_SPS_9&quot;               &quot;LSRP_SPS_10&quot;             
+## [245] &quot;hex1&quot;                     &quot;hex2&quot;                    
+## [247] &quot;hex3&quot;                     &quot;hex4&quot;                    
+## [249] &quot;hex5&quot;                     &quot;hex6&quot;                    
+## [251] &quot;hex7&quot;                     &quot;hex8&quot;                    
+## [253] &quot;hex9&quot;                     &quot;hex10&quot;                   
+## [255] &quot;hex11&quot;                    &quot;hex12&quot;                   
+## [257] &quot;hex13&quot;                    &quot;hex14&quot;                   
+## [259] &quot;hex15&quot;                    &quot;hex16&quot;                   
+## [261] &quot;hex17&quot;                    &quot;hex18&quot;                   
+## [263] &quot;hex19&quot;                    &quot;hex20&quot;                   
+## [265] &quot;hex21&quot;                    &quot;hex22&quot;                   
+## [267] &quot;hex23&quot;                    &quot;hex24&quot;                   
+## [269] &quot;hex25&quot;                    &quot;hex26&quot;                   
+## [271] &quot;hex27&quot;                    &quot;hex28&quot;                   
+## [273] &quot;hex29&quot;                    &quot;hex30&quot;                   
+## [275] &quot;hex31&quot;                    &quot;hex32&quot;                   
+## [277] &quot;hex33&quot;                    &quot;hex34&quot;                   
+## [279] &quot;hex35&quot;                    &quot;hex36&quot;                   
+## [281] &quot;hex37&quot;                    &quot;hex38&quot;                   
+## [283] &quot;hex39&quot;                    &quot;hex40&quot;                   
+## [285] &quot;hex41&quot;                    &quot;hex42&quot;                   
+## [287] &quot;hex43&quot;                    &quot;hex44&quot;                   
+## [289] &quot;hex45&quot;                    &quot;hex46&quot;                   
+## [291] &quot;hex47&quot;                    &quot;hex48&quot;                   
+## [293] &quot;hex49&quot;                    &quot;hex50&quot;                   
+## [295] &quot;hex51&quot;                    &quot;hex52&quot;                   
+## [297] &quot;hex53&quot;                    &quot;hex54&quot;                   
+## [299] &quot;hex55&quot;                    &quot;hex56&quot;                   
+## [301] &quot;hex57&quot;                    &quot;hex58&quot;                   
+## [303] &quot;hex59&quot;                    &quot;hex60&quot;                   
+## [305] &quot;hex_ATT&quot;                  &quot;IHS_1&quot;                   
+## [307] &quot;IHS_2&quot;                    &quot;IHS_3&quot;                   
+## [309] &quot;IHS_4&quot;                    &quot;IHS_5&quot;                   
+## [311] &quot;IHS_6&quot;                    &quot;crt1&quot;                    
+## [313] &quot;crt2&quot;                     &quot;crt3&quot;                    
+## [315] &quot;Attention1_1&quot;             &quot;Attention1_2&quot;            
+## [317] &quot;Attention1_3&quot;             &quot;Attention1_4&quot;            
+## [319] &quot;Attention1_5&quot;             &quot;Attention1_6&quot;            
+## [321] &quot;Attention1_7&quot;             &quot;Attention1_8&quot;            
+## [323] &quot;Attention1_9&quot;             &quot;Attention1_10&quot;           
+## [325] &quot;Attention1_11&quot;            &quot;NS1&quot;                     
+## [327] &quot;NS2&quot;                      &quot;NS3&quot;                     
+## [329] &quot;NS4&quot;                      &quot;NS5&quot;                     
+## [331] &quot;NS6&quot;                      &quot;NS7&quot;                     
+## [333] &quot;NS8&quot;                      &quot;NS9&quot;                     
+## [335] &quot;NS10&quot;                     &quot;NS11&quot;                    
+## [337] &quot;aopen1&quot;                   &quot;aopen2&quot;                  
+## [339] &quot;aopen3&quot;                   &quot;aopen4&quot;                  
+## [341] &quot;aopen5&quot;                   &quot;aopen6&quot;                  
+## [343] &quot;aopen7&quot;                   &quot;aopen8&quot;                  
+## [345] &quot;fi1&quot;                      &quot;fi2&quot;                     
+## [347] &quot;fi3&quot;                      &quot;fi4&quot;                     
+## [349] &quot;fi5&quot;                      &quot;fi6&quot;                     
+## [351] &quot;fi7&quot;                      &quot;fi8&quot;                     
+## [353] &quot;fi9&quot;                      &quot;fi10&quot;                    
+## [355] &quot;fi11&quot;                     &quot;fi12&quot;                    
+## [357] &quot;oc1&quot;                      &quot;oc2&quot;                     
+## [359] &quot;oc3&quot;                      &quot;oc4&quot;                     
+## [361] &quot;oc5&quot;                      &quot;oc6&quot;                     
+## [363] &quot;oc7&quot;                      &quot;oc8&quot;                     
+## [365] &quot;oc9&quot;                      &quot;oc10&quot;                    
+## [367] &quot;oc11&quot;                     &quot;oc12&quot;                    
+## [369] &quot;oc13&quot;                     &quot;oc14&quot;                    
+## [371] &quot;oc15&quot;                     &quot;oc16&quot;                    
+## [373] &quot;oc17&quot;                     &quot;oc18&quot;                    
+## [375] &quot;oc19&quot;                     &quot;oc20&quot;                    
+## [377] &quot;lies1&quot;                    &quot;lies2&quot;                   
+## [379] &quot;lies3&quot;                    &quot;lies4&quot;                   
+## [381] &quot;lies5&quot;                    &quot;lies6&quot;                   
+## [383] &quot;lies7&quot;                    &quot;lies8&quot;                   
+## [385] &quot;lies9&quot;                    &quot;lies10&quot;                  
+## [387] &quot;lies11&quot;                   &quot;lies12&quot;                  
+## [389] &quot;lies13&quot;                   &quot;lies14&quot;                  
+## [391] &quot;nclos1&quot;                   &quot;nclos2&quot;                  
+## [393] &quot;nclos3&quot;                   &quot;nclos4&quot;                  
+## [395] &quot;nclos5&quot;                   &quot;nclos6&quot;                  
+## [397] &quot;nclos7&quot;                   &quot;nclos8&quot;                  
+## [399] &quot;nclos9&quot;                   &quot;nclos10&quot;                 
+## [401] &quot;nclos11&quot;                  &quot;nclos12&quot;                 
+## [403] &quot;nclos13&quot;                  &quot;nclos14&quot;                 
+## [405] &quot;nclos15&quot;                  &quot;nclos16&quot;                 
+## [407] &quot;nclos17&quot;                  &quot;nclos18&quot;                 
+## [409] &quot;nclos19&quot;                  &quot;nclos20&quot;                 
+## [411] &quot;nclos21&quot;                  &quot;nclos22&quot;                 
+## [413] &quot;nclos23&quot;                  &quot;nclos24&quot;                 
+## [415] &quot;nclos25&quot;                  &quot;nclos26&quot;                 
+## [417] &quot;nclos27&quot;                  &quot;nclos28&quot;                 
+## [419] &quot;nclos29&quot;                  &quot;nclos30&quot;                 
+## [421] &quot;nclos31&quot;                  &quot;nclos32&quot;                 
+## [423] &quot;nclos33&quot;                  &quot;nclos34&quot;                 
+## [425] &quot;nclos35&quot;                  &quot;nclos36&quot;                 
+## [427] &quot;nclos37&quot;                  &quot;nclos38&quot;                 
+## [429] &quot;nclos39&quot;                  &quot;nclos40&quot;                 
+## [431] &quot;nclos41&quot;                  &quot;nclos42&quot;                 
+## [433] &quot;eub1&quot;                     &quot;eub2&quot;                    
+## [435] &quot;eub3&quot;                     &quot;eub4&quot;                    
+## [437] &quot;eub5&quot;                     &quot;eub6&quot;                    
+## [439] &quot;eub7&quot;                     &quot;eub8&quot;                    
+## [441] &quot;eub9&quot;                     &quot;eub10&quot;                   
+## [443] &quot;eub11&quot;                    &quot;eub12&quot;                   
+## [445] &quot;eub13&quot;                    &quot;eub14&quot;                   
+## [447] &quot;eub15&quot;                    &quot;eub16&quot;                   
+## [449] &quot;eub17&quot;                    &quot;eub18&quot;                   
+## [451] &quot;eub19&quot;                    &quot;eub20&quot;                   
+## [453] &quot;eub21&quot;                    &quot;eub22&quot;                   
+## [455] &quot;eub23&quot;                    &quot;eub24&quot;                   
+## [457] &quot;eub25&quot;                    &quot;eub26&quot;                   
+## [459] &quot;eub27&quot;                    &quot;eub28&quot;                   
+## [461] &quot;eub29&quot;                    &quot;eub30&quot;                   
+## [463] &quot;eub31&quot;                    &quot;eub32&quot;                   
+## [465] &quot;eub33&quot;                    &quot;eub34&quot;                   
+## [467] &quot;eub35&quot;                    &quot;eub36&quot;                   
+## [469] &quot;eub37&quot;                    &quot;eub38&quot;                   
+## [471] &quot;eub39&quot;                    &quot;eub40&quot;                   
+## [473] &quot;eub41&quot;                    &quot;eub42&quot;                   
+## [475] &quot;eub43&quot;                    &quot;eub44&quot;                   
+## [477] &quot;eub45&quot;                    &quot;eub46&quot;                   
+## [479] &quot;eub47&quot;                    &quot;eub48&quot;                   
+## [481] &quot;eub49&quot;                    &quot;gender&quot;                  
+## [483] &quot;age&quot;                      &quot;year&quot;                    
+## [485] &quot;Greek1&quot;                   &quot;major&quot;                   
+## [487] &quot;BS_shortanswer1&quot;          &quot;BS_shortanswer2&quot;         
+## [489] &quot;comment&quot;                  &quot;difficulties&quot;            
+## [491] &quot;id&quot;                       &quot;recoded_college&quot;         
+## [493] &quot;recoded_recycling&quot;        &quot;recoded_crime&quot;           
+## [495] &quot;sum_recoded_TR_college&quot;   &quot;sum_recoded_TR_recycling&quot;
+## [497] &quot;sum_recoded_TR_crime&quot;     &quot;BSthought_college&quot;       
+## [499] &quot;BSthought_recycling&quot;      &quot;BSthought_crime&quot;         
+## [501] &quot;BSthought&quot;                &quot;ns1&quot;                     
+## [503] &quot;ns2&quot;                      &quot;ns3&quot;                     
+## [505] &quot;ns4&quot;                      &quot;ns5&quot;                     
+## [507] &quot;ns6&quot;                      &quot;ns7&quot;                     
+## [509] &quot;ns8&quot;                      &quot;ns9&quot;                     
+## [511] &quot;ns10&quot;                     &quot;ns11&quot;                    
+## [513] &quot;NS_score&quot;                 &quot;word1&quot;                   
+## [515] &quot;word2&quot;                    &quot;word3&quot;                   
+## [517] &quot;word4&quot;                    &quot;word5&quot;                   
+## [519] &quot;word6&quot;                    &quot;word7&quot;                   
+## [521] &quot;word8&quot;                    &quot;word9&quot;                   
+## [523] &quot;word10&quot;                   &quot;word_score&quot;              
+## [525] &quot;crt_score&quot;                &quot;BFS_score&quot;               
+## [527] &quot;BFSe_score&quot;               &quot;BFSp_score&quot;              
+## [529] &quot;BPS_score&quot;                &quot;LIE_score&quot;               
+## [531] &quot;sdtnarc_score&quot;            &quot;sdtmach_score&quot;           
+## [533] &quot;sdtpsych_score&quot;           &quot;narc_score&quot;              
+## [535] &quot;mach_score&quot;               &quot;psycho_score&quot;            
+## [537] &quot;psychopri_score&quot;          &quot;psychosec_score&quot;         
+## [539] &quot;se_score&quot;                 &quot;hon_score&quot;               
+## [541] &quot;emo_score&quot;                &quot;extra_score&quot;             
+## [543] &quot;agree_score&quot;              &quot;cons_score&quot;              
+## [545] &quot;open_score&quot;               &quot;ihs_score&quot;               
+## [547] &quot;nclos_score&quot;              &quot;ncog_score&quot;              
+## [549] &quot;openTS_score&quot;             &quot;closeTS_score&quot;           
+## [551] &quot;intuitiveTS_score&quot;        &quot;effortTS_score&quot;          
+## [553] &quot;activeopen_score&quot;         &quot;fi_score&quot;                
+## [555] &quot;gender_label&quot;             &quot;year_label&quot;              
+## [557] &quot;greek&quot;</code></pre>
+<pre class="r"><code>##1. BFS and BPS
+cor.test(Thesis_scale$BPS_score, Thesis_scale$BFS_score, method=c(&quot;pearson&quot;))</code></pre>
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  Thesis_scale$BPS_score and Thesis_scale$BFS_score
+## t = 4.8404, df = 415, p-value = 1.831e-06
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.1382077 0.3200940
+## sample estimates:
+##       cor 
+## 0.2311697</code></pre>
+<pre class="r"><code># create the dataframe with 4 columns 
+bs_variables &lt;- c(&quot;BFS_score&quot;, &quot;BFSe_score&quot;, &quot;BFSp_score&quot;, &quot;BPS_score&quot;, &quot;LIE_score&quot;, &quot;sdtnarc_score&quot;, &quot;sdtmach_score&quot;, &quot;sdtpsych_score&quot;, &quot;narc_score&quot;, &quot;mach_score&quot;, &quot;psycho_score&quot;, &quot;psychopri_score&quot;, &quot;psychosec_score&quot;, &quot;se_score&quot;, &quot;hon_score&quot;, &quot;emo_score&quot;, &quot;extra_score&quot;, &quot;agree_score&quot;, &quot;cons_score&quot;, &quot;open_score&quot;, &quot;ihs_score&quot;, &quot;nclos_score&quot;, &quot;ncog_score&quot;, &quot;openTS_score&quot;, &quot;closeTS_score&quot;, &quot;intuitiveTS_score&quot;, &quot;effortTS_score&quot;, &quot;activeopen_score&quot;, &quot;fi_score&quot;, &quot;crt_score&quot;, &quot;word_score&quot;, &quot;NS_score&quot;, &quot;BSthought&quot; )
+
+correlates_bs &lt;- Thesis_scale[, bs_variables]
+cor_matrix &lt;- cor(correlates_bs, use = &quot;complete.obs&quot;, method = &quot;pearson&quot;)
+corr_results &lt;- corr.test(correlates_bs, use = &quot;pairwise&quot;, method = &quot;pearson&quot;)
+corr_results$r      </code></pre>
+<pre><code>##                      BFS_score   BFSe_score   BFSp_score    BPS_score
+## BFS_score          1.000000000  0.724296725  0.932561153  0.231169701
+## BFSe_score         0.724296725  1.000000000  0.426544732  0.086831352
+## BFSp_score         0.932561153  0.426544732  1.000000000  0.257671254
+## BPS_score          0.231169701  0.086831352  0.257671254  1.000000000
+## LIE_score          0.448061999  0.353532362  0.402761803  0.126955291
+## sdtnarc_score      0.161823955 -0.001302517  0.212819643  0.088795697
+## sdtmach_score      0.425708984  0.229416688  0.438373525  0.161048128
+## sdtpsych_score     0.309124775  0.148910833  0.327392335  0.215655474
+## narc_score         0.206778669  0.025457553  0.257926278  0.200041113
+## mach_score         0.419446400  0.203529775  0.443807540  0.216413826
+## psycho_score       0.347395478  0.201159268  0.350566153  0.288229356
+## psychopri_score    0.315124947  0.151802310  0.334054855  0.245045742
+## psychosec_score    0.302221304  0.220722218  0.280821860  0.274613677
+## se_score          -0.167761535 -0.187185906 -0.122295714 -0.034634140
+## hon_score         -0.363170471 -0.205722739 -0.368561495 -0.217759759
+## emo_score          0.085465012  0.147603951  0.034888407 -0.079661888
+## extra_score       -0.046154768 -0.099117451 -0.008698624  0.049506971
+## agree_score       -0.190267687 -0.088794435 -0.203015289 -0.054855151
+## cons_score        -0.270674345 -0.173872502 -0.263953635 -0.309367183
+## open_score        -0.027688706 -0.050006481 -0.010160370 -0.179881333
+## ihs_score          0.039860642 -0.010807939  0.057903354 -0.207388722
+## nclos_score        0.020688081 -0.035964307  0.046390979 -0.157948737
+## ncog_score        -0.082405643 -0.085119924 -0.063536985 -0.302086195
+## openTS_score      -0.272830996 -0.107347838 -0.301551980 -0.349095890
+## closeTS_score      0.128918904 -0.016746531  0.178035512  0.143373976
+## intuitiveTS_score  0.190572990  0.053809323  0.221701552  0.195297819
+## effortTS_score    -0.188049429 -0.084855194 -0.202433755 -0.353560689
+## activeopen_score  -0.174130919 -0.053345974 -0.200389437 -0.374896555
+## fi_score           0.156945039  0.003412944  0.204152712  0.008690739
+## crt_score         -0.087302618  0.002717676 -0.115761880 -0.080700516
+## word_score        -0.001099252  0.033110410 -0.018747198 -0.117555234
+## NS_score          -0.048690000  0.025502394 -0.077315304 -0.085865679
+## BSthought          0.022328429 -0.041126311  0.051010827  0.251182195
+##                       LIE_score sdtnarc_score sdtmach_score sdtpsych_score
+## BFS_score          0.4480619986   0.161823955    0.42570898   0.3091247749
+## BFSe_score         0.3535323615  -0.001302517    0.22941669   0.1489108327
+## BFSp_score         0.4027618028   0.212819643    0.43837352   0.3273923353
+## BPS_score          0.1269552912   0.088795697    0.16104813   0.2156554736
+## LIE_score          1.0000000000   0.066432874    0.54096945   0.4349453208
+## sdtnarc_score      0.0664328741   1.000000000    0.25516420   0.2908014924
+## sdtmach_score      0.5409694489   0.255164200    1.00000000   0.5766679884
+## sdtpsych_score     0.4349453208   0.290801492    0.57666799   1.0000000000
+## narc_score         0.1667436776   0.610682026    0.23682381   0.3405353686
+## mach_score         0.4715749877   0.273124673    0.66454155   0.5453422119
+## psycho_score       0.4530323647   0.108805697    0.57304923   0.6847810932
+## psychopri_score    0.3979557294   0.221481171    0.59077919   0.6504602624
+## psychosec_score    0.4090162696  -0.082028668    0.39251777   0.5528856270
+## se_score          -0.2208728047   0.440784884   -0.06405035  -0.1161733092
+## hon_score         -0.3663257682  -0.245615175   -0.50026927  -0.4619218675
+## emo_score         -0.0032544676  -0.100579826   -0.08484953  -0.3070652029
+## extra_score       -0.1261513132   0.559446444   -0.09819000  -0.0405739262
+## agree_score       -0.1751811099  -0.160532791   -0.29351610  -0.2982945485
+## cons_score        -0.2717041542   0.023356188   -0.24560690  -0.4697764127
+## open_score        -0.0004372885   0.074664961   -0.01132150  -0.0090156022
+## ihs_score          0.0307487673   0.181329207    0.14813029   0.0703666766
+## nclos_score       -0.0350512885   0.127016160    0.05869157  -0.2236984653
+## ncog_score        -0.1398091574   0.158150253   -0.07880631  -0.0266095109
+## openTS_score      -0.1546039046  -0.167541037   -0.26269666  -0.2557367997
+## closeTS_score      0.1033896796   0.190395348    0.21092566   0.3260645978
+## intuitiveTS_score  0.1091451064   0.334568062    0.23118481   0.1587028903
+## effortTS_score    -0.2225198920   0.076614378   -0.20105190  -0.2759534883
+## activeopen_score  -0.1203286817  -0.117228291   -0.14164708  -0.2802103347
+## fi_score           0.0662955970   0.307802623    0.21004861   0.0850559378
+## crt_score          0.0122899891  -0.143779091   -0.05544754  -0.0626855879
+## word_score         0.0168378713  -0.018280018    0.03479483  -0.1761104296
+## NS_score          -0.1031500719  -0.076254791    0.02500889  -0.1274613844
+## BSthought         -0.0168949085   0.028295654    0.06609749   0.0001788794
+##                     narc_score   mach_score psycho_score psychopri_score
+## BFS_score          0.206778669  0.419446400   0.34739548      0.31512495
+## BFSe_score         0.025457553  0.203529775   0.20115927      0.15180231
+## BFSp_score         0.257926278  0.443807540   0.35056615      0.33405485
+## BPS_score          0.200041113  0.216413826   0.28822936      0.24504574
+## LIE_score          0.166743678  0.471574988   0.45303236      0.39795573
+## sdtnarc_score      0.610682026  0.273124673   0.10880570      0.22148117
+## sdtmach_score      0.236823811  0.664541553   0.57304923      0.59077919
+## sdtpsych_score     0.340535369  0.545342212   0.68478109      0.65046026
+## narc_score         1.000000000  0.371218853   0.22660133      0.30511258
+## mach_score         0.371218853  1.000000000   0.65435175      0.67420894
+## psycho_score       0.226601332  0.654351754   1.00000000      0.92430227
+## psychopri_score    0.305112584  0.674208940   0.92430227      1.00000000
+## psychosec_score    0.052789391  0.447699342   0.83709011      0.56454924
+## se_score           0.281125450 -0.119398581  -0.30212470     -0.13451445
+## hon_score         -0.331000867 -0.531061134  -0.48652577     -0.53197166
+## emo_score         -0.184904489 -0.178398452  -0.28330574     -0.32969532
+## extra_score        0.386956520 -0.065533239  -0.24231949     -0.12552242
+## agree_score       -0.276757407 -0.336876538  -0.24624189     -0.20971072
+## cons_score        -0.129904256 -0.299906854  -0.56925850     -0.41575202
+## open_score         0.038931682 -0.131985708  -0.13742409     -0.13519914
+## ihs_score          0.035334300  0.097848512   0.05496760      0.08820400
+## nclos_score        0.070206984  0.071829688  -0.22879700     -0.12156397
+## ncog_score         0.110612881 -0.136278402  -0.22544795     -0.18718843
+## openTS_score      -0.106507840 -0.300951502  -0.32857451     -0.31102233
+## closeTS_score      0.149469119  0.306562738   0.41545254      0.42462587
+## intuitiveTS_score  0.186187293  0.214842470   0.11575829      0.14958727
+## effortTS_score     0.071756405 -0.292939399  -0.51859727     -0.43931216
+## activeopen_score  -0.159439417 -0.265950462  -0.38387434     -0.35636090
+## fi_score           0.232042299  0.211687086   0.09408280      0.16091004
+## crt_score         -0.051014249 -0.073667968  -0.09321864     -0.09441117
+## word_score        -0.009427989 -0.037160843  -0.27661124     -0.26768923
+## NS_score          -0.100799188  0.008057367  -0.19418207     -0.17410881
+## BSthought          0.010968538  0.093805079   0.04334346      0.04348436
+##                   psychosec_score     se_score   hon_score    emo_score
+## BFS_score             0.302221304 -0.167761535 -0.36317047  0.085465012
+## BFSe_score            0.220722218 -0.187185906 -0.20572274  0.147603951
+## BFSp_score            0.280821860 -0.122295714 -0.36856150  0.034888407
+## BPS_score             0.274613677 -0.034634140 -0.21775976 -0.079661888
+## LIE_score             0.409016270 -0.220872805 -0.36632577 -0.003254468
+## sdtnarc_score        -0.082028668  0.440784884 -0.24561518 -0.100579826
+## sdtmach_score         0.392517770 -0.064050347 -0.50026927 -0.084849534
+## sdtpsych_score        0.552885627 -0.116173309 -0.46192187 -0.307065203
+## narc_score            0.052789391  0.281125450 -0.33100087 -0.184904489
+## mach_score            0.447699342 -0.119398581 -0.53106113 -0.178398452
+## psycho_score          0.837090108 -0.302124700 -0.48652577 -0.283305743
+## psychopri_score       0.564549240 -0.134514452 -0.53197166 -0.329695323
+## psychosec_score       1.000000000 -0.458796281 -0.28940424 -0.139951692
+## se_score             -0.458796281  1.000000000  0.12262981 -0.181887833
+## hon_score            -0.289404244  0.122629810  1.00000000  0.167165929
+## emo_score            -0.139951692 -0.181887833  0.16716593  1.000000000
+## extra_score          -0.343760521  0.609233934  0.03867742 -0.028624134
+## agree_score          -0.231602089  0.074583634  0.25465345 -0.080903107
+## cons_score           -0.634598399  0.240318552  0.30787111  0.256000555
+## open_score           -0.103182297 -0.075122229  0.01258871  0.099362871
+## ihs_score            -0.007108387  0.082070440 -0.03253538  0.077996764
+## nclos_score          -0.331719928  0.184204107  0.08877791  0.247360831
+## ncog_score           -0.218974614  0.204735045  0.10717372 -0.096167231
+## openTS_score         -0.264517152 -0.007323082  0.09262240  0.044625452
+## closeTS_score         0.287948722  0.013038215 -0.03229574 -0.179078325
+## intuitiveTS_score     0.035860871  0.176532657 -0.08973359  0.089041523
+## effortTS_score       -0.490430468  0.282835489  0.12219328  0.041777743
+## activeopen_score     -0.319106956  0.051127906  0.11082804  0.172182177
+## fi_score             -0.027830659  0.233502342 -0.03138606  0.019351407
+## crt_score            -0.066446404 -0.025271508 -0.02594312 -0.117334663
+## word_score           -0.214513515  0.067531399  0.01186470  0.126382428
+## NS_score             -0.169523028  0.064199065 -0.01691481  0.026935973
+## BSthought             0.026688302 -0.030365675 -0.09201380  0.036448395
+##                    extra_score agree_score   cons_score    open_score
+## BFS_score         -0.046154768 -0.19026769 -0.270674345 -0.0276887058
+## BFSe_score        -0.099117451 -0.08879444 -0.173872502 -0.0500064811
+## BFSp_score        -0.008698624 -0.20301529 -0.263953635 -0.0101603695
+## BPS_score          0.049506971 -0.05485515 -0.309367183 -0.1798813334
+## LIE_score         -0.126151313 -0.17518111 -0.271704154 -0.0004372885
+## sdtnarc_score      0.559446444 -0.16053279  0.023356188  0.0746649607
+## sdtmach_score     -0.098190002 -0.29351610 -0.245606899 -0.0113214999
+## sdtpsych_score    -0.040573926 -0.29829455 -0.469776413 -0.0090156022
+## narc_score         0.386956520 -0.27675741 -0.129904256  0.0389316823
+## mach_score        -0.065533239 -0.33687654 -0.299906854 -0.1319857082
+## psycho_score      -0.242319493 -0.24624189 -0.569258503 -0.1374240917
+## psychopri_score   -0.125522417 -0.20971072 -0.415752016 -0.1351991401
+## psychosec_score   -0.343760521 -0.23160209 -0.634598399 -0.1031822972
+## se_score           0.609233934  0.07458363  0.240318552 -0.0751222291
+## hon_score          0.038677425  0.25465345  0.307871115  0.0125887051
+## emo_score         -0.028624134 -0.08090311  0.256000555  0.0993628714
+## extra_score        1.000000000  0.06152315  0.167263559  0.0886898990
+## agree_score        0.061523154  1.00000000  0.026410344  0.1091503689
+## cons_score         0.167263559  0.02641034  1.000000000  0.0045449729
+## open_score         0.088689899  0.10915037  0.004544973  1.0000000000
+## ihs_score          0.130055537  0.04263421  0.080259417  0.0690160912
+## nclos_score        0.081631222 -0.26692988  0.492880120 -0.2158062353
+## ncog_score         0.231734141  0.02523789  0.232726456  0.4070278095
+## openTS_score      -0.070192376 -0.07624958  0.264262169  0.1272697668
+## closeTS_score      0.043737652 -0.07411620 -0.280784405 -0.0972425067
+## intuitiveTS_score  0.266495791 -0.01832804 -0.088092144  0.0234765676
+## effortTS_score     0.159596659 -0.05682873  0.435845192  0.2595248466
+## activeopen_score   0.028951575  0.02270264  0.314672765  0.1505548936
+## fi_score           0.225297253 -0.11051404  0.039961543  0.0671196198
+## crt_score         -0.067866976  0.06795522  0.095167352 -0.0477507307
+## word_score         0.064613991 -0.08581828  0.247741644  0.0432546393
+## NS_score          -0.017903434 -0.04605276  0.207946514 -0.0594107026
+## BSthought          0.036662429 -0.03008552 -0.018994781 -0.0814889764
+##                      ihs_score nclos_score   ncog_score openTS_score
+## BFS_score          0.039860642  0.02068808 -0.082405643 -0.272830996
+## BFSe_score        -0.010807939 -0.03596431 -0.085119924 -0.107347838
+## BFSp_score         0.057903354  0.04639098 -0.063536985 -0.301551980
+## BPS_score         -0.207388722 -0.15794874 -0.302086195 -0.349095890
+## LIE_score          0.030748767 -0.03505129 -0.139809157 -0.154603905
+## sdtnarc_score      0.181329207  0.12701616  0.158150253 -0.167541037
+## sdtmach_score      0.148130293  0.05869157 -0.078806315 -0.262696660
+## sdtpsych_score     0.070366677 -0.22369847 -0.026609511 -0.255736800
+## narc_score         0.035334300  0.07020698  0.110612881 -0.106507840
+## mach_score         0.097848512  0.07182969 -0.136278402 -0.300951502
+## psycho_score       0.054967597 -0.22879700 -0.225447947 -0.328574513
+## psychopri_score    0.088203997 -0.12156397 -0.187188431 -0.311022327
+## psychosec_score   -0.007108387 -0.33171993 -0.218974614 -0.264517152
+## se_score           0.082070440  0.18420411  0.204735045 -0.007323082
+## hon_score         -0.032535384  0.08877791  0.107173716  0.092622399
+## emo_score          0.077996764  0.24736083 -0.096167231  0.044625452
+## extra_score        0.130055537  0.08163122  0.231734141 -0.070192376
+## agree_score        0.042634213 -0.26692988  0.025237888 -0.076249580
+## cons_score         0.080259417  0.49288012  0.232726456  0.264262169
+## open_score         0.069016091 -0.21580624  0.407027809  0.127269767
+## ihs_score          1.000000000  0.04372257  0.129174087 -0.049639194
+## nclos_score        0.043722568  1.00000000 -0.103764674  0.049933686
+## ncog_score         0.129174087 -0.10376467  1.000000000  0.138365202
+## openTS_score      -0.049639194  0.04993369  0.138365202  1.000000000
+## closeTS_score      0.148315703  0.01276794 -0.092991869 -0.389182263
+## intuitiveTS_score  0.189889936  0.12344139 -0.007085616 -0.487971409
+## effortTS_score    -0.010600890  0.17552298  0.523944384  0.435521731
+## activeopen_score   0.034148852  0.16848508  0.185686743  0.583719631
+## fi_score           0.333556531  0.17453286  0.136072520 -0.246276536
+## crt_score         -0.014082161 -0.00710151  0.079295691  0.134182856
+## word_score        -0.053420942  0.20088615  0.080022095  0.199662833
+## NS_score           0.038727222  0.10718019  0.029804235  0.228976154
+## BSthought         -0.163172345 -0.04538803 -0.122331384 -0.022506227
+##                   closeTS_score intuitiveTS_score effortTS_score
+## BFS_score            0.12891890       0.190572990   -0.188049429
+## BFSe_score          -0.01674653       0.053809323   -0.084855194
+## BFSp_score           0.17803551       0.221701552   -0.202433755
+## BPS_score            0.14337398       0.195297819   -0.353560689
+## LIE_score            0.10338968       0.109145106   -0.222519892
+## sdtnarc_score        0.19039535       0.334568062    0.076614378
+## sdtmach_score        0.21092566       0.231184814   -0.201051896
+## sdtpsych_score       0.32606460       0.158702890   -0.275953488
+## narc_score           0.14946912       0.186187293    0.071756405
+## mach_score           0.30656274       0.214842470   -0.292939399
+## psycho_score         0.41545254       0.115758287   -0.518597268
+## psychopri_score      0.42462587       0.149587265   -0.439312161
+## psychosec_score      0.28794872       0.035860871   -0.490430468
+## se_score             0.01303822       0.176532657    0.282835489
+## hon_score           -0.03229574      -0.089733594    0.122193285
+## emo_score           -0.17907833       0.089041523    0.041777743
+## extra_score          0.04373765       0.266495791    0.159596659
+## agree_score         -0.07411620      -0.018328042   -0.056828730
+## cons_score          -0.28078441      -0.088092144    0.435845192
+## open_score          -0.09724251       0.023476568    0.259524847
+## ihs_score            0.14831570       0.189889936   -0.010600890
+## nclos_score          0.01276794       0.123441391    0.175522976
+## ncog_score          -0.09299187      -0.007085616    0.523944384
+## openTS_score        -0.38918226      -0.487971409    0.435521731
+## closeTS_score        1.00000000       0.237800072   -0.400752821
+## intuitiveTS_score    0.23780007       1.000000000   -0.193309049
+## effortTS_score      -0.40075282      -0.193309049    1.000000000
+## activeopen_score    -0.38555581      -0.234679280    0.397266787
+## fi_score             0.25144271       0.534137018   -0.006519085
+## crt_score           -0.14788493      -0.178237483    0.184687062
+## word_score          -0.26974973      -0.077483133    0.312861367
+## NS_score            -0.20491068      -0.174210020    0.261944564
+## BSthought           -0.06527988      -0.044504582   -0.056655403
+##                   activeopen_score     fi_score    crt_score   word_score
+## BFS_score              -0.17413092  0.156945039 -0.087302618 -0.001099252
+## BFSe_score             -0.05334597  0.003412944  0.002717676  0.033110410
+## BFSp_score             -0.20038944  0.204152712 -0.115761880 -0.018747198
+## BPS_score              -0.37489656  0.008690739 -0.080700516 -0.117555234
+## LIE_score              -0.12032868  0.066295597  0.012289989  0.016837871
+## sdtnarc_score          -0.11722829  0.307802623 -0.143779091 -0.018280018
+## sdtmach_score          -0.14164708  0.210048612 -0.055447543  0.034794832
+## sdtpsych_score         -0.28021033  0.085055938 -0.062685588 -0.176110430
+## narc_score             -0.15943942  0.232042299 -0.051014249 -0.009427989
+## mach_score             -0.26595046  0.211687086 -0.073667968 -0.037160843
+## psycho_score           -0.38387434  0.094082805 -0.093218643 -0.276611243
+## psychopri_score        -0.35636090  0.160910038 -0.094411166 -0.267689226
+## psychosec_score        -0.31910696 -0.027830659 -0.066446404 -0.214513515
+## se_score                0.05112791  0.233502342 -0.025271508  0.067531399
+## hon_score               0.11082804 -0.031386060 -0.025943118  0.011864699
+## emo_score               0.17218218  0.019351407 -0.117334663  0.126382428
+## extra_score             0.02895158  0.225297253 -0.067866976  0.064613991
+## agree_score             0.02270264 -0.110514042  0.067955215 -0.085818277
+## cons_score              0.31467276  0.039961543  0.095167352  0.247741644
+## open_score              0.15055489  0.067119620 -0.047750731  0.043254639
+## ihs_score               0.03414885  0.333556531 -0.014082161 -0.053420942
+## nclos_score             0.16848508  0.174532863 -0.007101510  0.200886150
+## ncog_score              0.18568674  0.136072520  0.079295691  0.080022095
+## openTS_score            0.58371963 -0.246276536  0.134182856  0.199662833
+## closeTS_score          -0.38555581  0.251442710 -0.147884926 -0.269749732
+## intuitiveTS_score      -0.23467928  0.534137018 -0.178237483 -0.077483133
+## effortTS_score          0.39726679 -0.006519085  0.184687062  0.312861367
+## activeopen_score        1.00000000 -0.078535168  0.111741442  0.287722262
+## fi_score               -0.07853517  1.000000000 -0.125459718 -0.035351956
+## crt_score               0.11174144 -0.125459718  1.000000000  0.261564071
+## word_score              0.28772226 -0.035351956  0.261564071  1.000000000
+## NS_score                0.24024326 -0.050071179  0.349030804  0.337214235
+## BSthought              -0.06187767 -0.034360882 -0.066400510 -0.055967973
+##                       NS_score     BSthought
+## BFS_score         -0.048690000  0.0223284288
+## BFSe_score         0.025502394 -0.0411263114
+## BFSp_score        -0.077315304  0.0510108269
+## BPS_score         -0.085865679  0.2511821949
+## LIE_score         -0.103150072 -0.0168949085
+## sdtnarc_score     -0.076254791  0.0282956539
+## sdtmach_score      0.025008894  0.0660974940
+## sdtpsych_score    -0.127461384  0.0001788794
+## narc_score        -0.100799188  0.0109685381
+## mach_score         0.008057367  0.0938050789
+## psycho_score      -0.194182071  0.0433434602
+## psychopri_score   -0.174108805  0.0434843643
+## psychosec_score   -0.169523028  0.0266883024
+## se_score           0.064199065 -0.0303656752
+## hon_score         -0.016914813 -0.0920137951
+## emo_score          0.026935973  0.0364483950
+## extra_score       -0.017903434  0.0366624287
+## agree_score       -0.046052765 -0.0300855185
+## cons_score         0.207946514 -0.0189947807
+## open_score        -0.059410703 -0.0814889764
+## ihs_score          0.038727222 -0.1631723447
+## nclos_score        0.107180187 -0.0453880291
+## ncog_score         0.029804235 -0.1223313844
+## openTS_score       0.228976154 -0.0225062275
+## closeTS_score     -0.204910679 -0.0652798839
+## intuitiveTS_score -0.174210020 -0.0445045822
+## effortTS_score     0.261944564 -0.0566554030
+## activeopen_score   0.240243263 -0.0618776687
+## fi_score          -0.050071179 -0.0343608817
+## crt_score          0.349030804 -0.0664005102
+## word_score         0.337214235 -0.0559679727
+## NS_score           1.000000000  0.0114136570
+## BSthought          0.011413657  1.0000000000</code></pre>
+<pre class="r"><code>corr_results$p</code></pre>
+<pre><code>##                       BFS_score   BFSe_score    BFSp_score    BPS_score
+## BFS_score          0.000000e+00 2.758346e-66 5.211431e-183 6.628451e-04
+## BFSe_score         5.253992e-69 0.000000e+00  3.499844e-17 1.000000e+00
+## BFSp_score        9.870135e-186 7.261088e-20  0.000000e+00 3.679140e-05
+## BPS_score          1.831064e-06 7.653237e-02  9.482320e-08 0.000000e+00
+## LIE_score          5.531408e-22 1.012554e-13  1.076890e-17 9.452838e-03
+## sdtnarc_score      9.246573e-04 9.788694e-01  1.198408e-05 7.041843e-02
+## sdtmach_score      8.714859e-20 2.200877e-06  5.191367e-21 9.654963e-04
+## sdtpsych_score     1.101928e-10 2.298091e-03  7.116009e-12 8.872257e-06
+## narc_score         2.081649e-05 6.041921e-01  9.200657e-08 3.882670e-05
+## mach_score         3.366688e-19 2.818801e-05  1.491766e-21 8.235019e-06
+## psycho_score       2.848839e-13 3.506046e-05  1.674099e-13 2.024170e-09
+## psychopri_score    4.572979e-11 1.879633e-03  2.499921e-12 4.054026e-07
+## psychosec_score    3.106990e-10 5.506828e-06  5.605622e-09 1.240806e-08
+## se_score           5.818992e-04 1.205481e-04  1.244598e-02 4.806000e-01
+## hon_score          2.047073e-14 2.351221e-05  7.861490e-15 7.395405e-06
+## emo_score          8.166732e-02 2.544233e-03  4.779140e-01 1.047005e-01
+## extra_score        3.477081e-01 4.333133e-02  8.595969e-01 3.137774e-01
+## agree_score        9.431689e-05 7.042244e-02  3.022310e-05 2.642920e-01
+## cons_score         2.033485e-08 3.668913e-04  4.638695e-08 1.120046e-10
+## open_score         5.733330e-01 3.089138e-01  8.363117e-01 2.260593e-04
+## ihs_score          4.174364e-01 8.260404e-01  2.386226e-01 2.011308e-05
+## nclos_score        6.735802e-01 4.638974e-01  3.446610e-01 1.211925e-03
+## ncog_score         9.323969e-02 8.291153e-02  1.959028e-01 3.166667e-10
+## openTS_score       1.553149e-08 2.858112e-02  3.413737e-10 2.290315e-13
+## closeTS_score      8.396311e-03 7.331252e-01  2.582796e-04 3.344472e-03
+## intuitiveTS_score  9.185842e-05 2.735209e-01  4.990899e-06 6.071809e-05
+## effortTS_score     1.119713e-04 8.350290e-02  3.118969e-05 1.007678e-13
+## activeopen_score   3.594445e-04 2.776791e-01  3.843509e-05 2.494807e-15
+## fi_score           1.303376e-03 9.446033e-01  2.660612e-05 8.595551e-01
+## crt_score          8.469635e-02 9.572805e-01  2.205519e-02 1.111064e-01
+## word_score         9.821664e-01 5.006450e-01  7.030161e-01 1.645007e-02
+## NS_score           3.247829e-01 6.061878e-01  1.175845e-01 8.209157e-02
+## BSthought          6.513432e-01 4.050766e-01  3.016350e-01 2.391507e-07
+##                      LIE_score sdtnarc_score sdtmach_score sdtpsych_score
+## BFS_score         2.715921e-19  2.589040e-01  4.191847e-17   4.793385e-08
+## BFSe_score        4.637497e-11  1.000000e+00  7.923156e-04   6.089940e-01
+## BFSp_score        5.104460e-15  4.086571e-03  2.523004e-18   3.145276e-09
+## BPS_score         1.000000e+00  1.000000e+00  2.693735e-01   3.060929e-03
+## LIE_score         0.000000e+00  1.000000e+00  2.298257e-30   5.444037e-18
+## sdtnarc_score     1.762514e-01  0.000000e+00  5.075550e-05   6.280455e-07
+## sdtmach_score     4.533052e-33  1.318325e-07  0.000000e+00   1.282502e-35
+## sdtpsych_score    1.127130e-20  1.498915e-09  2.495140e-38   0.000000e+00
+## narc_score        6.291066e-04  7.074205e-44  1.001639e-06   8.817901e-13
+## mach_score        1.775950e-24  1.496917e-08  1.809257e-54   1.111063e-33
+## psycho_score      1.705068e-22  2.647829e-02  9.115543e-38   5.317981e-59
+## psychopri_score   2.819897e-17  5.102812e-06  1.363285e-40   1.609210e-51
+## psychosec_score   3.297116e-18  9.475217e-02  8.952997e-17   1.123904e-34
+## se_score          5.284467e-06  3.338717e-21  1.917704e-01   1.763252e-02
+## hon_score         1.171709e-14  3.927876e-07  9.914959e-28   2.234237e-23
+## emo_score         9.472355e-01  4.031922e-02  8.389707e-02   1.560596e-10
+## extra_score       1.000817e-02  1.246741e-35  4.533813e-02   4.091452e-01
+## agree_score       3.306068e-04  1.017214e-03  1.037622e-09   5.379520e-10
+## cons_score        1.788494e-08  6.347827e-01  3.931519e-07   3.174755e-24
+## open_score        9.929052e-01  1.284072e-01  8.179156e-01   8.545365e-01
+## ihs_score         5.316987e-01  2.006917e-04  2.454357e-03   1.519544e-01
+## nclos_score       4.753271e-01  9.504659e-03  2.317164e-01   3.970396e-06
+## ncog_score        4.276352e-03  1.210777e-03  1.084937e-01   5.883749e-01
+## openTS_score      1.562262e-03  6.009590e-04  5.398709e-08   1.233035e-07
+## closeTS_score     3.480683e-02  9.328145e-05  1.403875e-05   8.738955e-12
+## intuitiveTS_score 2.600829e-02  2.447683e-12  1.881159e-06   1.163078e-03
+## effortTS_score    4.475279e-06  1.187068e-01  3.540654e-05   1.005218e-08
+## activeopen_score  1.405802e-02  1.675429e-02  3.792048e-03   6.067319e-09
+## fi_score          1.766258e-01  1.403719e-10  1.526842e-05   8.277223e-02
+## crt_score         8.085865e-01  4.388988e-03  2.740710e-01   2.161705e-01
+## word_score        7.320368e-01  7.100791e-01  4.790961e-01   3.069020e-04
+## NS_score          3.658321e-02  1.227184e-01  6.131771e-01   9.689135e-03
+## BSthought         7.324173e-01  5.673158e-01  1.805638e-01   9.971118e-01
+##                     narc_score   mach_score  psycho_score psychopri_score
+## BFS_score         6.973523e-03 1.612644e-16  1.296222e-10    2.007538e-08
+## BFSe_score        1.000000e+00 9.302042e-03  1.142971e-02    5.056212e-01
+## BFSp_score        3.579056e-05 7.294736e-19  7.650632e-11    1.119965e-09
+## BPS_score         1.250220e-02 2.849316e-03  8.440787e-07    1.516206e-04
+## LIE_score         1.774081e-01 8.808713e-22  8.388933e-20    1.330991e-14
+## sdtnarc_score     3.664438e-41 6.047546e-06  1.000000e+00    1.791087e-03
+## sdtmach_score     3.696047e-04 9.444321e-52  4.676274e-35    7.034549e-38
+## sdtpsych_score    3.994509e-10 5.644202e-31  2.786622e-56    8.367893e-49
+## narc_score        0.000000e+00 2.096803e-12  1.052580e-03    8.418599e-08
+## mach_score        4.518973e-15 0.000000e+00  1.331098e-49    7.186224e-54
+## psycho_score      2.948404e-06 2.554891e-52  0.000000e+00   5.557473e-173
+## psychopri_score   1.962377e-10 1.374039e-56 1.054549e-175    0.000000e+00
+## psychosec_score   2.827304e-01 6.743519e-22 1.652300e-110    2.178852e-36
+## se_score          5.165986e-09 1.470345e-02  2.998903e-10    5.938987e-03
+## hon_score         4.297809e-12 1.202066e-31  4.167006e-26    9.076513e-32
+## emo_score         1.489986e-04 2.551263e-04  4.056451e-09    5.271537e-12
+## extra_score       2.615049e-16 1.821929e-01  5.666770e-07    1.038903e-02
+## agree_score       9.451801e-09 1.693715e-12  3.661259e-07    1.614536e-05
+## cons_score        7.982374e-03 4.298235e-10  4.239710e-37    8.118130e-19
+## open_score        4.283813e-01 7.024234e-03  4.987938e-03    5.746140e-03
+## ihs_score         4.723029e-01 4.609644e-02  2.633126e-01    7.231872e-02
+## nclos_score       1.523929e-01 1.431140e-01  2.347938e-06    1.298522e-02
+## ncog_score        2.405761e-02 5.366299e-03  3.411592e-06    1.228236e-04
+## openTS_score      2.985663e-02 3.713859e-10  6.276846e-12    8.808135e-11
+## closeTS_score     2.211210e-03 1.594538e-10  7.855192e-19    1.103191e-19
+## intuitiveTS_score 1.337152e-04 9.848069e-06  1.818371e-02    2.220458e-03
+## effortTS_score    1.435235e-01 1.071850e-09  4.414732e-30    4.192056e-21
+## activeopen_score  1.102195e-03 3.639246e-08  4.695657e-16    6.684119e-14
+## fi_score          1.669938e-06 1.304807e-05  5.489350e-02    9.754089e-04
+## crt_score         3.143352e-01 1.459457e-01  6.556455e-02    6.217430e-02
+## word_score        8.479618e-01 4.496996e-01  9.629536e-09    2.941299e-08
+## NS_score          4.110231e-02 8.706340e-01  7.417847e-05    3.909746e-04
+## BSthought         8.243394e-01 5.711274e-02  3.802066e-01    3.786583e-01
+##                   psychosec_score     se_score    hon_score    emo_score
+## BFS_score            1.326685e-07 1.664232e-01 9.437005e-12 1.000000e+00
+## BFSe_score           1.921883e-03 3.761099e-02 7.829567e-03 6.665890e-01
+## BFSp_score           2.303911e-06 1.000000e+00 3.639870e-12 1.000000e+00
+## BPS_score            5.025265e-06 1.000000e+00 2.566206e-03 1.000000e+00
+## LIE_score            1.569427e-15 1.849564e-03 5.413296e-12 1.000000e+00
+## sdtnarc_score        1.000000e+00 1.629294e-18 1.476881e-04 1.000000e+00
+## sdtmach_score        4.207909e-14 1.000000e+00 4.967395e-25 1.000000e+00
+## sdtpsych_score       5.720674e-32 1.000000e+00 1.103713e-20 6.726169e-08
+## narc_score           1.000000e+00 2.128386e-06 1.912525e-09 4.589157e-02
+## mach_score           3.304324e-19 1.000000e+00 6.058410e-29 7.679303e-02
+## psycho_score        8.691098e-108 1.283531e-07 2.071002e-23 1.679371e-06
+## psychopri_score      1.113393e-33 1.000000e+00 4.583639e-29 2.340562e-09
+## psychosec_score      0.000000e+00 2.361266e-20 7.559905e-07 1.000000e+00
+## se_score             4.789587e-23 0.000000e+00 1.000000e+00 5.864086e-02
+## hon_score            1.808590e-09 1.231124e-02 0.000000e+00 1.750227e-01
+## emo_score            4.236885e-03 1.916368e-04 6.184549e-04 0.000000e+00
+## extra_score          5.546095e-13 1.269403e-43 4.314057e-01 5.604436e-01
+## agree_score          1.800358e-06 1.288249e-01 1.399176e-07 9.938487e-02
+## cons_score           2.875526e-48 7.061084e-07 1.389953e-10 1.195562e-07
+## open_score           3.539590e-02 1.260784e-01 7.979526e-01 4.281299e-02
+## ihs_score            8.850671e-01 9.458361e-02 5.081169e-01 1.121819e-01
+## nclos_score          3.839001e-12 1.551484e-04 7.047496e-02 3.227908e-07
+## ncog_score           6.556313e-06 2.577748e-05 2.884161e-02 4.998674e-02
+## openTS_score         4.332548e-08 8.816209e-01 5.909196e-02 3.639322e-01
+## closeTS_score        2.197010e-09 7.906551e-01 5.112479e-01 2.413912e-04
+## intuitiveTS_score    4.657234e-01 2.966645e-04 6.749009e-02 6.964104e-02
+## effortTS_score       1.465563e-26 4.132808e-09 1.262708e-02 3.953755e-01
+## activeopen_score     2.665437e-11 2.981766e-01 2.378256e-02 4.192582e-04
+## fi_score             5.713680e-01 1.430264e-06 5.232240e-01 6.939192e-01
+## crt_score            1.898120e-01 6.183491e-01 6.090461e-01 2.030109e-02
+## word_score           1.016882e-05 1.691931e-01 8.093430e-01 9.871348e-03
+## NS_score             5.578759e-04 1.939808e-01 7.324289e-01 5.860890e-01
+## BSthought            5.895393e-01 5.388024e-01 6.236636e-02 4.611724e-01
+##                    extra_score  agree_score   cons_score   open_score
+## BFS_score         1.000000e+00 2.970982e-02 8.154273e-06 1.000000e+00
+## BFSe_score        1.000000e+00 1.000000e+00 1.074992e-01 1.000000e+00
+## BFSp_score        1.000000e+00 9.913177e-03 1.823007e-05 1.000000e+00
+## BPS_score         1.000000e+00 1.000000e+00 4.861001e-08 6.872202e-02
+## LIE_score         1.000000e+00 9.785963e-02 7.189744e-06 1.000000e+00
+## sdtnarc_score     6.358378e-33 2.817684e-01 1.000000e+00 1.000000e+00
+## sdtmach_score     1.000000e+00 4.368389e-07 1.476881e-04 1.000000e+00
+## sdtpsych_score    1.000000e+00 2.270157e-07 1.571504e-21 1.000000e+00
+## narc_score        1.223843e-13 3.856335e-06 1.000000e+00 1.000000e+00
+## mach_score        1.000000e+00 7.638655e-10 1.818153e-07 1.000000e+00
+## psycho_score      2.113705e-04 1.380295e-04 2.170731e-34 1.000000e+00
+## psychopri_score   1.000000e+00 5.440988e-03 3.872348e-16 1.000000e+00
+## psychosec_score   2.517927e-10 6.535298e-04 1.492398e-45 1.000000e+00
+## se_score          6.562812e-41 1.000000e+00 2.626723e-04 1.000000e+00
+## hon_score         1.000000e+00 5.372836e-05 6.018498e-08 1.000000e+00
+## emo_score         1.000000e+00 1.000000e+00 4.626826e-05 1.000000e+00
+## extra_score       0.000000e+00 1.000000e+00 1.743352e-01 1.000000e+00
+## agree_score       2.104818e-01 0.000000e+00 1.000000e+00 1.000000e+00
+## cons_score        6.138563e-04 5.911707e-01 0.000000e+00 1.000000e+00
+## open_score        7.075518e-02 2.600106e-02 9.263634e-01 0.000000e+00
+## ihs_score         7.908996e-03 3.857510e-01 1.021141e-01 1.599922e-01
+## nclos_score       9.636792e-02 3.228526e-08 7.556218e-27 8.962840e-06
+## ncog_score        1.775487e-06 6.077507e-01 1.598839e-06 4.956854e-18
+## openTS_score      1.529742e-01 1.204771e-01 4.468577e-08 9.361342e-03
+## closeTS_score     3.735635e-01 1.312458e-01 5.632893e-09 4.746833e-02
+## intuitiveTS_score 3.404711e-08 7.093519e-01 7.268261e-02 6.330382e-01
+## effortTS_score    1.089584e-03 2.474643e-01 1.023825e-20 7.889442e-08
+## activeopen_score  5.559651e-01 6.442886e-01 5.157375e-11 2.076562e-03
+## fi_score          3.464637e-06 2.418488e-02 4.162576e-01 1.718137e-01
+## crt_score         1.804956e-01 1.799283e-01 6.010035e-02 3.463340e-01
+## word_score        1.884154e-01 8.040931e-02 3.092015e-07 3.788689e-01
+## NS_score          7.174400e-01 3.517064e-01 2.143161e-05 2.294276e-01
+## BSthought         4.585431e-01 5.430496e-01 7.010188e-01 9.899404e-02
+##                      ihs_score  nclos_score   ncog_score openTS_score
+## BFS_score         1.000000e+00 1.000000e+00 1.000000e+00 6.259190e-06
+## BFSe_score        1.000000e+00 1.000000e+00 1.000000e+00 1.000000e+00
+## BFSp_score        1.000000e+00 1.000000e+00 1.000000e+00 1.450838e-07
+## BPS_score         6.757996e-03 3.305421e-01 1.349000e-07 1.044384e-10
+## LIE_score         1.000000e+00 1.000000e+00 1.000000e+00 4.218107e-01
+## sdtnarc_score     6.121096e-02 1.000000e+00 3.305421e-01 1.712733e-01
+## sdtmach_score     6.454958e-01 1.000000e+00 1.000000e+00 2.116294e-05
+## sdtpsych_score    1.000000e+00 1.405520e-03 1.000000e+00 4.759517e-05
+## narc_score        1.000000e+00 1.000000e+00 1.000000e+00 1.000000e+00
+## mach_score        1.000000e+00 1.000000e+00 1.000000e+00 1.574676e-07
+## psycho_score      1.000000e+00 8.429099e-04 1.214527e-03 2.780643e-09
+## psychopri_score   1.000000e+00 1.000000e+00 3.819815e-02 3.840347e-08
+## psychosec_score   1.000000e+00 1.712194e-09 2.281597e-03 1.711357e-05
+## se_score          1.000000e+00 4.763055e-02 8.558125e-03 1.000000e+00
+## hon_score         1.000000e+00 1.000000e+00 1.000000e+00 1.000000e+00
+## emo_score         1.000000e+00 1.223377e-04 1.000000e+00 1.000000e+00
+## extra_score       1.000000e+00 1.000000e+00 6.462771e-04 1.000000e+00
+## agree_score       1.000000e+00 1.284953e-05 1.000000e+00 1.000000e+00
+## cons_score        1.000000e+00 3.778109e-24 5.851749e-04 1.760619e-05
+## open_score        1.000000e+00 3.083217e-03 2.354506e-15 1.000000e+00
+## ihs_score         0.000000e+00 1.000000e+00 1.000000e+00 1.000000e+00
+## nclos_score       3.737285e-01 0.000000e+00 1.000000e+00 1.000000e+00
+## ncog_score        8.345146e-03 3.436706e-02 0.000000e+00 1.000000e+00
+## openTS_score      3.124851e-01 3.096195e-01 4.695308e-03 0.000000e+00
+## closeTS_score     2.423393e-03 7.948972e-01 5.808306e-02 1.706986e-16
+## intuitiveTS_score 9.744446e-05 1.174254e-02 8.854328e-01 2.834561e-26
+## effortTS_score    8.293213e-01 3.163624e-04 1.049363e-30 1.101070e-20
+## activeopen_score  4.873000e-01 5.589374e-04 1.394948e-04 2.351105e-39
+## fi_score          2.873469e-12 3.424319e-04 5.436966e-03 3.647038e-07
+## crt_score         7.813356e-01 8.886794e-01 1.174853e-01 7.888053e-03
+## word_score        2.770034e-01 3.673538e-05 1.031352e-01 4.105593e-05
+## NS_score          4.336126e-01 2.981630e-02 5.468288e-01 2.726901e-06
+## BSthought         8.994685e-04 3.581212e-01 1.307150e-02 6.491526e-01
+##                   closeTS_score intuitiveTS_score effortTS_score
+## BFS_score          1.000000e+00      2.911912e-02   3.504702e-02
+## BFSe_score         1.000000e+00      1.000000e+00   1.000000e+00
+## BFSp_score         7.748388e-02      1.756797e-03   1.019903e-02
+## BPS_score          8.729073e-01      1.942979e-02   4.625242e-11
+## LIE_score          1.000000e+00      1.000000e+00   1.579773e-03
+## sdtnarc_score      2.947694e-02      1.099010e-09   1.000000e+00
+## sdtmach_score      4.759136e-03      6.790985e-04   1.150712e-02
+## sdtpsych_score     3.853879e-09      3.186834e-01   4.081185e-06
+## narc_score         5.903931e-01      4.145172e-02   1.000000e+00
+## mach_score         6.856514e-08      3.377888e-03   4.501768e-07
+## psycho_score       3.754782e-16      1.000000e+00   2.216195e-27
+## psychopri_score    5.295317e-17      5.906419e-01   2.041531e-18
+## psychosec_score    9.139562e-07      1.000000e+00   7.313159e-24
+## se_score           1.000000e+00      8.870268e-02   1.706850e-06
+## hon_score          1.000000e+00      1.000000e+00   1.000000e+00
+## emo_score          7.295027e-02      1.000000e+00   1.000000e+00
+## extra_score        1.000000e+00      1.351670e-05   3.007252e-01
+## agree_score        1.000000e+00      1.000000e+00   1.000000e+00
+## cons_score         2.309486e-06      1.000000e+00   4.965549e-18
+## open_score         1.000000e+00      1.000000e+00   3.076882e-05
+## ihs_score          6.397757e-01      3.059756e-02   1.000000e+00
+## nclos_score        1.000000e+00      1.000000e+00   9.395962e-02
+## ncog_score         1.000000e+00      1.000000e+00   5.278294e-28
+## openTS_score       8.005762e-14      1.411611e-23   5.329180e-18
+## closeTS_score      0.000000e+00      3.436647e-04   7.631550e-15
+## intuitiveTS_score  9.288236e-07      0.000000e+00   2.308418e-02
+## effortTS_score     1.613435e-17      7.236419e-05   0.000000e+00
+## activeopen_score   3.414615e-16      1.299112e-06   3.527077e-17
+## fi_score           1.960782e-07      4.637400e-32   8.944106e-01
+## crt_score          3.378675e-03      3.978095e-04   2.407600e-04
+## word_score         2.280870e-08      1.145725e-01   6.732460e-11
+## NS_score           2.838751e-05      3.878799e-04   7.099305e-08
+## BSthought          1.860276e-01      3.681493e-01   2.512135e-01
+##                   activeopen_score     fi_score    crt_score   word_score
+## BFS_score             1.056767e-01 3.532148e-01 1.000000e+00 1.000000e+00
+## BFSe_score            1.000000e+00 1.000000e+00 1.000000e+00 1.000000e+00
+## BFSp_score            1.241453e-02 8.806627e-03 1.000000e+00 1.000000e+00
+## BPS_score             1.160085e-12 1.000000e+00 1.000000e+00 1.000000e+00
+## LIE_score             1.000000e+00 1.000000e+00 1.000000e+00 1.000000e+00
+## sdtnarc_score         1.000000e+00 6.064066e-08 1.000000e+00 1.000000e+00
+## sdtmach_score         9.821403e-01 5.160727e-03 1.000000e+00 1.000000e+00
+## sdtpsych_score        2.481533e-06 1.000000e+00 1.000000e+00 9.145680e-02
+## narc_score            3.031038e-01 6.095274e-04 1.000000e+00 1.000000e+00
+## mach_score            1.441141e-05 4.436345e-03 1.000000e+00 1.000000e+00
+## psycho_score          2.188176e-13 1.000000e+00 1.000000e+00 3.919221e-06
+## psychopri_score       3.074695e-11 2.711637e-01 1.000000e+00 1.173578e-05
+## psychosec_score       1.172792e-08 1.000000e+00 1.000000e+00 3.477737e-03
+## se_score              1.000000e+00 5.249068e-04 1.000000e+00 1.000000e+00
+## hon_score             1.000000e+00 1.000000e+00 1.000000e+00 1.000000e+00
+## emo_score             1.211656e-01 1.000000e+00 1.000000e+00 1.000000e+00
+## extra_score           1.000000e+00 1.229946e-03 1.000000e+00 1.000000e+00
+## agree_score           1.000000e+00 1.000000e+00 1.000000e+00 1.000000e+00
+## cons_score            2.258930e-08 1.000000e+00 1.000000e+00 1.174966e-04
+## open_score            5.565187e-01 1.000000e+00 1.000000e+00 1.000000e+00
+## ihs_score             1.000000e+00 1.284441e-09 1.000000e+00 1.000000e+00
+## nclos_score           1.606683e-01 1.010174e-01 1.000000e+00 1.190226e-02
+## ncog_score            4.310390e-02 1.000000e+00 1.000000e+00 1.000000e+00
+## openTS_score          1.210819e-36 1.378581e-04 1.000000e+00 1.317895e-02
+## closeTS_score         1.594625e-13 7.490186e-05 8.784554e-01 9.123481e-06
+## intuitiveTS_score     4.780734e-04 2.346525e-29 1.153647e-01 1.000000e+00
+## effortTS_score        1.661253e-14 1.000000e+00 7.295027e-02 2.942085e-08
+## activeopen_score      0.000000e+00 1.000000e+00 1.000000e+00 9.396859e-07
+## fi_score              1.097182e-01 0.000000e+00 1.000000e+00 1.000000e+00
+## crt_score             2.714730e-02 1.303984e-02 0.000000e+00 5.915826e-05
+## word_score            2.264303e-09 4.720815e-01 1.544602e-07 0.000000e+00
+## NS_score              8.307228e-07 3.112305e-01 1.476250e-12 2.182449e-12
+## BSthought             2.106305e-01 4.867194e-01 1.924160e-01 2.576016e-01
+##                       NS_score    BSthought
+## BFS_score         1.000000e+00 1.000000e+00
+## BFSe_score        1.000000e+00 1.000000e+00
+## BFSp_score        1.000000e+00 1.000000e+00
+## BPS_score         1.000000e+00 9.111643e-05
+## LIE_score         1.000000e+00 1.000000e+00
+## sdtnarc_score     1.000000e+00 1.000000e+00
+## sdtmach_score     1.000000e+00 1.000000e+00
+## sdtpsych_score    1.000000e+00 1.000000e+00
+## narc_score        1.000000e+00 1.000000e+00
+## mach_score        1.000000e+00 1.000000e+00
+## psycho_score      2.358875e-02 1.000000e+00
+## psychopri_score   1.137736e-01 1.000000e+00
+## psychosec_score   1.606683e-01 1.000000e+00
+## se_score          1.000000e+00 1.000000e+00
+## hon_score         1.000000e+00 1.000000e+00
+## emo_score         1.000000e+00 1.000000e+00
+## extra_score       1.000000e+00 1.000000e+00
+## agree_score       1.000000e+00 1.000000e+00
+## cons_score        7.158157e-03 1.000000e+00
+## open_score        1.000000e+00 1.000000e+00
+## ihs_score         1.000000e+00 2.527507e-01
+## nclos_score       1.000000e+00 1.000000e+00
+## ncog_score        1.000000e+00 1.000000e+00
+## openTS_score      9.762307e-04 1.000000e+00
+## closeTS_score     9.339492e-03 1.000000e+00
+## intuitiveTS_score 1.132609e-01 1.000000e+00
+## effortTS_score    2.775828e-05 1.000000e+00
+## activeopen_score  3.081982e-04 1.000000e+00
+## fi_score          1.000000e+00 1.000000e+00
+## crt_score         6.672651e-10 1.000000e+00
+## word_score        9.821020e-10 1.000000e+00
+## NS_score          0.000000e+00 1.000000e+00
+## BSthought         8.184328e-01 0.000000e+00</code></pre>
+</div>
+<div id="bps-and-others" class="section level3">
+<h3>BPS and others</h3>
+</div>
+<div id="bsthought-rating-and-listing-and-others"
+class="section level3">
+<h3>BSthought rating and listing and others</h3>
+</div>
 </div>
 
 

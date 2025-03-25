@@ -16,7 +16,15 @@ output:
 
 ```{r load-data, include=FALSE}
 ##install packages
+##install.packages("corrplot")
+##install.packages("plotly")
+##install.packages("ggcorrplot")
+##install.packages("reshape2")
 
+library(plotly)
+library(ggcorrplot)
+library(reshape2)
+library(corrplot)
 library(psych)
 library(ggplot2)
 library(ltm)
@@ -466,11 +474,57 @@ cor(Thesis_scale$BFS_score, Thesis_scale$BPS_score, use = "complete.obs")
 cor(Thesis_scale$BFS_score, Thesis_scale$BSthought, use = "complete.obs")
 cor(Thesis_scale$BPS_score, Thesis_scale$BSthought, use = "complete.obs")
 cor.test(Thesis_scale$BPS_score, Thesis_scale$BSthought, method=c("pearson"))
+colnames(Thesis_scale) 
+##1. BFS and BPS
+cor.test(Thesis_scale$BPS_score, Thesis_scale$BFS_score, method=c("pearson"))
+
+# create the dataframe with 4 columns 
+bs_variables <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narc_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "ihs_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "NS_score", "BSthought" )
+
+correlates_bs <- Thesis_scale[, bs_variables]
+cor_matrix <- cor(correlates_bs, use = "complete.obs", method = "pearson")
+corr_results <- corr.test(correlates_bs, use = "pairwise", method = "pearson")
+corr_results$r      
+corr_results$p
+
+
+corr_mat <- round(cor(correlates_bs, use = "pairwise.complete.obs"), 2)
+
+# reduce the size of correlation matrix
+melted_corr_mat <- melt(corr_mat)
+# head(melted_corr_mat)
+ 
+# plotting the correlation heatmap
+library(ggplot2)
+ggplot(data = melted_corr_mat, aes(x=Var1, y=Var2,
+                                   fill=value)) + 
+geom_tile()
+
+
+
+cor_matrix <- cor(correlates_bs, use = "pairwise.complete.obs")
+corrplot(cor_matrix, method = "color", type = "upper", tl.cex = 0.7)
+
+
+ 
 ```
 
-### BPS and others
-```{r}
+### heat map for correlations
+```{r heat map}
+## I have found how to do heat map for correlation matrix here: https://www.geeksforgeeks.org/how-to-create-correlation-heatmap-in-r/
 
+## I want to make a heat map because I have almost 30 variables and I think this can be a good way for visualization
+
+## Although the previous heat map is a good visualization, it does not provide any information for the excat number for each correlation value and the correlation between A and B is the same as between B and A, which makes the map redundant. Therefore, I find a more interactive heat map in the link that allows me to check for each variable and only show each correlation once. 
+corr_mat <- round(cor(correlates_bs, use = "pairwise.complete.obs"), 2)
+p_mat <- cor_pmat(correlates_bs)
+##plotting the interactive corr heatmap
+corr_mat <- ggcorrplot(
+  corr_mat, hc.order = TRUE, type = "lower",
+  outline.col = "white",
+  p.mat = p_mat
+)
+ggplotly(corr_mat)
 ```
 
 
