@@ -19,7 +19,9 @@ For this portfolio, I will continue to use the dataset from my thesis study. Thi
 ##install.packages("plotly")
 ##install.packages("ggcorrplot")
 ##install.packages("reshape2")
+##install.packages("cocor")
 
+library(cocor)
 library(plotly)
 library(ggcorrplot)
 library(reshape2)
@@ -536,3 +538,19 @@ ggplotly(corr_mat)
 ```
 
 This looks pretty good! If you put your mouse on one of the color block (the correlation value), you will be able to see what two variables are correlated and what is the correlation value. It is really easy to see which has high correlation as well!
+
+```{r hoteling's test}
+## I also need to test the difference between two correlations that share one variable (Narcissism)
+# Variables: r.jk = cor(BFS, Narc), r.jh = cor(BPS, Narc), r.kh = cor(BFS, BPS)
+r_jk <- cor(Thesis_scale$BFS_score, Thesis_scale$narc_score, use = "complete.obs")
+r_jh <- cor(Thesis_scale$BPS_score, Thesis_scale$narc_score, use = "complete.obs")
+r_kh <- cor(Thesis_scale$BFS_score, Thesis_scale$BPS_score, use = "complete.obs")
+n <- nrow(Thesis_scale)
+
+# Then I need to run cocor for overlapping correlations
+result <- cocor.dep.groups.overlap(r.jk = r_jk, r.jh = r_jh, r.kh = r_kh, n = n)
+
+# See the results
+print(result)
+```
+
