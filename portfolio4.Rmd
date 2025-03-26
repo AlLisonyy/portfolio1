@@ -541,7 +541,9 @@ ggplotly(corr_mat)
 
 This looks pretty good! If you put your mouse on one of the color block (the correlation value), you will be able to see what two variables are correlated and what is the correlation value. It is really easy to see which has high correlation as well!
 
-```{r hoteling's test}
+### Hoteling test for the three types of BS measurements and the variables
+
+```{r hoteling test}
 ## I also need to test the difference between two correlations that share one variable (Narcissism)
 # Variables: r.jk = cor(BFS, Narc), r.jh = cor(BPS, Narc), r.kh = cor(BFS, BPS)
 r_jk <- cor(Thesis_scale$BFS_score, Thesis_scale$narc_score, use = "complete.obs")
@@ -551,7 +553,7 @@ n <- nrow(Thesis_scale)
 
 # Then I need to run cocor for overlapping correlations
 resultnarc <- cocor.dep.groups.overlap(r.jk = r_jk, r.jh = r_jh, r.kh = r_kh, n = n)
-result@ hotelling1940
+resultnarc@ hotelling1940
 # See the results
 print(resultnarc)
 
@@ -578,6 +580,7 @@ compare_correlates <- function(var_name, x_name, y_name, Thesis_scale) {
     conclusion = ifelse(!is.na(result@hotelling1940$p.value) && result@hotelling1940$p.value < 0.05, "Different", "Not Different")
   )
 }
+
 ##Run for all 28 variables
 # 1. BFS vs BPS
 results_BFS_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFS_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
