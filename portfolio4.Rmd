@@ -29,12 +29,10 @@ library(purrr)
 library(reshape2)
 library(corrplot)
 library(psych)
-library(ggplot2)
 library(ltm)
 library(ppcor)
 library(tidyverse)
 library(haven)
-library(dplyr)
 Thesis_scale <- readRDS("Thesis_scale.rds")
 ```
 

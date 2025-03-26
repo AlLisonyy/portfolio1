@@ -22,24 +22,21 @@ For this portfolio, I plan to use the dataset from my thesis study. The study is
 ##For this portfolio, I would like to use the dataset from my thesis study.
 library(psych)
 library(haven)
-library(ggplot2)
 library(ltm)
 library(ppcor)
 library(tidyverse)
-library(dplyr)
-Thesis <- read_sav("~/Desktop/THESIS/Thesis.sav")    
+Thesis <- read_sav("Thesis.sav")    
 ```
 
 ## Step 1: clean data
 ```{r clean variables}
 ##The first step is to clean data, and I started with getting rid of participants that did not finished the study, as well as deleting variable that does not have any data, such as recipient name.  
-library(dplyr)
 Thesis_clean <- Thesis %>% 
-  select(-StartDate, -EndDate, -IPAddress, -RecordedDate, -ResponseId, -RecipientLastName, -RecipientFirstName, -RecipientEmail, -ExternalReference, -LocationLatitude, -LocationLongitude, -DistributionChannel, -UserLanguage, -robot_timer_First_Click, -robot_timer_Last_Click, -robot_timer_Page_Submit, -robot_timer_Click_Count, -browser_info_Browser, -browser_info_Version, -browser_info_Operating_System, -browser_info_Resolution) %>%
-  filter(Progress >= 50,  ##Keep only participants with progress >= 50
-  Consent1 != 2,  ##Remove people's answers who did not give consent to participate in the study
-  (!is.na(difficulties)),  ##Remove people's answers who had difficulties when answering questions, their data might be invalid
-  Status == 0,  ##Remove participants whose status is not 0
+ dplyr::select(-c(StartDate, EndDate, IPAddress, RecordedDate, ResponseId, RecipientLastName, RecipientFirstName, RecipientEmail,  ExternalReference, LocationLatitude, LocationLongitude, DistributionChannel, UserLanguage, robot_timer_First_Click, robot_timer_Last_Click, robot_timer_Page_Submit, robot_timer_Click_Count, browser_info_Browser, browser_info_Version, browser_info_Operating_System, browser_info_Resolution)) %>%
+  filter(Progress >= 50 &  ##Keep only participants with progress >= 50
+  Consent1 != 2 & ##Remove people's answers who did not give consent to participate in the study
+  (!is.na(difficulties)) & ##Remove people's answers who had difficulties when answering questions, their data might be invalid
+  Status == 0 &  ##Remove participants whose status is not 0
   Finished == 1
   )
 
@@ -116,11 +113,26 @@ I realized that I should have create new variables for the recoded ones, so that
 ## How to compute: I Sum the total number of thoughts for each participant per the topic. In other words, if a participant wrote three valid thoughts for topic 1, they should have “3” for their “sum_recoded_TR_topic”.
 
 Thesis_scale <- Thesis_scale %>%
-  mutate(
-    recoded_college = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
-    recoded_recycling = rowSums(select(., RC1_score, RC2_score, RC3_score, RC4_score, RC5_score), na.rm = TRUE),
-    recoded_crime = rowSums(select(., CR1_score, CR2_score, CR3_score, CR4_score, CR5_score), na.rm = TRUE),
-    )
+  dplyr::mutate(
+    recoded_college = rowSums(dplyr::select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
+    recoded_recycling = rowSums(dplyr::select(., RC1_score, RC2_score, RC3_score, RC4_score, RC5_score), na.rm = TRUE),
+    recoded_crime = rowSums(dplyr::select(., CR1_score, CR2_score, CR3_score, CR4_score, CR5_score), na.rm = TRUE)
+  )
+
+#the two version I also tried but did not let me build the website:
+#Thesis_scale <- Thesis_scale %>%
+  #dplyr::mutate(
+   # recoded_college = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
+    #recoded_recycling = rowSums(select(., RC1_score, RC2_score, RC3_score, RC4_score, RC5_score), na.rm = TRUE),
+    #recoded_crime = rowSums(select(., CR1_score, CR2_score, CR3_score, CR4_score, CR5_score), na.rm = TRUE)  )
+#Thesis_scale <- Thesis_scale %>%
+  #rowwise() %>%
+ # dplyr::mutate(
+  #  recoded_college = sum(c_across(c(CG1_score, CG2_score, CG3_score, CG4_score, CG5_score)), na.rm = TRUE),
+  #  recoded_recycling = sum(c_across(c(RC1_score, RC2_score, RC3_score, RC4_score, RC5_score)), na.rm = TRUE),
+  #  recoded_crime = sum(c_across(c(CR1_score, CR2_score, CR3_score, CR4_score, CR5_score)), na.rm = TRUE),  ) %>%
+ # ungroup()
+
 
 ## Next, I need to delete the scores in the BS_TR_topic items if I marked "0" in the accordingly topic_score variables. In other words, I need to put "0" in the BS_TR_topic when the participant did not provide valid answers.
 ##topic: college graduate
@@ -143,7 +155,7 @@ Thesis_scale$BS_TR_Crime_4 <- ifelse(Thesis_scale$CR4_score == 0, NA_integer_, T
 Thesis_scale$BS_TR_Crime_5 <- ifelse(Thesis_scale$CR5_score == 0, NA_integer_, Thesis_scale$BS_TR_Crime_5)
 ## Next, I sum the recoded_TR_topic variables separately for each topic. If the participants wrote about five answers, they should all have five “sum_recoded_TR_topic” scores (one for each topic).
 Thesis_scale <- Thesis_scale %>%
-  mutate(
+  dplyr::mutate(
     sum_recoded_TR_college = rowSums(select(., BS_TR_CG_1, BS_TR_CG_2, BS_TR_CG_3, BS_TR_CG_4, BS_TR_CG_5), na.rm = TRUE),
     sum_recoded_TR_recycling = rowSums(select(., BS_TR_Recylcing_1, BS_TR_Recylcing_2, BS_TR_Recylcing_3, BS_TR_Recylcing_4, BS_TR_Recylcing_5), na.rm = TRUE),
     sum_recoded_TR_crime = rowSums(select(., BS_TR_Crime_1, BS_TR_Crime_2, BS_TR_Crime_3, BS_TR_Crime_4, BS_TR_Crime_5), na.rm = TRUE)
@@ -153,14 +165,14 @@ summary(Thesis_scale$recoded_college)
 
 ## Lastly, I use this equation to calculate the BS Proportion per topic, whereby each participant will have five individual BS Proportion scores (one for each topic): sum_recoded_thought_rating_topic1 / (sum thought_frequency_topic1 x 10)
 Thesis_scale <- Thesis_scale %>%
-  mutate(
+  dplyr::mutate(
     BSthought_college = sum_recoded_TR_college / (recoded_college * 10),
     BSthought_recycling = sum_recoded_TR_recycling / (recoded_recycling * 10),
     BSthought_crime = sum_recoded_TR_crime / (recoded_crime * 10)
     )
 ## Then I combine them into one score
 Thesis_scale <- Thesis_scale %>%
-  mutate(BSthought = (BSthought_college + BSthought_recycling + BSthought_crime)/ 3)
+  dplyr::mutate(BSthought = (BSthought_college + BSthought_recycling + BSthought_crime)/ 3)
 ## Check if it worked for one
 head(Thesis_scale$BSthought_college)
 ```

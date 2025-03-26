@@ -19,13 +19,11 @@ For this portfolio, I will continue to use the dataset from my thesis study. Thi
 ##install.packages(c("tidytext", "stringr"))
 library(tidytext)
 library(psych)
-library(ggplot2)
 library(ltm)
 library(ppcor)
 library(tidyverse)
 library(haven)
 library(stringr)
-library(dplyr)
 Thesis_scale <- readRDS("Thesis_scale.rds")
 ```
 
