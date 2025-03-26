@@ -176,6 +176,273 @@ pcor.test(partial_BFScrt$BFS_score, partial_BFScrt$crt_score, partial_BFScrt$LIE
 
 ```
 
+### Bullshit Frequency subscale BFSpersuasive and other variables's partial correlation when controled for lying tendency
+
+```{r BFSp and others}
+##1. BFSp and Thought listing and rating task
+partial_BFSpthoughlist <- Thesis_scale %>% 
+  select(BFSp_score, BSthought, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpthoughlist$BFSp_score, partial_BFSpthoughlist$BSthought, partial_BFSpthoughlist$LIE_score)
+
+##2. BFSp and narcissism (short scale)
+partial_BFSpsdtnarc <- Thesis_scale %>% 
+  select(BFSp_score, sdtnarc_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpsdtnarc$BFSp_score, partial_BFSpsdtnarc$sdtnarc_score, partial_BFSpsdtnarc$LIE_score)
+
+##3, BFSp and machiavellianism (short scale)
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_score)
+
+##4. BFSp and psychopathy (short scale)
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$sdtpsych_score, Thesis_scale$LIE_score)
+
+##5. BFSp and Narcissistic Personality Inventory
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$narc_score, Thesis_scale$LIE_score)
+
+##6. BFSp and Machiavellianism Personality scale
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$mach_score, Thesis_scale$LIE_score)
+
+##7. BFSp and Levenson Self-Report Psychopathy Scale
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$psycho_score, Thesis_scale$LIE_score)
+##7.1
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$psychopri_score, Thesis_scale$LIE_score)
+partial_BFSppsychosec <- Thesis_scale %>% 
+  select(BFSp_score, psychosec_score, LIE_score) %>% 
+  drop_na()
+##7.2
+pcor.test(partial_BFSppsychosec$BFSp_score, partial_BFSppsychosec$psychosec_score, partial_BFSppsychosec$LIE_score)
+
+##8. BFSp and self-esteem
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$se_score, Thesis_scale$LIE_score)
+
+##BFSp and HEXACO
+##9. Honesty-Humility
+partial_BFSphon<- Thesis_scale %>% 
+  select(BFSp_score, hon_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSphon$BFSp_score, partial_BFSphon$hon_score, partial_BFSphon$LIE_score)
+##10. Emotionality
+partial_BFSpemo <- Thesis_scale %>% 
+  select(BFSp_score, emo_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpemo$BFSp_score, partial_BFSpemo$emo_score, partial_BFSpemo$LIE_score)
+##11. Extraversion
+partial_BFSpextra <- Thesis_scale %>% 
+  select(BFSp_score, extra_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpextra$BFSp_score, partial_BFSpextra$extra_score, partial_BFSpextra$LIE_score)
+##12. Agreeableness
+partial_BFSpagree <- Thesis_scale %>% 
+  select(BFSp_score, agree_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpagree$BFSp_score, partial_BFSpagree$agree_score, partial_BFSpagree$LIE_score)
+##13. CONSCIENTIOUSNESS
+partial_BFSpcons <- Thesis_scale %>% 
+  select(BFSp_score, cons_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpcons$BFSp_score, partial_BFSpcons$cons_score, partial_BFSpcons$LIE_score)
+##14. Openness
+partial_BFSpopen <- Thesis_scale %>% 
+  select(BFSp_score, open_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpopen$BFSp_score, partial_BFSpopen$open_score, partial_BFSpopen$LIE_score)
+
+##15. BFSp and Intellectual Humility Scale
+partial_BFSpih <- Thesis_scale %>% 
+  select(BFSp_score, ihs_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpih$BFSp_score, partial_BFSpih$ihs_score, partial_BFSpih$LIE_score)
+
+##16. BFSp and Need for Closure
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$nclos_score, Thesis_scale$LIE_score)
+
+##17. BFSp and Need for Cognition
+partial_BFSpncog <- Thesis_scale %>% 
+  select(BFSp_score, ncog_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpncog$BFSp_score, partial_BFSpncog$ncog_score, partial_BFSpncog$LIE_score)
+
+##18. BFSp and Actively Open Thinking Style
+partial_BFSpopenTS <- Thesis_scale %>% 
+  select(BFSp_score, openTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpopenTS$BFSp_score, partial_BFSpopenTS$openTS_score, partial_BFSpopenTS$LIE_score)
+
+##19. BFSp and Close-minded Thinking Style
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$closeTS_score, Thesis_scale$LIE_score)
+
+##20. BFSp and prefer intuitive Thinking Style
+partial_BFSpintuitiveTS <- Thesis_scale %>% 
+  select(BFSp_score, intuitiveTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpintuitiveTS$BFSp_score, partial_BFSpintuitiveTS$intuitiveTS_score, partial_BFSpintuitiveTS$LIE_score)
+
+##21. BFSp and prefer effortful Thinking Style
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$effortTS_score, Thesis_scale$LIE_score)
+
+##22. BFSp and Actively Open-Minded Thinking about Evidence Scale 
+partial_BFSpactiveopen <- Thesis_scale %>% 
+  select(BFSp_score, activeopen_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpactiveopen$BFSp_score, partial_BFSpactiveopen$activeopen_score, partial_BFSpactiveopen$LIE_score)
+
+##23. BFSp and Faith in Intuition Scale
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$fi_score, Thesis_scale$LIE_score)
+
+##24. BFSp and Numeracy scale
+partial_BFSpns <- Thesis_scale %>% 
+  select(BFSp_score, ns_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpns$BFSp_score, partial_BFSpns$ns_score, partial_BFSpns$LIE_score)
+
+##25. BFSp and Wordsum Vocabulary Test
+partial_BFSpword <- Thesis_scale %>% 
+  select(BFSp_score, word_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpword$BFSp_score, partial_BFSpword$word_score, partial_BFSpword$LIE_score)
+
+##26. BFSp and Cognitive Reflection Test
+partial_BFSpcrt<- Thesis_scale %>% 
+  select(BFSp_score, crt_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpcrt$BFSp_score, partial_BFSpcrt$crt_score, partial_BFSpcrt$LIE_score)
+```
+
+### Bullshit Frequency subscale BFSevasive and other variables's partial correlation when controled for lying tendency
+
+```{r}
+##1. BFSe and Thought listing and rating task
+partial_BFSepthoughtist <- Thesis_scale %>% 
+  select(BFSe_score, BSthought, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSepthoughtist$BFSe_score, partial_BFSepthoughtist$BSthought, partial_BFSepthoughtist$LIE_score)
+
+##2. BFSe and narcissism (short scale)
+partial_BFSesdtnarc <- Thesis_scale %>% 
+  select(BFSe_score, sdtnarc_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSesdtnarc$BFSe_score, partial_BFSesdtnarc$sdtnarc_score, partial_BFSesdtnarc$LIE_score)
+
+##3, BFSe and machiavellianism (short scale)
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_score)
+
+##4. BFSe and psychopathy (short scale)
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$sdtpsych_score, Thesis_scale$LIE_score)
+
+##5. BFSe and Narcissistic Personality Inventory
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$narc_score, Thesis_scale$LIE_score)
+
+##6. BFSe and Machiavellianism Personality scale
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$mach_score, Thesis_scale$LIE_score)
+
+##7. BFSe and Levenson Self-Report Psychopathy Scale
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$psycho_score, Thesis_scale$LIE_score)
+##7.1
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$psychopri_score, Thesis_scale$LIE_score)
+partial_BFSepsychosec <- Thesis_scale %>% 
+  select(BFSe_score, psychosec_score, LIE_score) %>% 
+  drop_na()
+##7.2
+pcor.test(partial_BFSepsychosec$BFSe_score, partial_BFSepsychosec$psychosec_score, partial_BFSepsychosec$LIE_score)
+
+##8. BFSe and self-esteem
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$se_score, Thesis_scale$LIE_score)
+
+##BFSe and HEXACO
+##9. Honesty-Humility
+partial_BFSehon<- Thesis_scale %>% 
+  select(BFSe_score, hon_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSehon$BFSe_score, partial_BFSehon$hon_score, partial_BFSehon$LIE_score)
+##10. Emotionality
+partial_BFSeemo <- Thesis_scale %>% 
+  select(BFSe_score, emo_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeemo$BFSe_score, partial_BFSeemo$emo_score, partial_BFSeemo$LIE_score)
+##11. Extraversion
+partial_BFSeextra <- Thesis_scale %>% 
+  select(BFSe_score, extra_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeextra$BFSe_score, partial_BFSeextra$extra_score, partial_BFSeextra$LIE_score)
+##12. Agreeableness
+partial_BFSeagree <- Thesis_scale %>% 
+  select(BFSe_score, agree_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeagree$BFSe_score, partial_BFSeagree$agree_score, partial_BFSeagree$LIE_score)
+##13. CONSCIENTIOUSNESS
+partial_BFSecons <- Thesis_scale %>% 
+  select(BFSe_score, cons_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSecons$BFSe_score, partial_BFSecons$cons_score, partial_BFSecons$LIE_score)
+##14. Openness
+partial_BFSeopen <- Thesis_scale %>% 
+  select(BFSe_score, open_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeopen$BFSe_score, partial_BFSeopen$open_score, partial_BFSeopen$LIE_score)
+
+##15. BFSe and Intellectual Humility Scale
+partial_BFSeih <- Thesis_scale %>% 
+  select(BFSe_score, ihs_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeih$BFSe_score, partial_BFSeih$ihs_score, partial_BFSeih$LIE_score)
+
+##16. BFSe and Need for Closure
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$nclos_score, Thesis_scale$LIE_score)
+
+##17. BFSe and Need for Cognition
+partial_BFSencog <- Thesis_scale %>% 
+  select(BFSe_score, ncog_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSencog$BFSe_score, partial_BFSencog$ncog_score, partial_BFSencog$LIE_score)
+
+##18. BFSe and Actively Open Thinking Style
+partial_BFSeopenTS <- Thesis_scale %>% 
+  select(BFSe_score, openTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeopenTS$BFSe_score, partial_BFSeopenTS$openTS_score, partial_BFSeopenTS$LIE_score)
+
+##19. BFSe and Close-minded Thinking Style
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$closeTS_score, Thesis_scale$LIE_score)
+
+##20. BFSe and prefer intuitive Thinking Style
+partial_BFSeintuitiveTS <- Thesis_scale %>% 
+  select(BFSe_score, intuitiveTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeintuitiveTS$BFSe_score, partial_BFSeintuitiveTS$intuitiveTS_score, partial_BFSeintuitiveTS$LIE_score)
+
+##21. BFSe and prefer effortful Thinking Style
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$effortTS_score, Thesis_scale$LIE_score)
+
+##22. BFSe and Actively Open-Minded Thinking about Evidence Scale 
+partial_BFSeactiveopen <- Thesis_scale %>% 
+  select(BFSe_score, activeopen_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeactiveopen$BFSe_score, partial_BFSeactiveopen$activeopen_score, partial_BFSeactiveopen$LIE_score)
+
+##23. BFSe and Faith in Intuition Scale
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$fi_score, Thesis_scale$LIE_score)
+
+##24. BFSe and Numeracy scale
+partial_BFSens <- Thesis_scale %>% 
+  select(BFSe_score, ns_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSens$BFSe_score, partial_BFSens$ns_score, partial_BFSens$LIE_score)
+
+##25. BFSe and Wordsum Vocabulary Test
+partial_BFSeword <- Thesis_scale %>% 
+  select(BFSe_score, word_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeword$BFSe_score, partial_BFSeword$word_score, partial_BFSeword$LIE_score)
+
+##26. BFSe and Cognitive Reflection Test
+partial_BFSecrt<- Thesis_scale %>% 
+  select(BFSe_score, crt_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSecrt$BFSe_score, partial_BFSecrt$crt_score, partial_BFSecrt$LIE_score)
+```
+
+
 ### Bullshit Propensity scales and other variables's partial correlation when controled for lying tendency
 
 ```{r BPS and others}
