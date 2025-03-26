@@ -307,6 +307,12 @@ partial_BFSpcrt<- Thesis_scale %>%
   select(BFSp_score, crt_score, LIE_score) %>% 
   drop_na()
 pcor.test(partial_BFSpcrt$BFSp_score, partial_BFSpcrt$crt_score, partial_BFSpcrt$LIE_score)
+
+##27. BFSp and BPS
+partial_BFSpBPS<- Thesis_scale %>% 
+  select(BFSp_score, BPS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpBPS$BFSp_score, partial_BFSpBPS$BPS_score, partial_BFSpBPS$LIE_score)
 ```
 
 ### Bullshit Frequency subscale BFSevasive and other variables's partial correlation when controled for lying tendency
@@ -440,6 +446,13 @@ partial_BFSecrt<- Thesis_scale %>%
   select(BFSe_score, crt_score, LIE_score) %>% 
   drop_na()
 pcor.test(partial_BFSecrt$BFSe_score, partial_BFSecrt$crt_score, partial_BFSecrt$LIE_score)
+
+##27. BFSe and BPS
+partial_BFSeBPS<- Thesis_scale %>% 
+  select(BFSe_score, BPS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeBPS$BFSe_score, partial_BFSeBPS$BPS_score, partial_BFSeBPS$LIE_score)
+
 ```
 
 
@@ -574,7 +587,9 @@ partial_BPScrt<- Thesis_scale %>%
   select(BPS_score, crt_score, LIE_score) %>% 
   drop_na()
 pcor.test(partial_BPScrt$BPS_score, partial_BPScrt$crt_score, partial_BPScrt$LIE_score)
+
 ```
+
 ### Bullshit Thought Listing and Rating tasks and other variables's partial correlation when controled for lying tendency
 
 ```{r thought listing / rating and others}
