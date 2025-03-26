@@ -570,14 +570,13 @@ compare_correlates <- function(var_name, x_name, y_name, Thesis_scale) {
   result <- cocor.dep.groups.overlap(r.jk = r_xy1, r.jh = r_xy2, r.kh = r_x1x2, n = n)
   tibble(
     variable = var_name,
-    predictor1 = x_name,
-    predictor2 = y_name,
     r_pred1 = r_xy1,
     r_pred2 = r_xy2,
     r_variable = r_x1x2,
     p_Hotelling = tryCatch(result@hotelling1940$p.value, error = function(e) NA),
     p_Steiger = tryCatch(result@steiger1980$p.value, error = function(e) NA),
-    conclusion = ifelse(!is.na(result@hotelling1940$p.value) && result@hotelling1940$p.value < 0.05, "Different", "Not Different")
+    conclusion = ifelse(!is.na(result@hotelling1940$p.value) && result@hotelling1940$p.value < 0.05, "Different", "Not Different"),
+    hotelingt = result@ hotelling1940$statistic
   )
 }
 
