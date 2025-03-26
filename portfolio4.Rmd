@@ -550,41 +550,82 @@ r_kh <- cor(Thesis_scale$BFS_score, Thesis_scale$BPS_score, use = "complete.obs"
 n <- nrow(Thesis_scale)
 
 # Then I need to run cocor for overlapping correlations
-result <- cocor.dep.groups.overlap(r.jk = r_jk, r.jh = r_jh, r.kh = r_kh, n = n)
+resultnarc <- cocor.dep.groups.overlap(r.jk = r_jk, r.jh = r_jh, r.kh = r_kh, n = n)
 result@ hotelling1940
 # See the results
-print(result)
+print(resultnarc)
 
-
-
-# List of variable names you want to compare against BFS and BPS
+##After this worked and I knwo what I want from the output, I decided to create a function for calculating the hoteling tests for all the variables. 
+##List of variable names you want to compare against BFS and BPS
 target_vars <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narc_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "ihs_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score")
 
-# Function to run cocor and return results
-compare_corrs <- function(var_name, Thesis_scale) {
-  r_jk <- cor(Thesis_scale$BFS_score, Thesis_scale[[var_name]], use = "pairwise.complete.obs")
-  r_jh <- cor(Thesis_scale$BPS_score, Thesis_scale[[var_name]], use = "pairwise.complete.obs")
-  r_kh <- cor(Thesis_scale$BFS_score, Thesis_scale$BPS_score, use = "pairwise.complete.obs")
+##create a function since there are too many variables to be put manually
+compare_correlates <- function(var_name, x_name, y_name, Thesis_scale) {
+  r_xy1 <- cor(Thesis_scale[[x_name]], Thesis_scale[[var_name]], use = "pairwise.complete.obs")
+  r_xy2 <- cor(Thesis_scale[[y_name]], Thesis_scale[[var_name]], use = "pairwise.complete.obs")
+  r_x1x2 <- cor(Thesis_scale[[x_name]], Thesis_scale[[y_name]], use = "pairwise.complete.obs")
   n <- nrow(Thesis_scale)
-  result <- cocor.dep.groups.overlap(r.jk = r_jk, r.jh = r_jh, r.kh = r_kh, n = n)
-  
-  # Return a tidy row of results
+  result <- cocor.dep.groups.overlap(r.jk = r_xy1, r.jh = r_xy2, r.kh = r_x1x2, n = n)
   tibble(
     variable = var_name,
-    r_BFS = r_jk,
-    r_BPS = r_jh,
-    r_BFS_BPS = r_kh,
+    predictor1 = x_name,
+    predictor2 = y_name,
+    r_pred1 = r_xy1,
+    r_pred2 = r_xy2,
+    r_variable = r_x1x2,
     p_Hotelling = tryCatch(result@hotelling1940$p.value, error = function(e) NA),
     p_Steiger = tryCatch(result@steiger1980$p.value, error = function(e) NA),
-    conclusion = ifelse(!is.na(p_Hotelling) && p_Hotelling < 0.05, "Different", "Not Different"),
-    hotelingt = result@ hotelling1940$statistic
-    )
-  }
+    conclusion = ifelse(!is.na(result@hotelling1940$p.value) && result@hotelling1940$p.value < 0.05, "Different", "Not Different")
+  )
+}
+##Run for all 28 variables
+# 1. BFS vs BPS
+results_BFS_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFS_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
 
-# Run for all 28 variables
-results_df <- map_dfr(target_vars, compare_corrs, Thesis_scale = Thesis_scale)
+# 2. BFS vs BSthought
+results_BFS_BSthought <- map_dfr(target_vars, compare_correlates, x_name = "BFS_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
 
-# View your results
-print(results_df)
+# 3. BPS vs BSthought
+results_BPS_BSthought <- map_dfr(target_vars, compare_correlates, x_name = "BPS_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+
+##View the results in a table
+print(results_BFS_BPS)
+print(results_BFS_BSthought)
+print(results_BPS_BSthought)
+```
+```{r hoteling BFS and BSthought}
+##do the same for BFS and BSthought
+##create a function again
+compare_correlates <- function(var_name, x_name, y_name, Thesis_scale) {
+  r_xy1 <- cor(Thesis_scale[[x_name]], Thesis_scale[[var_name]], use = "pairwise.complete.obs")
+  r_xy2 <- cor(Thesis_scale[[y_name]], Thesis_scale[[var_name]], use = "pairwise.complete.obs")
+  r_x1x2 <- cor(Thesis_scale[[x_name]], Thesis_scale[[y_name]], use = "pairwise.complete.obs")
+  n <- nrow(Thesis_scale)
+  result <- cocor.dep.groups.overlap(r.jk = r_xy1, r.jh = r_xy2, r.kh = r_x1x2, n = n)
+  tibble(
+    variable = var_name,
+    predictor1 = x_name,
+    predictor2 = y_name,
+    r_pred1 = r_xy1,
+    r_pred2 = r_xy2,
+    r_variable = r_x1x2,
+    p_Hotelling = tryCatch(result@hotelling1940$p.value, error = function(e) NA),
+    p_Steiger = tryCatch(result@steiger1980$p.value, error = function(e) NA),
+    conclusion = ifelse(!is.na(result@hotelling1940$p.value) && result@hotelling1940$p.value < 0.05, "Different", "Not Different")
+  )
+}
+
+results_BFS_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFS_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+
+# 2. BFS vs BSthought
+results_BFS_BSthought <- map_dfr(target_vars, compare_correlates, x_name = "BFS_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+
+# 3. BPS vs BSthought
+results_BPS_BSthought <- map_dfr(target_vars, compare_correlates, x_name = "BPS_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+
+
+print(results_BFS_BPS)
+print(results_BFS_BSthought)
+print(results_BPS_BSthought)
 ```
 
