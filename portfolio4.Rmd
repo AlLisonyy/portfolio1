@@ -780,6 +780,7 @@ corr_results$p
 
 #First, I will need to create a correlation matrix
 corr_mat <- round(cor(correlates_bs, use = "pairwise.complete.obs"), 2)
+colnames(correlates_bs) <- gsub("_score", "", colnames(correlates_bs))
 
 #Next, in order for better too look at, I will reorder the matrix by using corr coefficient as distance metric
 dist <- as.dist((1-corr_mat)/2)
@@ -800,7 +801,6 @@ ggplot(data = melted_corr_mat, aes(x=Var1, y=Var2, fill=value)) +
 
 ```{r heatmap2, fig.width=12, fig.height=8}
 ## Although the previous heat map is a good visualization, it does not provide any information for the excat number for each correlation value and the correlation between A and B is the same as between B and A, which makes the map redundant. Therefore, I find a more interactive heat map in the link that allows me to check for each variable and only show each correlation once. 
-colnames(correlates_bs) <- gsub("_score", "", colnames(correlates_bs))
 p_mat <- cor_pmat(correlates_bs)
 ##plotting the interactive corr heatmap
 corr_mat <- ggcorrplot(
