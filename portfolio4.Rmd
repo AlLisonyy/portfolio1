@@ -775,7 +775,7 @@ partial_BSthoughtcrt<- Thesis_scale %>%
 pcor.test(partial_BSthoughtcrt$BSthought, partial_BSthoughtcrt$crt_score, partial_BSthoughtcrt$LIE_score)
 ```
 ## Step 2: pearson correlation
-### BSF and others
+### correlations for all the variables
 ```{r pearson correlation BSF}
 cor(Thesis_scale$BFS_score, Thesis_scale$BPS_score, use = "complete.obs")
 cor(Thesis_scale$BFS_score, Thesis_scale$BSthought, use = "complete.obs")
