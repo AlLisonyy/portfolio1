@@ -55,8 +55,11 @@ pcor.test(Thesis_scale$BFS_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_s
 ##4. BFS and psychopathy (short scale)
 pcor.test(Thesis_scale$BFS_score, Thesis_scale$sdtpsych_score, Thesis_scale$LIE_score)
 
-##5. BFS and Narcissistic Personality Inventory
-pcor.test(Thesis_scale$BFS_score, Thesis_scale$narc_score, Thesis_scale$LIE_score)
+##5.1 BFS and Narcissistic Personality Inventory
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$narcgrand_score, Thesis_scale$LIE_score)
+
+##5.2 BFS and Hypersensitive Narcissism Scale
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$narchyper_score, Thesis_scale$LIE_score)
 
 ##6. BFS and Machiavellianism Personality scale
 pcor.test(Thesis_scale$BFS_score, Thesis_scale$mach_score, Thesis_scale$LIE_score)
@@ -195,8 +198,11 @@ pcor.test(Thesis_scale$BFSp_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_
 ##4. BFSp and psychopathy (short scale)
 pcor.test(Thesis_scale$BFSp_score, Thesis_scale$sdtpsych_score, Thesis_scale$LIE_score)
 
-##5. BFSp and Narcissistic Personality Inventory
-pcor.test(Thesis_scale$BFSp_score, Thesis_scale$narc_score, Thesis_scale$LIE_score)
+##5.1 BFSp and Narcissistic Personality Inventory
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$narcgrand_score, Thesis_scale$LIE_score)
+
+##5.2 BFSp and Hypersensitive Narcissism Scale
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$narchyper_score, Thesis_scale$LIE_score)
 
 ##6. BFSp and Machiavellianism Personality scale
 pcor.test(Thesis_scale$BFSp_score, Thesis_scale$mach_score, Thesis_scale$LIE_score)
@@ -334,8 +340,11 @@ pcor.test(Thesis_scale$BFSe_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_
 ##4. BFSe and psychopathy (short scale)
 pcor.test(Thesis_scale$BFSe_score, Thesis_scale$sdtpsych_score, Thesis_scale$LIE_score)
 
-##5. BFSe and Narcissistic Personality Inventory
-pcor.test(Thesis_scale$BFSe_score, Thesis_scale$narc_score, Thesis_scale$LIE_score)
+##5.1 BFSe and Narcissistic Personality Inventory
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$narcgrand_score, Thesis_scale$LIE_score)
+
+##5.2 BFSe and Hypersensitive Narcissism Scale
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$narchyper_score, Thesis_scale$LIE_score)
 
 ##6. BFSe and Machiavellianism Personality scale
 pcor.test(Thesis_scale$BFSe_score, Thesis_scale$mach_score, Thesis_scale$LIE_score)
@@ -451,6 +460,12 @@ partial_BFSeBPS<- Thesis_scale %>%
   drop_na()
 pcor.test(partial_BFSeBPS$BFSe_score, partial_BFSeBPS$BPS_score, partial_BFSeBPS$LIE_score)
 
+##28. BFSe and BFSp
+partial_BFSeBFSp <- Thesis_scale %>% 
+  select(BFSe_score, BFSp_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeBFSp$BFSe_score, partial_BFSeBFSp$BFSp_score, partial_BFSeBFSp$LIE_score)
+
 ```
 
 
@@ -475,8 +490,11 @@ pcor.test(Thesis_scale$BPS_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_s
 ##4. BPS and psychopathy (short scale)
 pcor.test(Thesis_scale$BPS_score, Thesis_scale$sdtpsych_score, Thesis_scale$LIE_score)
 
-##5. BPS and Narcissistic Personality Inventory
-pcor.test(Thesis_scale$BPS_score, Thesis_scale$narc_score, Thesis_scale$LIE_score)
+##5.1 BPS and Narcissistic Personality Inventory
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$narcgrand_score, Thesis_scale$LIE_score)
+
+##5.2 BPS and Hypersensitive Narcissism Scale
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$narchyper_score, Thesis_scale$LIE_score)
 
 ##6. BPS and Machiavellianism Personality scale
 pcor.test(Thesis_scale$BPS_score, Thesis_scale$mach_score, Thesis_scale$LIE_score)
@@ -610,11 +628,17 @@ partial_BSthoughtsdtpsych <- Thesis_scale %>%
   drop_na()
 pcor.test(partial_BSthoughtsdtpsych$BSthought, partial_BSthoughtsdtpsych$sdtpsych_score, partial_BSthoughtsdtpsych$LIE_score)
 
-##4. BSthought and Narcissistic Personality Inventory
-partial_BSthoughtnarc <- Thesis_scale %>% 
-  select(BSthought, narc_score, LIE_score) %>% 
+##4.1 BSthought and Narcissistic Personality Inventory
+partial_BSthoughtnarcgrand <- Thesis_scale %>% 
+  select(BSthought, narcgrand_score, LIE_score) %>% 
   drop_na()
-pcor.test(partial_BSthoughtnarc$BSthought, partial_BSthoughtnarc$narc_score, partial_BSthoughtnarc$LIE_score)
+pcor.test(partial_BSthoughtnarcgrand$BSthought, partial_BSthoughtnarcgrand$narcgrand_score, partial_BSthoughtnarcgrand$LIE_score)
+
+##4.2 BSthought and Hypersensitive Narcissism Scale
+partial_BSthoughtnarchyper <- Thesis_scale %>% 
+  select(BSthought, narchyper_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtnarchyper$BSthought, partial_BSthoughtnarchyper$narchyper_score, partial_BSthoughtnarchyper$LIE_score)
 
 ##5. BSthought and Machiavellianism Personality scale
 partial_BSthoughtmach <- Thesis_scale %>% 
@@ -762,7 +786,7 @@ colnames(Thesis_scale)
 cor.test(Thesis_scale$BPS_score, Thesis_scale$BFS_score, method=c("pearson"))
 
 # create the dataframe with 4 columns 
-bs_variables <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narc_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "ihs_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score", "BSthought" )
+bs_variables <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narcgrand_score", "narchyper_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "ihs_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score", "BSthought" )
 
 correlates_bs <- Thesis_scale[, bs_variables]
 correlates <- round(cor(correlates_bs, use = "pairwise.complete.obs"), 2)
@@ -826,20 +850,20 @@ This looks pretty good! If you put your mouse on one of the color block (the cor
 ```{r hoteling test}
 ## I also need to test the difference between two correlations that share one variable (Narcissism)
 # Variables: r.jk = cor(BFS, Narc), r.jh = cor(BPS, Narc), r.kh = cor(BFS, BPS)
-r_jk <- cor(Thesis_scale$BFS_score, Thesis_scale$narc_score, use = "complete.obs")
-r_jh <- cor(Thesis_scale$BPS_score, Thesis_scale$narc_score, use = "complete.obs")
+r_jk <- cor(Thesis_scale$BFS_score, Thesis_scale$narcgrand_score, use = "complete.obs")
+r_jh <- cor(Thesis_scale$BPS_score, Thesis_scale$narcgrand_score, use = "complete.obs")
 r_kh <- cor(Thesis_scale$BFS_score, Thesis_scale$BPS_score, use = "complete.obs")
 n <- nrow(Thesis_scale)
 
 # Then I need to run cocor for overlapping correlations
-resultnarc <- cocor.dep.groups.overlap(r.jk = r_jk, r.jh = r_jh, r.kh = r_kh, n = n)
-resultnarc@ hotelling1940
+resultnarcgrand <- cocor.dep.groups.overlap(r.jk = r_jk, r.jh = r_jh, r.kh = r_kh, n = n)
+resultnarcgrand@ hotelling1940
 # See the results
-print(resultnarc)
+print(resultnarcgrand)
 
 ##After this worked and I knwo what I want from the output, I decided to create a function for calculating the hoteling tests for all the variables. 
 ##List of variable names you want to compare against BFS and BPS
-target_vars <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narc_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "ihs_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score")
+target_vars <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narcgrand_score", "narchyper_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "ihs_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score")
 
 ##create a function since there are too many variables to be put manually
 compare_correlates <- function(var_name, x_name, y_name, Thesis_scale) {
