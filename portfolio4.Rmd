@@ -902,9 +902,26 @@ results_BFS_BSthought <- map_dfr(target_vars, compare_correlates, x_name = "BFS_
 # 3. BPS vs BSthought
 results_BPS_BSthought <- map_dfr(target_vars, compare_correlates, x_name = "BPS_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
 
+# 4. BFSe vs BPS
+results_BFSe_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFSe_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+
+# 5. BFSp vs BPS
+results_BFSp_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFSp_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+
+# 6. BFSe vs BSthought
+results_BFSp_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFSe_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+
+# 7. BFSp vs BSthought
+results_BFSp_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFSp_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+
 ##View the results in a table
 print(results_BFS_BPS)
 print(results_BFS_BSthought)
 print(results_BPS_BSthought)
+print(results_BFSe_BPS)
+print(results_BFSp_BPS)
+print(results_BFSp_BPS)
+print(results_BFSp_BPS)
+
 ```
 

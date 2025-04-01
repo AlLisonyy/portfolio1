@@ -254,7 +254,7 @@ fi_items <- Thesis_scale[, fi]
 cronbach.alpha(fi_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
 
 ## The descriptives information for each scales
-psych::describe(Thesis_scale %>% select(BFS_score, BFSe_score, BFSp_score, BPS_score, LIE_score, sdtnarc_score, sdtmach_score, sdtpsych_score, narchyper_score, narcgrand_score, mach_score, psycho_score, psychopri_score, psychosec_score, se_score, hon_score, emo_score, extra_score, agree_score, cons_score, open_score, ihs_score, nclos_score, ncog_score, openTS_score, closeTS_score, intuitiveTS_score, effortTS_score, activeopen_score, fi_score, crt_score, word_score, ns_score))
+psych::describe(Thesis_scale %>% select(BFS_score, BFSe_score, BFSp_score, BPS_score, BSthought, LIE_score, sdtnarc_score, sdtmach_score, sdtpsych_score, narchyper_score, narcgrand_score, mach_score, psycho_score, psychopri_score, psychosec_score, se_score, hon_score, emo_score, extra_score, agree_score, cons_score, open_score, ihs_score, nclos_score, ncog_score, openTS_score, closeTS_score, intuitiveTS_score, effortTS_score, activeopen_score, fi_score, crt_score, word_score, ns_score))
 ```
 
 ## Step 2: Demographic information
