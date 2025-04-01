@@ -317,6 +317,12 @@ partial_BFSpBPS<- Thesis_scale %>%
   select(BFSp_score, BPS_score, LIE_score) %>% 
   drop_na()
 pcor.test(partial_BFSpBPS$BFSp_score, partial_BFSpBPS$BPS_score, partial_BFSpBPS$LIE_score)
+
+##28. BFSp and BFS
+partial_BFSpBFS<- Thesis_scale %>% 
+  select(BFSp_score, BFS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpBFS$BFSp_score, partial_BFSpBFS$BFS_score, partial_BFSpBFS$LIE_score)
 ```
 
 ### Bullshit Frequency subscale BFSevasive and other variables's partial correlation when controled for lying tendency
@@ -465,6 +471,12 @@ partial_BFSeBFSp <- Thesis_scale %>%
   select(BFSe_score, BFSp_score, LIE_score) %>% 
   drop_na()
 pcor.test(partial_BFSeBFSp$BFSe_score, partial_BFSeBFSp$BFSp_score, partial_BFSeBFSp$LIE_score)
+
+##29. BFSe and BFS
+partial_BFSeBFS <- Thesis_scale %>% 
+  select(BFSe_score, BFS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeBFS$BFSe_score, partial_BFSeBFS$BFS_score, partial_BFSeBFS$LIE_score)
 
 ```
 
