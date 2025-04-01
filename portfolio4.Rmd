@@ -777,15 +777,11 @@ pcor.test(partial_BSthoughtcrt$BSthought, partial_BSthoughtcrt$crt_score, partia
 ## Step 2: pearson correlation
 ### correlations for all the variables
 ```{r pearson correlation BSF}
-cor(Thesis_scale$BFS_score, Thesis_scale$BPS_score, use = "complete.obs")
-cor(Thesis_scale$BFS_score, Thesis_scale$BSthought, use = "complete.obs")
-cor(Thesis_scale$BPS_score, Thesis_scale$BSthought, use = "complete.obs")
-cor.test(Thesis_scale$BPS_score, Thesis_scale$BSthought, method=c("pearson"))
-colnames(Thesis_scale) 
-##1. BFS and BPS
-cor.test(Thesis_scale$BPS_score, Thesis_scale$BFS_score, method=c("pearson"))
+##Test to see if the correlation test is what i am looking for:
+cor.test(Thesis_scale$BSthought, Thesis_scale$ncog_score, method=c("pearson"))
+cor.test(Thesis_scale$BSthought, Thesis_scale$ihs_score, method=c("pearson"))
 
-# create the dataframe with 4 columns 
+##Correlations
 bs_variables <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narcgrand_score", "narchyper_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "ihs_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score", "BSthought" )
 
 correlates_bs <- Thesis_scale[, bs_variables]
@@ -845,7 +841,7 @@ ggplotly(corr_mat)
 
 This looks pretty good! If you put your mouse on one of the color block (the correlation value), you will be able to see what two variables are correlated and what is the correlation value. It is really easy to see which has high correlation as well!
 
-### Hoteling test for the three types of BS measurements and the variables
+## Step 3: Hoteling test for the three types of BS measurements and the variables
 
 ```{r hoteling test}
 ## I also need to test the difference between two correlations that share one variable (Narcissism)

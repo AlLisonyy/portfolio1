@@ -12,4 +12,4 @@ gender moderation?
 short answer analysis
 
 
-BPS scale exploratory factor analysis?
+BPS scale exploratory factor analysis?-- is the three scales measuring the same thing for BS or different apsects 
