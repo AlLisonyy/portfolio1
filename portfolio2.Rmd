@@ -98,13 +98,13 @@ Thesis_scale <- Thesis_scale %>%
     
     across(c(nclos2, nclos5, nclos15, nclos12, nclos17, nclos18, nclos19, nclos20, nclos22, nclos24, nclos27, nclos28, nclos34, nclos37, nclos38, nclos42), ~ recode(.,
       `1` = 6, `2` = 5, `3` = 4, `4` = 3, `5` = 2, `6` = 1)), ##Need for closure
-    
-    across(c(hex1, hex9, hex10, hex12, hex14, hex15, hex19, hex20, hex21, hex24, hex26, hex28, hex30, hex31, hex32, hex35, hex41, hex44, hex46, hex48, hex49, hex52, hex53, hex55, hex56, hex57, hex59, hex60), ~ recode(.,
+
+    across(c(hex1, hex9, hex10, hex12, hex14, hex15, hex19, hex20, hex21, hex24, hex26, hex28, hex30, hex31, hex32, hex35, hex41, hex42, hex44, hex46, hex48, hex49, hex52, hex53, hex55, hex56, hex57, hex59, hex60), ~ recode(.,
       `1` = 5, `2` = 4, `4` = 2, `5` = 1)) ##HEXACO
     )
-
 ```
 I realized that I should have create new variables for the recoded ones, so that would be easier for me to keep track on if the numbers are already recoded. I had too many variables this time so I did not do that. 
+I also had HEXACO's Honesty-Humility subscale with a low reliability, I ran a more close analysis looking at item correlations and found that I was missing one item for reverse coding... 
 
 ## Step 3.1: calculating the Thought listing and rating task
 ```{r BS Thought rating and listing measurement calculation}
