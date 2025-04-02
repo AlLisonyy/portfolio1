@@ -909,10 +909,10 @@ results_BFSe_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFSe_scor
 results_BFSp_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFSp_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
 
 # 6. BFSe vs BSthought
-results_BFSp_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFSe_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+results_BFSe_BSthought <- map_dfr(target_vars, compare_correlates, x_name = "BFSe_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
 
 # 7. BFSp vs BSthought
-results_BFSp_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFSp_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+results_BFSp_BSthought <- map_dfr(target_vars, compare_correlates, x_name = "BFSp_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
 
 ##View the results in a table
 print(results_BFS_BPS)
@@ -920,101 +920,10 @@ print(results_BFS_BSthought)
 print(results_BPS_BSthought)
 print(results_BFSe_BPS)
 print(results_BFSp_BPS)
-print(results_BFSp_BPS)
-print(results_BFSp_BPS)
+print(results_BFSe_BSthought)
+print(results_BFSp_BSthought)
 
 ```
-
-
-```{r}
-compare_partial_correlates <- function(var_name, x_name, y_name, Thesis_scale) {
-  # Calculate partial correlations, controlling for LIE_score
-  partial_corr1 <- tryCatch(pcor.test(Thesis_scale[[x_name]], Thesis_scale[[var_name]], Thesis_scale[["LIE_score"]], method = "pearson"), error = function(e) NULL)
-  partial_corr2 <- tryCatch(pcor.test(Thesis_scale[[y_name]], Thesis_scale[[var_name]], Thesis_scale[["LIE_score"]], method = "pearson"), error = function(e) NULL)
-  partial_corr3 <- tryCatch(pcor.test(Thesis_scale[[x_name]], Thesis_scale[[y_name]], Thesis_scale[["LIE_score"]], method = "pearson"), error = function(e) NULL)
-  
-  # Check if partial correlations were calculated successfully
-  if (is.null(partial_corr1) || is.null(partial_corr2) || is.null(partial_corr3)) {
-    return(tibble(
-      variable = var_name,
-      r_pred1 = NA,
-      r_pred2 = NA,
-      r_variable = NA,
-      p_Hotelling = NA,
-      p_Steiger = NA,
-      conclusion = "Error during partial correlation calculation",
-      hotelingt = NA
-    ))
-  }
-  
-  # Extract partial correlation estimates
-  r_jk <- as.numeric(partial_corr1$estimate)
-  r_jh <- as.numeric(partial_corr2$estimate)
-  r_kh <- as.numeric(partial_corr3$estimate)
-  n <- nrow(Thesis_scale)
-  
-  # Check if correlations are valid numbers between -1 and 1
-  if (!is.na(r_jk) && !is.na(r_jh) && !is.na(r_kh) && 
-      all(c(r_jk, r_jh, r_kh) >= -1 & c(r_jk, r_jh, r_kh) <= 1)) {
-    
-    result <- tryCatch(cocor.dep.groups.overlap(r.jk = r_jk, r.jh = r_jh, r.kh = r_kh, n = n), 
-                       error = function(e) NULL)
-    
-    if (!is.null(result)) {
-      return(tibble(
-        variable = var_name,
-        r_pred1 = r_jk,
-        r_pred2 = r_jh,
-        r_variable = r_kh,
-        p_Hotelling = tryCatch(result@hotelling1940$p.value, error = function(e) NA),
-        p_Steiger = tryCatch(result@steiger1980$p.value, error = function(e) NA),
-        conclusion = ifelse(!is.na(result@hotelling1940$p.value) && result@hotelling1940$p.value < 0.05, "Different", "Not Different"),
-        hotelingt = tryCatch(result@hotelling1940$statistic, error = function(e) NA)
-      ))
-    } else {
-      return(tibble(
-        variable = var_name,
-        r_pred1 = r_jk,
-        r_pred2 = r_jh,
-        r_variable = r_kh,
-        p_Hotelling = NA,
-        p_Steiger = NA,
-        conclusion = "Error during cocor calculation",
-        hotelingt = NA
-      ))
-    }
-  } else {
-    return(tibble(
-      variable = var_name,
-      r_pred1 = r_jk,
-      r_pred2 = r_jh,
-      r_variable = r_kh,
-      p_Hotelling = NA,
-      p_Steiger = NA,
-      conclusion = "Invalid correlation values",
-      hotelingt = NA
-    ))
-  }
-}
-
-## Variable List
-target_vars <- c("BFSe_score", "BFSp_score", "BPS_score", "sdtnarc_score", "sdtmach_score", 
-                 "sdtpsych_score", "narcgrand_score", "narchyper_score", "mach_score", "psycho_score", 
-                 "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", 
-                 "agree_score", "cons_score", "open_score", "ihs_score", "nclos_score", "ncog_score", 
-                 "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", 
-                 "fi_score", "crt_score", "word_score", "ns_score", "BSthought")
-
-## Run Analysis for all Variables
-results_BFS_BPS_partial <- map_dfr(target_vars, compare_partial_correlates, 
-                                   x_name = "BFS_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
-
-## View the Results in a Table
-print(results_BFS_BPS_partial)
-```
-
-
-
 
 ```{r partial corre hoteling}
 ##Test the function first:
@@ -1081,11 +990,35 @@ compare_partial_correlates <- function(var_name, x_name, y_name, control_vars, T
     hotelingt = tryCatch(result@hotelling1940$statistic, error = function(e) NA)
   )}
 
-results_BFS_BPS_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BFS_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+# 1. BFS vs BPS
+results_BFS_BPS_partial <- map_dfr(target_vars, compare_partial_correlates, 
+                                   x_name = "BFS_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+# 2. BFS vs BSthought
+results_BFS_BSthought_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BFS_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
 
-## View the results in a table
+# 3. BPS vs BSthought
+results_BPS_BSthought_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BPS_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+
+# 4. BFSe vs BPS
+results_BFSe_BPS_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BFSe_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+
+# 5. BFSp vs BPS
+results_BFSp_BPS_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BFSp_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+
+# 6. BFSe vs BSthought
+results_BFSe_BSthought_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BFSe_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+
+# 7. BFSp vs BSthought
+results_BFSp_BSthought_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BFSp_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+
+##View the results in a table
 print(results_BFS_BPS_partial)
-
+print(results_BFS_BSthought_partial)
+print(results_BPS_BSthought_partial)
+print(results_BFSe_BPS_partial)
+print(results_BFSp_BPS_partial)
+print(results_BFSe_BSthought_partial)
+print(results_BFSp_BSthought_partial)
 ```
 
 
