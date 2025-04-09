@@ -69,7 +69,7 @@ pcor.test(Thesis_scale$BFS_score, Thesis_scale$psycho_score, Thesis_scale$LIE_sc
 ##7.1
 pcor.test(Thesis_scale$BFS_score, Thesis_scale$psychopri_score, Thesis_scale$LIE_score)
 partial_BFSpsychosec <- Thesis_scale %>% 
-  select(BFS_score, psychosec_score, LIE_score) %>% 
+  select(BFS_score, psychosec_score, LIE_score) %>%
   drop_na()
 ##7.2
 pcor.test(partial_BFSpsychosec$BFS_score, partial_BFSpsychosec$psychosec_score, partial_BFSpsychosec$LIE_score)
@@ -1022,4 +1022,8 @@ print(results_BFSp_BSthought_partial)
 ```
 
 
+```{r}
+saveRDS(Thesis_scale, file = "Thesis_scale.rds")
+write_sav(Thesis_scale, "Thesis_scale.sav")
+```
 

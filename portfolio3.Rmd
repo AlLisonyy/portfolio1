@@ -36,6 +36,20 @@ Thesis_scale <- Thesis_scale %>%
 bfs_items <- Thesis_scale[, bfs]
 cronbach.alpha(bfs_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
 
+##BFS additional items
+bfs_add <- c("BS_ADD_1", "BS_ADD_2", "BS_ADD_3", "BS_ADD_4", "BS_ADD_5", "BS_ADD_6", "BS_ADD_7", "BS_ADD_8")
+Thesis_scale <- Thesis_scale %>%
+  mutate(BFSadd_score = rowMeans(Thesis_scale[,bfs_add],na.rm=TRUE)) 
+bfsadd_items <- Thesis_scale[, bfs_add]
+cronbach.alpha(bfsadd_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
+##BFS original and additional items
+bfs_new <- c("BS_ADD_1", "BS_ADD_2", "BS_ADD_3", "BS_ADD_4", "BS_ADD_5", "BS_ADD_6", "BS_ADD_7", "BS_ADD_8", "BFS_1", "BFS_2", "BFS_3", "BFS_4", "BFS_5", "BFS_6", "BFS_7", "BFS_8", "BFS_9", "BFS_10", "BFS_11", "BFS_12")
+Thesis_scale <- Thesis_scale %>%
+  mutate(BFSnew_score = rowMeans(Thesis_scale[,bfs_new],na.rm=TRUE)) 
+bfsnew_items <- Thesis_scale[, bfs_new]
+cronbach.alpha(bfsnew_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Bullshit Frequency scale evasive
 bfse <- c("BFS_9", "BFS_10", "BFS_11", "BFS_12")
 Thesis_scale <- Thesis_scale %>%
@@ -254,7 +268,7 @@ fi_items <- Thesis_scale[, fi]
 cronbach.alpha(fi_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
 
 ## The descriptives information for each scales
-psych::describe(Thesis_scale %>% select(BFS_score, BFSe_score, BFSp_score, BPS_score, BSthought, LIE_score, sdtnarc_score, sdtmach_score, sdtpsych_score, narchyper_score, narcgrand_score, mach_score, psycho_score, psychopri_score, psychosec_score, se_score, hon_score, emo_score, extra_score, agree_score, cons_score, open_score, ihs_score, nclos_score, ncog_score, openTS_score, closeTS_score, intuitiveTS_score, effortTS_score, activeopen_score, fi_score, crt_score, word_score, ns_score))
+psych::describe(Thesis_scale %>% select(BFS_score, BFSadd_score, BFSnew_score, BFSe_score, BFSp_score, BPS_score, BSthought, LIE_score, sdtnarc_score, sdtmach_score, sdtpsych_score, narchyper_score, narcgrand_score, mach_score, psycho_score, psychopri_score, psychosec_score, se_score, hon_score, emo_score, extra_score, agree_score, cons_score, open_score, ihs_score, nclos_score, ncog_score, openTS_score, closeTS_score, intuitiveTS_score, effortTS_score, activeopen_score, fi_score, crt_score, word_score, ns_score))
 ```
 
 ## Step 2: Demographic information
@@ -287,7 +301,7 @@ ggplot(genders, aes(x = "", y = n, fill = gender_label)) +
 
 ```
 
-###Year in college
+###Year in college and age
 
 ```{r year in college}
 ##For year in college, I would like to do a pie chart. So I will start with coverting gender codes to labels
@@ -307,6 +321,19 @@ ggplot(years, aes(x = year_label, y = n, fill = year_label)) +
   scale_fill_manual(values = c("#7a4d9f", "#eb68a0", "#feb326", "#64c5eb")) +
   theme_minimal() +
   theme(legend.position = "none")
+
+##Age information
+age_summary <- Thesis_scale %>%
+  summarise(
+    Mean_Age = mean(age, na.rm = TRUE),
+    Median_Age = median(age, na.rm = TRUE),
+    SD_Age = sd(age, na.rm = TRUE),
+    Min_Age = min(age, na.rm = TRUE),
+    Max_Age = max(age, na.rm = TRUE),
+    N_Age = n()
+  )
+
+print(age_summary)
 ```
 
 ###Greek Life

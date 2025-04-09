@@ -13,3 +13,274 @@ short answer analysis
 
 
 BPS scale exploratory factor analysis?-- is the three scales measuring the same thing for BS or different apsects 
+
+```{r}
+library(tibble)
+library(ggplot2)
+library(psych)
+library(ltm)
+library(tidyverse)
+
+Thesis_scale <- readRDS("Thesis_scale.rds")
+```
+
+
+```{r bar graph for dark traid}
+
+# Sample data: Replace these values with your actual correlation values
+dark <- data.frame(
+  Trait = rep(c("MACH-short", "NARC-short", "PSYC-short", "MPI", "HSNS", "NPI", "LSRP"), each = 3),
+  Measures = rep(c("BFS", "BPS", "Thought Task"), times = 7),
+  Correlation = c(0.24, 0.11, 0.09,     # Machiavellianism correlations
+                  0.15, 0.08, 0.01,     # Narcissism correlations
+                  0.14, 0.18, 0.01,     # Psychopathy correlations
+                  .26, .18, .11, #MPI
+                  .25, .07, .10,    #HSNS
+                  .15, .18, .01,     #NPI
+                  .18, .26, .06)      #LSRP      
+  )
+
+
+
+plot <- ggplot(dark, aes(x = Trait, y = Correlation, fill = Measures)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.85), width = 0.8) +
+  scale_fill_manual(values = c("BFS" = "#1f77b4", "BPS" = "#ff7f0e", "Thought Task" = "#2ca02c")) +
+  theme_classic(base_size = 12) + # Set the base font size to 12
+  theme(
+    text = element_text(family = "Times New Roman"), # Use Times New Roman for all text
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 12)
+  ) +
+  labs(
+    title = " ",
+    x = "Dark Triad Traits",
+    y = "Partial Correlation (r)",
+    fill = "Measures"
+  ) +
+  geom_text(aes(label = round(Correlation, 2)), 
+            position = position_dodge(width = 0.85),  # Matching dodge width with bars
+            vjust = -0.4, 
+            size = 5,  # Made the text smaller for better clarity
+            family = "Times New Roman")+
+  scale_y_continuous(limits = c(0, 0.3), expand = c(0, 0))
+
+
+# Display the plot
+print(plot)
+
+
+```
+
+
+```{r}
+#Sample data: Replace these values with your actual correlation values
+hexaco <- data.frame(
+  Trait = rep(c("HON", "EMO", "EXTRA", "AGRE", "CONS", "OPEN", "NCOG", "NCLS"), each = 3),
+  Measures = rep(c("BFS", "BPS", "Thought Task"), times = 8),
+  Correlation = c(-.24, -.16, -.10,   
+                  .10, -.08, .04,     
+                  .01, .07, .03,     
+                  -.13, -.03, -.03, 
+                  -.17, -.29, -.02,    
+                  -.03, -.18, -.08,     
+                  -.02, -.30, -.13,
+                  .04, -.15, -.05)          
+  )
+
+
+
+plot <- ggplot(hexaco, aes(x = Trait, y = Correlation, fill = Measures)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.85), width = 0.8) +
+  scale_fill_manual(values = c("BFS" = "#1f77b4", "BPS" = "#ff7f0e", "Thought Task" = "#2ca02c")) +
+  theme_classic(base_size = 12) + # Set the base font size to 12
+  theme(
+    text = element_text(family = "Times New Roman"), # Use Times New Roman for all text
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 12)
+  ) +
+  labs(
+    title = " ",
+    x = "Other Personality Traits",
+    y = "Partial Correlation (r)",
+    fill = "Measures"
+  ) +
+  geom_text(aes(label = round(Correlation, 2)), 
+            position = position_dodge(width = 0.85),  # Matching dodge width with bars
+            vjust = -0.4, 
+            size = 5,  # Made the text smaller for better clarity
+            family = "Times New Roman")+
+  scale_y_continuous(limits = c(-.35, 0.15), expand = c(0, 0))
+
+
+# Display the plot
+print(plot)
+
+```
+
+
+```{r}
+##install.packages("lavaan")
+##install.packages("semPlot")
+
+library(lavaan)
+library(semPlot)
+
+one_factor_model <- '
+    General_Factor =~ BFS_1 + BFS_2 + BFS_3 + BFS_4 + BFS_5 + BFS_6 + BFS_7 + BFS_8 + BFS_9 + BFS_10 + BFS_11 + BFS_12 + BPS_1 + BPS_2 + BPS_3 + BPS_4 + BPS_5 + BPS_6 + BPS_7 + BPS_8 + BPS_9 + BPS_10 + BPS_11 + BPS_12
+'
+
+one_factor_fit <- cfa(one_factor_model, data = Thesis_scale)
+summary(one_factor_fit, fit.measures = TRUE, standardized = TRUE)
+
+
+
+two_factor_model <- '
+    BFS_Factor =~ BFS_1 + BFS_2 + BFS_3 + BFS_4 + BFS_5 + BFS_6 + BFS_7 + BFS_8 + BFS_9 + BFS_10 + BFS_11 + BFS_12
+    BPS_Factor =~ BPS_1 + BPS_2 + BPS_3 + BPS_4 + BPS_5 + BPS_6 + BPS_7 + BPS_8 + BPS_9 + BPS_10 + BPS_11 + BPS_12
+'
+
+two_factor_fit <- cfa(two_factor_model, data = Thesis_scale)
+summary(two_factor_fit, fit.measures = TRUE, standardized = TRUE)
+
+
+#Compare models:
+compare_models <- anova(one_factor_fit, two_factor_fit)
+print(compare_models)
+
+semPaths(one_factor_fit, what = "std", layout = "tree", edge.label.cex = 1.2, title = FALSE)
+semPaths(two_factor_fit, what = "std", layout = "tree", edge.label.cex = 1.2, title = FALSE)
+```
+```{r}
+#install.packages("psych")
+#install.packages("GPArotation")
+library(psych)
+library(GPArotation)
+
+# Preparing the data: Assuming your items are named BFS1, BFS2, ..., BPS1, BPS2, ...
+# Select all BFS and BPS items for the analysis
+bfs_it <- paste0("BFS_", 1:12)
+bps_it <- paste0("BPS_", 1:12)
+
+all_items <- c(bfs_it, bps_it)
+
+# Select the relevant columns from your dataset
+efa_data <- Thesis_scale[, all_items]
+
+# Check if the data is suitable for EFA (KMO and Bartlett’s test)
+KMO(efa_data)  # Should be > 0.60 for a good EFA
+cortest.bartlett(efa_data)  # Should be significant (p < .05)
+
+bartlett_result <- cortest.bartlett(efa_data)
+print(bartlett_result)  # Should be significant (p < .05)
+
+
+
+
+# Principal Component Analysis (PCA) to determine number of factors
+pca_results <- principal(efa_data, nfactors = ncol(efa_data), rotate = "none")
+print(pca_results$values)
+
+# Scree Plot (to visualize eigenvalues)
+scree(efa_data)
+
+# Parallel Analysis (more reliable than scree plot alone)
+fa.parallel(efa_data, fa = "fa", n.iter = 100)
+
+
+
+
+# Run EFA for 2 Factors
+efa_2factor <- fa(efa_data, nfactors = 3, rotate = "oblimin", fm = "ml")
+
+# Print results
+print(efa_2factor)
+
+# Visualize factor loadings
+fa.diagram(efa_2factor)
+```
+
+```{r}
+bfs_model <- '
+  BFS_Factor =~ BFS_1 + BFS_2 + BFS_3 + BFS_4 + BFS_5 + BFS_6 + 
+                BFS_7 + BFS_8 + BFS_9 + BFS_10 + BFS_11 + BFS_12
+'
+
+# Fit the model
+bfs_fit <- cfa(bfs_model, data = Thesis_scale)
+summary(bfs_fit, fit.measures = TRUE, standardized = TRUE)
+
+# Visualize the model
+semPaths(bfs_fit, what = "std", layout = "tree", edge.label.cex = 1.2)
+```
+
+```{r}
+# Specify a single-factor model for BPS
+bps_model <- '
+  BPS_Factor =~ BPS_1 + BPS_2 + BPS_3 + BPS_4 + BPS_5 + BPS_6 + 
+                BPS_7 + BPS_8 + BPS_9 + BPS_10
+'
+
+# Fit the model
+bps_fit <- cfa(bps_model, data = Thesis_scale)
+summary(bps_fit, fit.measures = TRUE, standardized = TRUE)
+
+# Visualize the model
+semPaths(bps_fit, what = "std", layout = "tree", edge.label.cex = 1.2)
+```
+
+```{r}
+bfs_it <- paste0("BFS_", 1:12)
+lie_it <- paste0("lies", 1:14)
+
+all_items_liebfs <- c(bfs_it, lie_it)
+
+# Select the relevant columns from your dataset
+efa_data_liebfs <- Thesis_scale[, all_items_liebfs]
+
+# Check if the data is suitable for EFA (KMO and Bartlett’s test)
+KMO(efa_data_liebfs)  # Should be > 0.60 for a good EFA
+cortest.bartlett(efa_data_liebfs)  # Should be significant (p < .05)
+
+liebfs_result <- cortest.bartlett(efa_data_liebfs)
+print(liebfs_result)  # Should be significant (p < .05)
+
+
+# Principal Component Analysis (PCA) to determine number of factors
+pcalie_results <- principal(efa_data_liebfs, nfactors = ncol(efa_data_liebfs), rotate = "none")
+print(pcalie_results$values)
+
+# Scree Plot (to visualize eigenvalues)
+scree(efa_data_liebfs)
+
+# Parallel Analysis (more reliable than scree plot alone)
+fa.parallel(efa_data_liebfs, fa = "fa", n.iter = 100)
+
+
+# Run EFA for 3 Factors
+efa_2factorlie <- fa(efa_data_liebfs, nfactors = 3, rotate = "oblimin", fm = "ml")
+
+# Print results
+print(efa_2factorlie)
+
+# Visualize factor loadings
+fa.diagram(efa_2factorlie)
+
+
+# Run EFA for 4 Factors
+efa_2factorlie <- fa(efa_data_liebfs, nfactors = 4, rotate = "oblimin", fm = "ml")
+
+# Print results
+print(efa_2factorlie)
+
+# Visualize factor loadings
+fa.diagram(efa_2factorlie)
+
+```
+
+

@@ -402,7 +402,39 @@ cronbach.alpha(bfs_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.829 0.875</code></pre>
+## 0.830 0.876</code></pre>
+<pre class="r"><code>##BFS additional items
+bfs_add &lt;- c(&quot;BS_ADD_1&quot;, &quot;BS_ADD_2&quot;, &quot;BS_ADD_3&quot;, &quot;BS_ADD_4&quot;, &quot;BS_ADD_5&quot;, &quot;BS_ADD_6&quot;, &quot;BS_ADD_7&quot;, &quot;BS_ADD_8&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(BFSadd_score = rowMeans(Thesis_scale[,bfs_add],na.rm=TRUE)) 
+bfsadd_items &lt;- Thesis_scale[, bfs_add]
+cronbach.alpha(bfsadd_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;bfsadd_items&#39; data-set
+## 
+## Items: 8
+## Sample units: 417
+## alpha: 0.864
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.840 0.884</code></pre>
+<pre class="r"><code>##BFS original and additional items
+bfs_new &lt;- c(&quot;BS_ADD_1&quot;, &quot;BS_ADD_2&quot;, &quot;BS_ADD_3&quot;, &quot;BS_ADD_4&quot;, &quot;BS_ADD_5&quot;, &quot;BS_ADD_6&quot;, &quot;BS_ADD_7&quot;, &quot;BS_ADD_8&quot;, &quot;BFS_1&quot;, &quot;BFS_2&quot;, &quot;BFS_3&quot;, &quot;BFS_4&quot;, &quot;BFS_5&quot;, &quot;BFS_6&quot;, &quot;BFS_7&quot;, &quot;BFS_8&quot;, &quot;BFS_9&quot;, &quot;BFS_10&quot;, &quot;BFS_11&quot;, &quot;BFS_12&quot;)
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(BFSnew_score = rowMeans(Thesis_scale[,bfs_new],na.rm=TRUE)) 
+bfsnew_items &lt;- Thesis_scale[, bfs_new]
+cronbach.alpha(bfsnew_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></pre>
+<pre><code>## 
+## Standardized Cronbach&#39;s alpha for the &#39;bfsnew_items&#39; data-set
+## 
+## Items: 20
+## Sample units: 417
+## alpha: 0.899
+## 
+## Bootstrap 95% CI based on 1000 samples
+##  2.5% 97.5% 
+## 0.881 0.913</code></pre>
 <pre class="r"><code>##Bullshit Frequency scale evasive
 bfse &lt;- c(&quot;BFS_9&quot;, &quot;BFS_10&quot;, &quot;BFS_11&quot;, &quot;BFS_12&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -418,7 +450,7 @@ cronbach.alpha(bfse_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code><
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.664 0.770</code></pre>
+## 0.667 0.765</code></pre>
 <pre class="r"><code>##Bullshit Frequency scale persuasive
 bfsp &lt;- c(&quot;BFS_1&quot;, &quot;BFS_2&quot;, &quot;BFS_3&quot;, &quot;BFS_4&quot;, &quot;BFS_5&quot;, &quot;BFS_6&quot;, &quot;BFS_7&quot;, &quot;BFS_8&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -434,7 +466,7 @@ cronbach.alpha(bfsp_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code><
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.836 0.881</code></pre>
+## 0.835 0.882</code></pre>
 <pre class="r"><code>##Bullshit Propensity scale 
 bps &lt;- c(&quot;BPS_1&quot;, &quot;BPS_2&quot;, &quot;BPS_3&quot;, &quot;BPS_4&quot;, &quot;BPS_5&quot;, &quot;BPS_6&quot;, &quot;BPS_7&quot;, &quot;BPS_8&quot;, &quot;BPS_9&quot;, &quot;BPS_10&quot;, &quot;BPS_11&quot;, &quot;BPS_12&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -450,7 +482,7 @@ cronbach.alpha(bps_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.716 0.790</code></pre>
+## 0.714 0.789</code></pre>
 <pre class="r"><code>##Lying in Everyday Situations Scale
 lie &lt;- c(&quot;lies1&quot;, &quot;lies2&quot;, &quot;lies3&quot;, &quot;lies4&quot;, &quot;lies5&quot;, &quot;lies6&quot;, &quot;lies7&quot;, &quot;lies8&quot;, &quot;lies9&quot;, &quot;lies10&quot;, &quot;lies11&quot;, &quot;lies12&quot;, &quot;lies13&quot;, &quot;lies14&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -482,7 +514,7 @@ cronbach.alpha(sdtnarc_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</cod
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.661 0.752</code></pre>
+## 0.658 0.753</code></pre>
 <pre class="r"><code>##Short_dark_triad Machiavellianism
 sdtmach &lt;- c(&quot;DTS_MACH_1&quot;, &quot;DTS_MACH_2&quot;, &quot;DTS_MACH_3&quot;, &quot;DTS_MACH_4&quot;, &quot;DTS_MACH_5&quot;, &quot;DTS_MACH_6&quot;, &quot;DTS_MACH_7&quot;, &quot;DTS_MACH_8&quot;, &quot;DTS_MACH_9&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -498,7 +530,7 @@ cronbach.alpha(sdtmach_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</cod
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.753 0.819</code></pre>
+## 0.756 0.820</code></pre>
 <pre class="r"><code>##Short_dark_triad Psychopathy
 sdtpsych &lt;- c(&quot;DTS_Path_1&quot;, &quot;DTS_Path_2&quot;, &quot;DTS_Path_3&quot;, &quot;DTS_Path_4&quot;, &quot;DTS_Path_5&quot;, &quot;DTS_Path_6&quot;, &quot;DTS_Path_7&quot;, &quot;DTS_Path_8&quot;, &quot;DTS_Path_9&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -514,7 +546,7 @@ cronbach.alpha(sdtpsych_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</co
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.719 0.792</code></pre>
+## 0.717 0.790</code></pre>
 <pre class="r"><code>##Hypersensitive Narcissism Scale
 narchyper &lt;- c(&quot;HNS_1&quot;, &quot;HNS_2&quot;, &quot;HNS_3&quot;, &quot;HNS_4&quot;, &quot;HNS_5&quot;, &quot;HNS_6&quot;, &quot;HNS_7&quot;, &quot;HNS_8&quot;, &quot;HNS_9&quot;, &quot;NPI_10&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -530,7 +562,7 @@ cronbach.alpha(narchyper_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</c
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.652 0.746</code></pre>
+## 0.652 0.744</code></pre>
 <pre class="r"><code>##Narcissistic Personality Inventory
 narcgrand &lt;- c(&quot;NPI_1&quot;, &quot;NPI_2&quot;, &quot;NPI_3&quot;, &quot;NPI_4&quot;, &quot;NPI_5&quot;, &quot;NPI_6&quot;, &quot;NPI_7&quot;, &quot;NPI_8&quot;, &quot;NPI_9&quot;, &quot;NPI_10&quot;, &quot;NPI_11&quot;, &quot;NPI_12&quot;, &quot;NPI_13&quot;, &quot;NPI_14&quot;, &quot;NPI_15&quot;, &quot;NPI_16&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -546,7 +578,7 @@ cronbach.alpha(narcgrand_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</c
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.707 0.783</code></pre>
+## 0.708 0.784</code></pre>
 <pre class="r"><code>##Machiavellianism Personality scale
 mach &lt;- c(&quot;MPS_1&quot;, &quot;MPS_2&quot;, &quot;MPS_3&quot;, &quot;MPS_4&quot;, &quot;MPS_5&quot;, &quot;MPS_6&quot;, &quot;MPS_7&quot;, &quot;MPS_8&quot;, &quot;MPS_9&quot;, &quot;MPS_10&quot;, &quot;MPS_11&quot;, &quot;MPS_12&quot;, &quot;MPS_13&quot;, &quot;MPS_14&quot;, &quot;MPS_15&quot;, &quot;MPS_16&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -562,7 +594,7 @@ cronbach.alpha(mach_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code><
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.812 0.858</code></pre>
+## 0.809 0.857</code></pre>
 <pre class="r"><code>##Levenson Self-Report Psychopathy Scale
 psycho &lt;- c(&quot;LSRP_PPS_1&quot;, &quot;LSRP_PPS_2&quot;, &quot;LSRP_PPS_3&quot;, &quot;LSRP_PPS_4&quot;, &quot;LSRP_PPS_5&quot;, &quot;LSRP_PPS_6&quot;, &quot;LSRP_PPS_7&quot;, &quot;LSRP_PPS_8&quot;, &quot;LSRP_PPS_9&quot;, &quot;LSRP_PPS_10&quot;, &quot;LSRP_PPS_11&quot;, &quot;LSRP_PPS_12&quot;, &quot;LSRP_PPS_13&quot;, &quot;LSRP_PPS_14&quot;, &quot;LSRP_PPS_15&quot;, &quot;LSRP_PPS_16&quot;, &quot;LSRP_SPS_1&quot;, &quot;LSRP_SPS_2&quot;, &quot;LSRP_SPS_3&quot;, &quot;LSRP_SPS_4&quot;, &quot;LSRP_SPS_5&quot;, &quot;LSRP_SPS_6&quot;, &quot;LSRP_SPS_7&quot;, &quot;LSRP_SPS_8&quot;, &quot;LSRP_SPS_9&quot;, &quot;LSRP_SPS_10&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -597,7 +629,7 @@ cronbach.alpha(psychopri_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</c
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.788 0.833</code></pre>
+## 0.789 0.834</code></pre>
 <pre class="r"><code>##secondary factor of psychopathy scale
 psychosec &lt;- c(&quot;LSRP_SPS_1&quot;, &quot;LSRP_SPS_2&quot;, &quot;LSRP_SPS_3&quot;, &quot;LSRP_SPS_4&quot;, &quot;LSRP_SPS_5&quot;, 
                     &quot;LSRP_SPS_6&quot;, &quot;LSRP_SPS_7&quot;, &quot;LSRP_SPS_8&quot;, &quot;LSRP_SPS_9&quot;, &quot;LSRP_SPS_10&quot;)
@@ -614,7 +646,7 @@ cronbach.alpha(psychosec_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</c
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.726 0.796</code></pre>
+## 0.725 0.796</code></pre>
 <pre class="r"><code>##Self-esteem (Rosenberg)
 se &lt;- c(&quot;self_esteem_1&quot;, &quot;self_esteem_2&quot;, &quot;self_esteem_3&quot;, &quot;self_esteem_4&quot;, &quot;self_esteem_5&quot;, 
                      &quot;self_esteem_6&quot;, &quot;self_esteem_7&quot;, &quot;self_esteem_8&quot;, &quot;self_esteem_9&quot;, &quot;self_esteem_10&quot;)
@@ -631,7 +663,7 @@ cronbach.alpha(se_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></p
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.885 0.916</code></pre>
+## 0.885 0.915</code></pre>
 <pre class="r"><code>##HEXACO
 ##Honesty_humility
 hon &lt;- c(&quot;hex6&quot;, &quot;hex12&quot;, &quot;hex18&quot;, &quot;hex24&quot;, &quot;hex30&quot;, &quot;hex36&quot;, &quot;hex42&quot;, &quot;hex48&quot;, &quot;hex54&quot;, &quot;hex60&quot;)
@@ -648,7 +680,7 @@ cronbach.alpha(hon_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.595 0.702</code></pre>
+##  0.59  0.70</code></pre>
 <pre class="r"><code>##Emotionality
 emo &lt;- c(&quot;hex5&quot;, &quot;hex11&quot;, &quot;hex17&quot;, &quot;hex23&quot;, &quot;hex29&quot;, &quot;hex35&quot;, &quot;hex41&quot;, &quot;hex47&quot;, &quot;hex53&quot;, &quot;hex59&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -664,7 +696,7 @@ cronbach.alpha(emo_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.766 0.828</code></pre>
+## 0.768 0.830</code></pre>
 <pre class="r"><code>##Extraversion
 extra &lt;- c(&quot;hex4&quot;, &quot;hex10&quot;, &quot;hex16&quot;, &quot;hex22&quot;, &quot;hex28&quot;, &quot;hex34&quot;, &quot;hex40&quot;, &quot;hex46&quot;, &quot;hex52&quot;, &quot;hex58&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -680,7 +712,7 @@ cronbach.alpha(extra_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code>
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.770 0.828</code></pre>
+## 0.767 0.828</code></pre>
 <pre class="r"><code>##Agreeableness
 agree &lt;- c(&quot;hex3&quot;, &quot;hex9&quot;, &quot;hex15&quot;, &quot;hex21&quot;, &quot;hex27&quot;, &quot;hex33&quot;, &quot;hex39&quot;, &quot;hex45&quot;, &quot;hex51&quot;, &quot;hex57&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -696,7 +728,7 @@ cronbach.alpha(agree_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code>
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.748 0.816</code></pre>
+## 0.748 0.815</code></pre>
 <pre class="r"><code>##CONSCIENTIOUSNESS
 cons &lt;- c(&quot;hex2&quot;, &quot;hex8&quot;, &quot;hex14&quot;, &quot;hex20&quot;, &quot;hex26&quot;, &quot;hex32&quot;, &quot;hex38&quot;, &quot;hex44&quot;, &quot;hex50&quot;, &quot;hex56&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -728,7 +760,7 @@ cronbach.alpha(open_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code><
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.612 0.721</code></pre>
+## 0.614 0.727</code></pre>
 <pre class="r"><code>##Intellectual Humility Scale
 ihs &lt;- c(&quot;IHS_1&quot;, &quot;IHS_2&quot;, &quot;IHS_3&quot;, &quot;IHS_4&quot;, &quot;IHS_5&quot;, &quot;IHS_6&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -744,7 +776,7 @@ cronbach.alpha(ihs_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.354 0.524</code></pre>
+## 0.350 0.533</code></pre>
 <pre class="r"><code>##Need for Closure
 nclos &lt;- c(&quot;nclos1&quot;, &quot;nclos2&quot;, &quot;nclos3&quot;, &quot;nclos4&quot;, &quot;nclos5&quot;, &quot;nclos6&quot;, &quot;nclos7&quot;, &quot;nclos8&quot;, &quot;nclos9&quot;, &quot;nclos10&quot;, 
                                                  &quot;nclos11&quot;, &quot;nclos12&quot;, &quot;nclos13&quot;, &quot;nclos14&quot;, &quot;nclos15&quot;, 
@@ -767,7 +799,7 @@ cronbach.alpha(nclos_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code>
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.813 0.858</code></pre>
+## 0.810 0.859</code></pre>
 <pre class="r"><code>##Need for Cognition
 ncog &lt;- c(&quot;ncog7&quot;, &quot;ncog8&quot;, &quot;ncog9&quot;, &quot;ncog10&quot;, &quot;ncog11&quot;, &quot;ncog12&quot;, 
                                                &quot;ncog13&quot;, &quot;ncog14&quot;, &quot;ncog15&quot;, &quot;ncog16&quot;, &quot;ncog17&quot;, &quot;ncog18&quot;)
@@ -784,7 +816,7 @@ cronbach.alpha(ncog_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code><
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.664 0.765</code></pre>
+## 0.661 0.764</code></pre>
 <pre class="r"><code>##Actively Open Thinking Style
 openTS &lt;- c(&quot;A4CTS_1&quot;, &quot;A4CTS_2&quot;, &quot;A4CTS_3&quot;, &quot;A4CTS_4&quot;, &quot;A4CTS_5&quot;, &quot;A4CTS_6&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -800,7 +832,7 @@ cronbach.alpha(openTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.804 0.866</code></pre>
+## 0.808 0.866</code></pre>
 <pre class="r"><code>##Close-minded Thinking Style
 closeTS &lt;- c(&quot;A4CTS_7&quot;, &quot;A4CTS_8&quot;, &quot;A4CTS_9&quot;, &quot;A4CTS_10&quot;, &quot;A4CTS_11&quot;, &quot;A4CTS_12&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -816,7 +848,7 @@ cronbach.alpha(closeTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</cod
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.789 0.855</code></pre>
+## 0.792 0.856</code></pre>
 <pre class="r"><code>##prefer intuitive Thinking Style
 intuitiveTS &lt;- c(&quot;A4CTS_13&quot;, &quot;A4CTS_14&quot;, &quot;A4CTS_15&quot;, &quot;A4CTS_16&quot;, &quot;A4CTS_17&quot;, &quot;A4CTS_18&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -832,7 +864,7 @@ cronbach.alpha(intuitiveTS_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)<
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.847 0.893</code></pre>
+## 0.849 0.894</code></pre>
 <pre class="r"><code>##prefer effortful Thinking Style
 effortTS &lt;- c(&quot;A4CTS_19&quot;, &quot;A4CTS_20&quot;, &quot;A4CTS_21&quot;, &quot;A4CTS_22&quot;, &quot;A4CTS_23&quot;, &quot;A4CTS_24&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -864,7 +896,7 @@ cronbach.alpha(activeopen_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.707 0.783</code></pre>
+## 0.710 0.781</code></pre>
 <pre class="r"><code>##Faith in Intuition Scale
 fi &lt;- c(&quot;fi1&quot;, &quot;fi2&quot;, &quot;fi3&quot;, &quot;fi4&quot;, &quot;fi5&quot;, &quot;fi6&quot;, &quot;fi7&quot;, &quot;fi8&quot;, &quot;fi9&quot;, &quot;fi10&quot;, &quot;fi11&quot;, &quot;fi12&quot;)
 Thesis_scale &lt;- Thesis_scale %&gt;%
@@ -880,7 +912,7 @@ cronbach.alpha(fi_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)</code></p
 ## 
 ## Bootstrap 95% CI based on 1000 samples
 ##  2.5% 97.5% 
-## 0.839 0.882</code></pre>
+## 0.839 0.880</code></pre>
 <pre class="r"><code>## The descriptives information for each scales
 psych::describe(Thesis_scale %&gt;% select(BFS_score, BFSe_score, BFSp_score, BPS_score, BSthought, LIE_score, sdtnarc_score, sdtmach_score, sdtpsych_score, narchyper_score, narcgrand_score, mach_score, psycho_score, psychopri_score, psychosec_score, se_score, hon_score, emo_score, extra_score, agree_score, cons_score, open_score, ihs_score, nclos_score, ncog_score, openTS_score, closeTS_score, intuitiveTS_score, effortTS_score, activeopen_score, fi_score, crt_score, word_score, ns_score))</code></pre>
 <pre><code>##                   vars   n mean   sd median trimmed  mad  min  max range  skew
