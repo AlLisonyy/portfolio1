@@ -71,6 +71,13 @@ Thesis_scale <- Thesis_scale %>%
 bps_items <- Thesis_scale[, bps]
 cronbach.alpha(bps_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
 
+##BS thought listing task
+bsthought <- c("BSthought_recycling", "BSthought_college", "BSthought_crime")
+Thesis_scale <- Thesis_scale %>%
+  mutate(bsthought_score = rowMeans(Thesis_scale[,bsthought],na.rm=TRUE))
+bsthought_items <- Thesis_scale[, bsthought]
+cronbach.alpha(bsthought_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
 ##Lying in Everyday Situations Scale
 lie <- c("lies1", "lies2", "lies3", "lies4", "lies5", "lies6", "lies7", "lies8", "lies9", "lies10", "lies11", "lies12", "lies13", "lies14")
 Thesis_scale <- Thesis_scale %>%
@@ -196,12 +203,26 @@ Thesis_scale <- Thesis_scale %>%
 open_items <- Thesis_scale[, open]
 cronbach.alpha(open_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
 
-##Intellectual Humility Scale
-ihs <- c("IHS_1", "IHS_2", "IHS_3", "IHS_4", "IHS_5", "IHS_6")
+##Wordsum
+word <- c("wordsum_1", "wordsum_2", "wordsum_3", "wordsum_4", "wordsum_5", "wordsum_6","wordsum_7","wordsum_8","wordsum_9")
 Thesis_scale <- Thesis_scale %>%
-  mutate(ihs_score = rowMeans(Thesis_scale[,ihs],na.rm=TRUE)) 
-ihs_items <- Thesis_scale[, ihs]
-cronbach.alpha(ihs_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+  mutate(word_score = rowMeans(Thesis_scale[,word],na.rm=TRUE)) 
+word_items <- Thesis_scale[, word]
+cronbach.alpha(word_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
+##Numeracy scale
+ns <- c("NS1", "NS2", "NS3", "NS4", "NS5", "NS6","NS7","NS8","NS9", "NS10", "NS11")
+Thesis_scale <- Thesis_scale %>%
+  mutate(ns_score = rowMeans(Thesis_scale[,ns],na.rm=TRUE)) 
+ns_items <- Thesis_scale[, ns]
+cronbach.alpha(ns_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
+
+##Critical reflection ability
+crt <- c("crt1", "crt2", "crt3")
+Thesis_scale <- Thesis_scale %>%
+  mutate(crt_score = rowMeans(Thesis_scale[,crt],na.rm=TRUE)) 
+crt_items <- Thesis_scale[, crt]
+cronbach.alpha(crt_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
 
 ##Need for Closure
 nclos <- c("nclos1", "nclos2", "nclos3", "nclos4", "nclos5", "nclos6", "nclos7", "nclos8", "nclos9", "nclos10", 
@@ -268,7 +289,7 @@ fi_items <- Thesis_scale[, fi]
 cronbach.alpha(fi_items, standardized = TRUE, CI = TRUE, na.rm = TRUE)
 
 ## The descriptives information for each scales
-psych::describe(Thesis_scale %>% select(BFS_score, BFSadd_score, BFSnew_score, BFSe_score, BFSp_score, BPS_score, BSthought, LIE_score, sdtnarc_score, sdtmach_score, sdtpsych_score, narchyper_score, narcgrand_score, mach_score, psycho_score, psychopri_score, psychosec_score, se_score, hon_score, emo_score, extra_score, agree_score, cons_score, open_score, ihs_score, nclos_score, ncog_score, openTS_score, closeTS_score, intuitiveTS_score, effortTS_score, activeopen_score, fi_score, crt_score, word_score, ns_score))
+psych::describe(Thesis_scale %>% select(BFS_score, BFSadd_score, BFSnew_score, BFSe_score, BFSp_score, BPS_score, BSthought, LIE_score, sdtnarc_score, sdtmach_score, sdtpsych_score, narchyper_score, narcgrand_score, mach_score, psycho_score, psychopri_score, psychosec_score, se_score, hon_score, emo_score, extra_score, agree_score, cons_score, open_score, nclos_score, ncog_score, openTS_score, closeTS_score, intuitiveTS_score, effortTS_score, activeopen_score, fi_score, crt_score, word_score, ns_score))
 ```
 
 ## Step 2: Demographic information

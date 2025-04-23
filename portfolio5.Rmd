@@ -10,16 +10,21 @@ exploratory data
 
 gender moderation?
 short answer analysis
+ verbal reasoning skills serves as a moderator in the relations between facets of Machiavellianism and “bullshit” production.
 
 
 BPS scale exploratory factor analysis?-- is the three scales measuring the same thing for BS or different apsects 
 
 ```{r}
+
+library(ggsignif)
 library(tibble)
 library(ggplot2)
 library(psych)
 library(ltm)
 library(tidyverse)
+library(ppcor)
+
 
 Thesis_scale <- readRDS("Thesis_scale.rds")
 ```
@@ -28,19 +33,25 @@ Thesis_scale <- readRDS("Thesis_scale.rds")
 ```{r bar graph for dark traid}
 
 # Sample data: Replace these values with your actual correlation values
+
 dark <- data.frame(
-  Trait = rep(c("MACH-short", "NARC-short", "PSYC-short", "MPI", "HSNS", "NPI", "LSRP"), each = 3),
-  Measures = rep(c("BFS", "BPS", "Thought Task"), times = 7),
+  Trait = rep(c("MACH-short", "NARC-short", "PSYC-short", "MPI", "HSNS", "NPI", "LSRP", "LSRP-prim","LSRP-sec"), each = 3),
+  Measures = rep(c("BFS", "BPS", "Thought Task"), times = 9),
   Correlation = c(0.24, 0.11, 0.09,     # Machiavellianism correlations
                   0.15, 0.08, 0.01,     # Narcissism correlations
                   0.14, 0.18, 0.01,     # Psychopathy correlations
                   .26, .18, .11, #MPI
                   .25, .07, .10,    #HSNS
                   .15, .18, .01,     #NPI
-                  .18, .26, .06)      #LSRP      
+                  .18, .26, .06,      #LSRP 
+                  .17, .21, .05,
+                  .15, .25, .04
+                  )     
   )
 
-
+dark$Trait <- factor(dark$Trait, levels = c(
+  "MACH-short", "MPI", "NARC-short", "HSNS", "NPI", "PSYC-short", "LSRP", "LSRP-prim","LSRP-sec"
+))
 
 plot <- ggplot(dark, aes(x = Trait, y = Correlation, fill = Measures)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.85), width = 0.8) +
@@ -60,12 +71,7 @@ plot <- ggplot(dark, aes(x = Trait, y = Correlation, fill = Measures)) +
     y = "Partial Correlation (r)",
     fill = "Measures"
   ) +
-  geom_text(aes(label = round(Correlation, 2)), 
-            position = position_dodge(width = 0.85),  # Matching dodge width with bars
-            vjust = -0.4, 
-            size = 5,  # Made the text smaller for better clarity
-            family = "Times New Roman")+
-  scale_y_continuous(limits = c(0, 0.3), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 0.40), expand = c(0, 0))
 
 
 # Display the plot
@@ -75,10 +81,10 @@ print(plot)
 ```
 
 
-```{r}
+```{r Other personality traits}
 #Sample data: Replace these values with your actual correlation values
 hexaco <- data.frame(
-  Trait = rep(c("HON", "EMO", "EXTRA", "AGRE", "CONS", "OPEN", "NCOG", "NCLS"), each = 3),
+  othertrait = rep(c("HON", "EMO", "EXTRA", "AGRE", "CONS", "OPEN", "NCOG", "NCLS"), each = 3),
   Measures = rep(c("BFS", "BPS", "Thought Task"), times = 8),
   Correlation = c(-.24, -.16, -.10,   
                   .10, -.08, .04,     
@@ -90,9 +96,11 @@ hexaco <- data.frame(
                   .04, -.15, -.05)          
   )
 
+hexaco$othertrait <- factor(hexaco$othertrait, levels = c(
+  "HON", "EMO", "EXTRA", "AGRE", "CONS", "OPEN", "NCOG", "NCLS"
+))
 
-
-plot <- ggplot(hexaco, aes(x = Trait, y = Correlation, fill = Measures)) +
+plot <- ggplot(hexaco, aes(x = othertrait, y = Correlation, fill = Measures)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.85), width = 0.8) +
   scale_fill_manual(values = c("BFS" = "#1f77b4", "BPS" = "#ff7f0e", "Thought Task" = "#2ca02c")) +
   theme_classic(base_size = 12) + # Set the base font size to 12
@@ -110,17 +118,123 @@ plot <- ggplot(hexaco, aes(x = Trait, y = Correlation, fill = Measures)) +
     y = "Partial Correlation (r)",
     fill = "Measures"
   ) +
-  geom_text(aes(label = round(Correlation, 2)), 
-            position = position_dodge(width = 0.85),  # Matching dodge width with bars
-            vjust = -0.4, 
-            size = 5,  # Made the text smaller for better clarity
-            family = "Times New Roman")+
-  scale_y_continuous(limits = c(-.35, 0.15), expand = c(0, 0))
+  scale_y_continuous(limits = c(-.40, 0.40), expand = c(0, 0))
 
 
 # Display the plot
 print(plot)
 
+```
+
+
+```{r Cognitive Ability}
+cogability <- data.frame(
+  cogab = rep(c("WORD", "NS", "CRT"), each = 3),
+  Measures = rep(c("BFS", "BPS", "Thought Task"), times = 3),
+  Correlation = c(-.00, -.12, .01,   
+                  -.10, -.07, -.06,     
+                  -.11, -.08, -.07)          
+  )
+
+cogability$cogab <- factor(cogability$cogab, levels = c(
+  "WORD", "NS", "CRT"
+))
+
+plot_cog <- ggplot(cogability, aes(x = cogab, y = Correlation, fill = Measures)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.85), width = 0.8) +
+  scale_fill_manual(values = c("BFS" = "#1f77b4", "BPS" = "#ff7f0e", "Thought Task" = "#2ca02c")) +
+  theme_classic(base_size = 12) + # Set the base font size to 12
+  theme(
+    text = element_text(family = "Times New Roman"), # Use Times New Roman for all text
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 12)
+  ) +
+  labs(
+    title = " ",
+    x = "Cognitive Ability",
+    y = "Partial Correlation (r)",
+    fill = "Measures"
+  ) +
+  scale_y_continuous(limits = c(-.40, 0.10), expand = c(0, 0))
+
+# Display the plot
+print(plot_cog)
+```
+
+
+```{r thinking styles}
+thinkstyles <- data.frame(
+  thinkst = rep(c("ACT", "PIT", "PET", "CMT", "AOT", "FI"), each = 3),
+  Measures = rep(c("BFS", "BPS", "Thought Task"), times = 6),
+  Correlation = c(-.14, -.37, -.06, 
+                  .16, .18, -.04,
+                  -.10, -.34, -.06,     
+                  .09, .13, -.06,
+                  -.23, -.34, -.03,
+                  .14, .00, -.03)          
+  )
+
+thinkstyles$thinkst <- factor(thinkstyles$thinkst, levels = c(
+  "ACT", "PIT", "PET", "CMT", "AOT", "FI"
+))
+
+plot_style <- ggplot(thinkstyles, aes(x = thinkst, y = Correlation, fill = Measures)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.85), width = 0.8) +
+  scale_fill_manual(values = c("BFS" = "#1f77b4", "BPS" = "#ff7f0e", "Thought Task" = "#2ca02c")) +
+  theme_classic(base_size = 12) + # Set the base font size to 12
+  theme(
+    text = element_text(family = "Times New Roman"), # Use Times New Roman for all text
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 12)
+  ) +
+  labs(
+    title = " ",
+    x = "Thinking Styles",
+    y = "Partial Correlation (r)",
+    fill = "Measures"
+  ) +
+  scale_y_continuous(limits = c(-.40, 0.40), expand = c(0, 0))
+
+# Display the plot
+print(plot_style)
+```
+
+
+```{r self-esteem}
+selfesteem <- data.frame(
+  selfes = rep(c("SE"), each = 5),
+  Measures = rep(c("BFSe", "BFSp", "BFS", "BPS", "Thought Task"), times = 1),
+  Correlation = c(-.12, -.04, -.08, -.00, -.03)          
+  )
+
+plot_style <- ggplot(selfesteem, aes(x = selfes, y = Correlation, fill = Measures)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.85), width = 0.8) +
+  scale_fill_manual(values = c("BFS" = "#1f77b4", "BPS" = "#ff7f0e", "Thought Task" = "#2ca02c", "BFSe" = "#FEDF05", "BFSp" = "#9966cc")) +
+  theme_classic(base_size = 12) + # Set the base font size to 12
+  theme(
+    text = element_text(family = "Times New Roman"), # Use Times New Roman for all text
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 12)
+  ) +
+  labs(
+    title = " ",
+    x = "Self-Esteem",
+    y = "Partial Correlation (r)",
+    fill = "Measures"
+  ) +
+  scale_y_continuous(limits = c(-.40, 0.20), expand = c(0, 0))
+
+# Display the plot
+print(plot_style)
 ```
 
 

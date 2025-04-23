@@ -38,6 +38,21 @@ Thesis_scale <- readRDS("Thesis_scale.rds")
 
 ## Step 1: partial correlations
 ### Bullshit Frequency scales and other variables's partial correlation when controled for lying tendency
+```{r}
+partial_ci <- function(r, n, conf_level = 0.95) {
+  z <- 0.5 * log((1 + r) / (1 - r))
+  se <- 1 / sqrt(n - 3)
+  z_crit <- qnorm((1 + conf_level) / 2)
+  
+  z_lower <- z - z_crit * se
+  z_upper <- z + z_crit * se
+  
+  r_lower <- (exp(2 * z_lower) - 1) / (exp(2 * z_lower) + 1)
+  r_upper <- (exp(2 * z_upper) - 1) / (exp(2 * z_upper) + 1)
+  
+  return(c(lower = r_lower, upper = r_upper))
+}
+```
 
 ```{r BFS and others}
 ##1. BFS and BPS
@@ -48,7 +63,9 @@ partial_BFSsdtnarc <- Thesis_scale %>%
   select(BFS_score, sdtnarc_score, LIE_score) %>% 
   drop_na()
 pcor.test(partial_BFSsdtnarc$BFS_score, partial_BFSsdtnarc$sdtnarc_score, partial_BFSsdtnarc$LIE_score)
-
+r <- 0.20
+n <- 417
+partial_ci(r, n)
 ##3, BFS and machiavellianism (short scale)
 pcor.test(Thesis_scale$BFS_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_score)
 
