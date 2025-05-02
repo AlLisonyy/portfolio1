@@ -127,10 +127,7 @@ partial_BFSopen <- Thesis_scale %>%
 pcor.test(partial_BFSopen$BFS_score, partial_BFSopen$open_score, partial_BFSopen$LIE_score)
 
 ##15. BFS and Intellectual Humility Scale
-partial_BFSih <- Thesis_scale %>% 
-  select(BFS_score, ihs_score, LIE_score) %>% 
-  drop_na()
-pcor.test(partial_BFSih$BFS_score, partial_BFSih$ihs_score, partial_BFSih$LIE_score)
+
 
 ##16. BFS and Need for Closure
 pcor.test(Thesis_scale$BFS_score, Thesis_scale$nclos_score, Thesis_scale$LIE_score)
@@ -270,10 +267,7 @@ partial_BFSpopen <- Thesis_scale %>%
 pcor.test(partial_BFSpopen$BFSp_score, partial_BFSpopen$open_score, partial_BFSpopen$LIE_score)
 
 ##15. BFSp and Intellectual Humility Scale
-partial_BFSpih <- Thesis_scale %>% 
-  select(BFSp_score, ihs_score, LIE_score) %>% 
-  drop_na()
-pcor.test(partial_BFSpih$BFSp_score, partial_BFSpih$ihs_score, partial_BFSpih$LIE_score)
+
 
 ##16. BFSp and Need for Closure
 pcor.test(Thesis_scale$BFSp_score, Thesis_scale$nclos_score, Thesis_scale$LIE_score)
@@ -641,45 +635,45 @@ pcor.test(partial_BPScrt$BPS_score, partial_BPScrt$crt_score, partial_BPScrt$LIE
 
 ##1. BSthought rating and listing and narcissism (short scale)
 partial_BSthoughtsdtnarc <- Thesis_scale %>% 
-  select(BSthought, sdtnarc_score, LIE_score) %>% 
+  select(BSthought, sdtnarc_score, LIE_score, knowledge_score) %>% 
   drop_na()
-pcor.test(partial_BSthoughtsdtnarc$BSthought, partial_BSthoughtsdtnarc$sdtnarc_score, partial_BSthoughtsdtnarc$LIE_score)
+pcor.test(partial_BSthoughtsdtnarc$BSthought, partial_BSthoughtsdtnarc$sdtnarc_score, partial_BSthoughtsdtnarc[, c("LIE_score", "knowledge_score")])
 
 ##2, BSthought and machiavellianism (short scale)
 partial_BSthoughtsdtmach <- Thesis_scale %>% 
-  select(BSthought, sdtmach_score, LIE_score) %>% 
+  select(BSthought, sdtmach_score, LIE_score, knowledge_score) %>% 
   drop_na()
-pcor.test(partial_BSthoughtsdtmach$BSthought, partial_BSthoughtsdtmach$sdtmach_score, partial_BSthoughtsdtmach$LIE_score)
+pcor.test(partial_BSthoughtsdtmach$BSthought, partial_BSthoughtsdtmach$sdtmach_score, partial_BSthoughtsdtmach[, c("LIE_score", "knowledge_score")])
 
 ##3. BSthought and psychopathy (short scale)
 partial_BSthoughtsdtpsych <- Thesis_scale %>% 
-  select(BSthought, sdtpsych_score, LIE_score) %>% 
+  select(BSthought, sdtpsych_score, LIE_score, knowledge_score) %>% 
   drop_na()
-pcor.test(partial_BSthoughtsdtpsych$BSthought, partial_BSthoughtsdtpsych$sdtpsych_score, partial_BSthoughtsdtpsych$LIE_score)
+pcor.test(partial_BSthoughtsdtpsych$BSthought, partial_BSthoughtsdtpsych$sdtpsych_score, partial_BSthoughtsdtpsych[, c("LIE_score", "knowledge_score")])
 
 ##4.1 BSthought and Narcissistic Personality Inventory
 partial_BSthoughtnarcgrand <- Thesis_scale %>% 
-  select(BSthought, narcgrand_score, LIE_score) %>% 
+  select(BSthought, narcgrand_score, LIE_score, knowledge_score) %>% 
   drop_na()
-pcor.test(partial_BSthoughtnarcgrand$BSthought, partial_BSthoughtnarcgrand$narcgrand_score, partial_BSthoughtnarcgrand$LIE_score)
+pcor.test(partial_BSthoughtnarcgrand$BSthought, partial_BSthoughtnarcgrand$narcgrand_score, partial_BSthoughtnarcgrand[, c("LIE_score", "knowledge_score")])
 
 ##4.2 BSthought and Hypersensitive Narcissism Scale
 partial_BSthoughtnarchyper <- Thesis_scale %>% 
-  select(BSthought, narchyper_score, LIE_score) %>% 
+  select(BSthought, narchyper_score, LIE_score, knowledge_score) %>% 
   drop_na()
-pcor.test(partial_BSthoughtnarchyper$BSthought, partial_BSthoughtnarchyper$narchyper_score, partial_BSthoughtnarchyper$LIE_score)
+pcor.test(partial_BSthoughtnarchyper$BSthought, partial_BSthoughtnarchyper$narchyper_score, partial_BSthoughtnarchyper[, c("LIE_score", "knowledge_score")])
 
 ##5. BSthought and Machiavellianism Personality scale
 partial_BSthoughtmach <- Thesis_scale %>% 
-  select(BSthought, mach_score, LIE_score) %>% 
+  select(BSthought, mach_score, LIE_score, knowledge_score) %>% 
   drop_na()
-pcor.test(partial_BSthoughtmach$BSthought, partial_BSthoughtmach$mach_score, partial_BSthoughtmach$LIE_score)
+pcor.test(partial_BSthoughtmach$BSthought, partial_BSthoughtmach$mach_score, partial_BSthoughtmach[, c("LIE_score", "knowledge_score")])
 
 ##6. BSthought and Levenson Self-Report Psychopathy Scale
 partial_BSthoughtpsych <- Thesis_scale %>% 
-  select(BSthought, psycho_score, LIE_score) %>% 
+  select(BSthought, psycho_score, LIE_score, knowledge_score) %>% 
   drop_na()
-pcor.test(partial_BSthoughtpsych$BSthought, partial_BSthoughtpsych$psycho_score, partial_BSthoughtpsych$LIE_score)
+pcor.test(partial_BSthoughtpsych$BSthought, partial_BSthoughtpsych$psycho_score, partial_BSthoughtpsych[, c("LIE_score", "knowledge_score")])
 
 ##7. 
 partial_BSthoughtpsychopri <- Thesis_scale %>% 
@@ -803,6 +797,16 @@ partial_BSthoughtcrt<- Thesis_scale %>%
   drop_na()
 pcor.test(partial_BSthoughtcrt$BSthought, partial_BSthoughtcrt$crt_score, partial_BSthoughtcrt$LIE_score)
 ```
+
+### Partial conrrelations for BS thought when controling for both Lie scores and Self-reported knowledge
+```{r}
+##knowledge and bs thought
+##each knowledge with BS thought listing
+
+
+```
+
+
 ## Step 2: pearson correlation
 ### correlations for all the variables
 ```{r pearson correlation BSF}

@@ -7,10 +7,13 @@ title: "Portfolio 5"
 ## exploratory by using this dataset? Such as scale fit, moderation, or other predicting ones. \
 
 exploratory data
+book coding visualization
 
 gender moderation?
 short answer analysis
+How the thinking styles might interact?
  verbal reasoning skills serves as a moderator in the relations between facets of Machiavellianism and “bullshit” production.
+ 
 
 lying as another variable that correlated with the other bs measures.
 

@@ -175,6 +175,13 @@ Thesis_scale <- Thesis_scale %>%
   dplyr::mutate(BSthought = (BSthought_college + BSthought_recycling + BSthought_crime)/ 3)
 ## Check if it worked for one
 head(Thesis_scale$BSthought_college)
+
+## There is another variable called self-reported knowledge of each topic. I will need to average the knowledge of each topic and created a new variable called knowledge_score
+Thesis_scale <- Thesis_scale %>%
+  mutate(
+    knowledge_score = (Knowledge_CG + Knowledge_recycle + Knowledge_Crime)/3
+  )
+
 ```
 
 ## Step 3.2: calculating the cogntive ability measurements
