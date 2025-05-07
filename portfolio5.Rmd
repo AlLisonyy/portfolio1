@@ -30,6 +30,7 @@ library(ppcor)
 Thesis_scale <- readRDS("Thesis_scale.rds")
 ```
 
+## Graphs for the partial correlations when controling for lying
 
 ```{r bar graph for dark traid}
 
@@ -238,11 +239,13 @@ plot_style <- ggplot(selfesteem, aes(x = selfes, y = Correlation, fill = Measure
 print(plot_style)
 ```
 
+## EFA and CFA for the scales of bullshitting propensity
 
-```{r}
+```{r bfs and bps}
 ##install.packages("lavaan")
 ##install.packages("semPlot")
 
+## I wanted to see if these two scales might be measuring the same underlying construct first. 
 library(lavaan)
 library(semPlot)
 
@@ -271,14 +274,15 @@ print(compare_models)
 semPaths(one_factor_fit, what = "std", layout = "tree", edge.label.cex = 1.2, title = FALSE)
 semPaths(two_factor_fit, what = "std", layout = "tree", edge.label.cex = 1.2, title = FALSE)
 ```
+Based on the graphs, it is very appearant that they did not load on the same construct. Therefore, these two scales are measuring different aspects/dimensions of bullshitting propensity. 
+
+
 ```{r}
 #install.packages("psych")
 #install.packages("GPArotation")
 library(psych)
 library(GPArotation)
 
-# Preparing the data: Assuming your items are named BFS1, BFS2, ..., BPS1, BPS2, ...
-# Select all BFS and BPS items for the analysis
 bfs_it <- paste0("BFS_", 1:12)
 bps_it <- paste0("BPS_", 1:12)
 
@@ -295,19 +299,13 @@ bartlett_result <- cortest.bartlett(efa_data)
 print(bartlett_result)  # Should be significant (p < .05)
 
 
-
-
 # Principal Component Analysis (PCA) to determine number of factors
 pca_results <- principal(efa_data, nfactors = ncol(efa_data), rotate = "none")
 print(pca_results$values)
 
-# Scree Plot (to visualize eigenvalues)
+# Scree Plot
 scree(efa_data)
-
-# Parallel Analysis (more reliable than scree plot alone)
 fa.parallel(efa_data, fa = "fa", n.iter = 100)
-
-
 
 
 # Run EFA for 2 Factors
@@ -321,6 +319,7 @@ fa.diagram(efa_2factor)
 ```
 
 ```{r}
+## I wanted to test if the BFS is actually measuring two different forms of bs 
 bfs_model <- '
   BFS_Factor =~ BFS_1 + BFS_2 + BFS_3 + BFS_4 + BFS_5 + BFS_6 + 
                 BFS_7 + BFS_8 + BFS_9 + BFS_10 + BFS_11 + BFS_12
@@ -335,7 +334,7 @@ semPaths(bfs_fit, what = "std", layout = "tree", edge.label.cex = 1.2)
 ```
 
 ```{r}
-# Specify a single-factor model for BPS
+##Specify a single-factor model for BPS
 bps_model <- '
   BPS_Factor =~ BPS_1 + BPS_2 + BPS_3 + BPS_4 + BPS_5 + BPS_6 + 
                 BPS_7 + BPS_8 + BPS_9 + BPS_10
@@ -350,6 +349,8 @@ semPaths(bps_fit, what = "std", layout = "tree", edge.label.cex = 1.2)
 ```
 
 ```{r}
+## For this one, I was playing a bit to explore whether BFS and Lying scales might load on the same factors or different ones, since this is briefly mentioned in one of the Littrell's paper on developing BFS. 
+
 bfs_it <- paste0("BFS_", 1:12)
 lie_it <- paste0("lies", 1:14)
 
