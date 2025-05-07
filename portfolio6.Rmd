@@ -1,9 +1,18 @@
 ---
-title: "Portfolio 6"
+title: "Thesis data Open-ended Short Answer Analysis"
+author: "Allison Li"
+date: "03242025"
+output: 
+  html_document:
+    encoding: UTF-8
+    toc: true
+    number_sections: false
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
 ---
 
-> The projects should be numbered consecutively (i.e., in the order in which you began them), and should include for each project a description of the goal, the product (computer program, hand graph, computer graph, etc.), the data, and some interpretation. Reports must be reproducible and of high quality in terms of writing, grammar, presentation, etc.
-
+For this portfolio, I am inspired by our Lab on AI (Modile 14), and I am wondering if adding questions for Sentiment analysis can be a good Lab exercise for this module. 
 
 maybe how can we use R studio to code for open ended / qualitative data--- can be a potential lab for the AI module?
 https://www.tidytextmining.com/sentiment.html

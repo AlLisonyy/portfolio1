@@ -1,23 +1,20 @@
 ---
-title: "Portfolio 5"
+title: "Thesis data Visualization Analyses"
+author: "Allison Li"
+date: "04252025"
+output: 
+  html_document:
+    encoding: UTF-8
+    toc: true
+    number_sections: false
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
 ---
 
-> The projects should be numbered consecutively (i.e., in the order in which you began them), and should include for each project a description of the goal, the product (computer program, hand graph, computer graph, etc.), the data, and some interpretation. Reports must be reproducible and of high quality in terms of writing, grammar, presentation, etc.
+For this portfolio, I will continue to use the dataset from my thesis study. This portfolio will focus on creating visualization for my main statistical analysis. I would like to compare how each individual differences is differently or similarly correlated with one of the three bullshitting measures. Additionally, I applied the EFA and CFA just to see how Bullshitting Frequency scale and Bullshitting Propensity scale has loaded on either one or more factors.
 
-## exploratory by using this dataset? Such as scale fit, moderation, or other predicting ones. \
-
-exploratory data
-book coding visualization
-
-gender moderation?
-short answer analysis
-How the thinking styles might interact?
- verbal reasoning skills serves as a moderator in the relations between facets of Machiavellianism and “bullshit” production.
- 
-
-lying as another variable that correlated with the other bs measures.
-
-BPS scale exploratory factor analysis?-- is the three scales measuring the same thing for BS or different apsects 
+##Do I do moderation test? such as gender?
 
 ```{r}
 
