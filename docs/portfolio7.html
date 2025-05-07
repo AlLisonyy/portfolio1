@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Portfolio 7</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Portfolio</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="p01.html">Portfolio 1</a>
+</li>
+<li>
+  <a href="p02.html">Portfolio 2</a>
+</li>
+<li>
+  <a href="p03.html">Portfolio 3</a>
+</li>
+<li>
+  <a href="p04.html">Portfolio 4</a>
+</li>
+<li>
+  <a href="p05.html">Portfolio 5</a>
+</li>
+<li>
+  <a href="p06.html">Portfolio 6</a>
+</li>
+<li>
+  <a href="p07.html">Portfolio 7</a>
+</li>
+<li>
+  <a href="p08.html">Portfolio 8</a>
+</li>
+<li>
+  <a href="p09.html">Portfolio 9</a>
+</li>
+<li>
+  <a href="p10.html">Portfolio 10</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Portfolio 7</h1>
+
+</div>
+
+
+<blockquote>
+<p>The projects should be numbered consecutively (i.e., in the order in
+which you began them), and should include for each project a description
+of the goal, the product (computer program, hand graph, computer graph,
+etc.), the data, and some interpretation. Reports must be reproducible
+and of high quality in terms of writing, grammar, presentation, etc.</p>
+</blockquote>
+<p>I would like to create some basic visualization for a book coding
+project. This book coding project is an exploratory study that codes and
+examines how race/ethnicity is depicted in children’s books about race.
+By investigating both representation of diversity, types of intergroup
+contacts, acquired information about race and culture, and intergroup
+bias reduction strategies, this project aims to understand how the
+present books talks about diversity and build the first step for future
+studies to investigate whether certain strategy is more effective in
+media for bias reduction. One thing I would like to note is that these
+dataset are from Dr. Katharine Scott, me and Sophie Boyld’s project, and
+some of the codes are already written by Dr. Scott. My project here
+mainly focuses on the visualization rather than how to analyze some of
+the research questions.</p>
+<p>For this portfolio, I would like to first, see the overview
+information about the books.</p>
+<div id="step-1-visualization-of-basic-book-information"
+class="section level2">
+<h2>Step 1: visualization of basic book information</h2>
+<div id="racialethnic-representation-of-authors" class="section level3">
+<h3>racial/ethnic representation of authors</h3>
+<p>Question: What percent of the books had at least one
+author/illustrator who was each race/ethnicity? This includes people who
+were biracial/multiracial but who at least partially identified as the
+selected race.</p>
+<p>Asian/Asian American</p>
+<pre><code>##   AsianAuthorIllustrator Count Percentage
+## 1                     No   165   87.76596
+## 2                    Yes    23   12.23404</code></pre>
+<p><img src="portfolio7_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Black</p>
+<pre><code>##   BlackAuthorIllustrator Count Percentage
+## 1                     No    78   41.48936
+## 2                    Yes   110   58.51064</code></pre>
+<p><img src="portfolio7_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Hispanic</p>
+<pre><code>##   HispanicAuthorIllustrator Count Percentage
+## 1                        No   169   89.89362
+## 2                       Yes    19   10.10638</code></pre>
+<p><img src="portfolio7_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Middle Eastern</p>
+<pre><code>##   MiddleEasternAuthorIllustrator Count Percentage
+## 1                             No   179  95.212766
+## 2                            Yes     9   4.787234</code></pre>
+<p><img src="portfolio7_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Native American</p>
+<pre><code>##   NativeAmericanAuthorIllustrator Count Percentage
+## 1                              No   179  95.212766
+## 2                             Yes     9   4.787234</code></pre>
+<p><img src="portfolio7_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Native Hawaiian / Pacific Islander</p>
+<pre><code>##   NativeHawaiianPacificIslanderAuthorIllustrator Count Percentage
+## 1                                             No   188        100</code></pre>
+<p><img src="portfolio7_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+This could either be lacking representation of NHPI authors/illustrators
+among the books we examined, or could be that the coders were unable to
+find further ethnic background information about the authors so they
+categrized them into Asians or other ethnic racial minority groups.</p>
+<p>White</p>
+<pre><code>##   WhiteAuthorIllustrator Count Percentage
+## 1                     No   115   61.17021
+## 2                    Yes    73   38.82979</code></pre>
+<p><img src="portfolio7_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+The general Pie Chart</p>
+<pre class="r"><code>race_cols &lt;- c(&quot;blackAuthorIll&quot;, &quot;hispanicAuthorIll&quot;, &quot;middleEasternIll&quot;, 
+               &quot;nativeAuthorIll&quot;, &quot;nhpiAuthorIll&quot;, &quot;whiteAuthorIll&quot;, &quot;asianAuthorIll&quot;)
+
+##Convert to logical (TRUE/FALSE) in case they are &quot;Yes&quot;/&quot;No&quot;
+d_logical &lt;- dWide[, race_cols] == &quot;Yes&quot;
+
+##Sum 
+race_counts &lt;- colSums(d_logical)
+total_books &lt;- nrow(dWide)
+race_percent &lt;- colSums(d_logical) / total_books * 100
+
+##Convert to a data frame for plotting
+race_num &lt;- data.frame(
+  Race = names(race_counts),
+  Count = as.vector(race_counts)
+)
+race_percentage &lt;- data.frame(
+  Race = names(race_percent),
+  Percentage = round(as.vector(race_percent), 1)
+)
+
+ggplot(race_num, aes(x = reorder(Race, -Count), y = Count, fill = Race)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(title = &quot;Number of Books Featuring Each Ethnic/Racial Group (Author or Illustrator)&quot;,
+       x = &quot;Ethnic/Racial Group&quot;, y = &quot;Number of Books&quot;) +
+  theme_minimal() +
+  theme(legend.position = &quot;none&quot;) +
+  geom_text(aes(label = Count), vjust = -0.5)</code></pre>
+<p><img src="portfolio7_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(race_percentage, aes(x = reorder(Race, -Percentage), y = Percentage, fill = Race)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  geom_text(aes(label = paste0(Percentage, &quot;%&quot;)), vjust = -0.5, size = 4) +
+  labs(title = &quot;Percentage of Books Featuring Each Ethnic/Racial Group (Author or Illustrator)&quot;,
+       x = &quot;Ethnic/Racial Group&quot;, y = &quot;Percentage of Books&quot;) +
+  coord_flip() </code></pre>
+<p><img src="portfolio7_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+</div>
+<div id="temporal-settings-of-the-books" class="section level3">
+<h3>Temporal settings of the books</h3>
+<p>Question: Are the books contemporary, historical, fantastical, or
+combination of contemporary and historical?</p>
+<pre class="r"><code>library(forcats)
+
+table &lt;- table(dWide$temporalSetting)
+counts &lt;- as.vector(table)
+percentages &lt;- counts / sum(counts) * 100
+
+result &lt;- data.frame(
+  &quot;TemporalSetting&quot; = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)</code></pre>
+<pre><code>##                         TemporalSetting Count Percentage
+## 1            Contemporary (current day)   129  68.617021
+## 2 Contemporary (current day),Historical    17   9.042553
+## 3                 Fantastical/non-human     9   4.787234
+## 4                            Historical    33  17.553191</code></pre>
+<pre class="r"><code>result &lt;- result %&gt;%
+  mutate(TemporalSetting = fct_recode(TemporalSetting,
+    &quot;Contemporary&quot; = &quot;Contemporary (current day)&quot;,
+    &quot;Contemporary + Historical&quot; = &quot;Contemporary (current day),Historical&quot;,
+    &quot;Fantastical/non-human&quot; = &quot;Fantastical/non-human&quot;,
+    &quot;Historical&quot; = &quot;Historical&quot;
+  ))
+
+ggplot(result, aes(x = reorder(TemporalSetting, -Percentage), y = Percentage, fill = TemporalSetting)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  geom_text(aes(label = paste0(round(Percentage, 1), &quot;%&quot;)), vjust = -0.5, size = 4) +
+  labs(title = &quot;Temporal Setting of Books&quot;,
+       x = &quot;Setting Type&quot;, y = &quot;Percentage of Books&quot;) +
+  theme_minimal() +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="portfolio7_files/figure-html/setting-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(result, aes(x = &quot;&quot;, y = Percentage, fill = TemporalSetting)) +
+  geom_bar(width = 1, stat = &quot;identity&quot;) +
+  coord_polar(&quot;y&quot;) +
+  geom_text(aes(label = paste0(round(Percentage, 1), &quot;%&quot;)),
+            position = position_stack(vjust = 0.5), size = 3.6) +
+  labs(title = &quot;Temporal Setting of Books&quot;)+
+  scale_fill_manual(values = c(&quot;Contemporary&quot; = &quot;#d5d1e9&quot;, &quot;Contemporary + Historical&quot; = &quot;#d0e4ee&quot;, &quot;Fantastical/non-human&quot; = &quot;#F3f5a9&quot;, &quot;Historical&quot; = &quot;#f5cf9f&quot;))+
+  theme_void()</code></pre>
+<p><img src="portfolio7_files/figure-html/setting-2.png" width="672" /></p>
+<p>Question: Are the books fiction, non-fiction, or some
+combination??</p>
+<pre class="r"><code>table &lt;- table(dWide$fiction)
+counts &lt;- as.vector(table)
+percentages &lt;- counts / sum(counts) * 100
+
+result &lt;- data.frame(
+  &quot;Fiction&quot; = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+
+print(result)</code></pre>
+<pre><code>##                                  Fiction Count Percentage
+## 1 Combination of fiction and non-fiction    46  24.468085
+## 2                                Fiction   125  66.489362
+## 3                            Non-fiction    17   9.042553</code></pre>
+<pre class="r"><code>ggplot(result, aes(x = &quot;&quot;, y = Percentage, fill = Fiction)) +
+  geom_bar(stat = &quot;identity&quot;, width = 1) +
+  coord_polar(&quot;y&quot;) +
+  geom_text(aes(label = paste0(round(Percentage, 1), &quot;%&quot;)),
+            position = position_stack(vjust = 0.5), size = 4) +
+  scale_fill_manual(values = c(&quot;Non-fiction&quot; = &quot;#EDCBD2&quot;, &quot;Fiction&quot; = &quot;#C3E0DD&quot;, &quot;Combination of fiction and non-fiction&quot; = &quot;#FAE9DA&quot;))+
+  labs(title = &quot;Fiction, Nonfiction, or Combination of Both&quot;) +
+  theme_void()</code></pre>
+<p><img src="portfolio7_files/figure-html/setting%202-1.png" width="672" /></p>
+</div>
+<div id="fictionnon-fictioncombo" class="section level3">
+<h3>Fiction/non-fiction/combo</h3>
+</div>
+<div id="diversity-of-characters-in-the-book" class="section level3">
+<h3>Diversity of characters in the book</h3>
+<pre class="r"><code>#Question 4: Who is captured in children’s books about race</code></pre>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -4,5 +4,339 @@ title: "Portfolio 7"
 
 > The projects should be numbered consecutively (i.e., in the order in which you began them), and should include for each project a description of the goal, the product (computer program, hand graph, computer graph, etc.), the data, and some interpretation. Reports must be reproducible and of high quality in terms of writing, grammar, presentation, etc.
 
+I would like to create some basic visualization for a book coding project. This book coding project is an exploratory study that codes and examines how race/ethnicity is depicted in children's books about race. By investigating both representation of diversity, types of intergroup contacts, acquired information about race and culture, and intergroup bias reduction strategies, this project aims to understand how the present books talks about diversity and build the first step for future studies to investigate whether certain strategy is more effective in media for bias reduction.
+One thing I would like to note is that these dataset are from Dr. Katharine Scott, me and Sophie Boyld's project, and some of the codes are already written by Dr. Scott. My project here mainly focuses on the visualization rather than how to analyze some of the research questions.   
 
-book coding visualization??
+```{r load-data, include=FALSE}
+library(readxl)
+library(tidyverse)
+library(writexl)
+library(irrCAC)
+library(irr)
+library(lme4)
+library(mclogit)
+library(effectsize)
+library(car)
+library(dplyr)
+library(effects)
+library(ggplot2)
+
+dWide = read_excel("~/Downloads/charactersWideDataFrameClean (1).xlsx")
+
+dLong = read_excel("~/Downloads/charactersLongDataFrameClean (1).xlsx")
+
+interventions = read_excel("~/Downloads/Final Intervention Codes (2).xlsx")
+
+Comparison = read_excel("~/Downloads/Character_Compare.xlsx")
+
+```
+
+For this portfolio, I would like to first, see the overview information about the books.
+
+## Step 1: visualization of basic book information
+### racial/ethnic representation of authors 
+Question: What percent of the books had at least one author/illustrator who was each race/ethnicity? This includes people who were biracial/multiracial but who at least partially identified as the selected race.
+
+Asian/Asian American
+```{r, echo = F}
+
+table <- table(dWide$asianAuthorIll)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "AsianAuthorIllustrator" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+ggplot(result, aes(x = "", y = Percentage, fill = AsianAuthorIllustrator)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5), size = 4) +
+  scale_fill_manual(values = c("lightgreen", "#FFEE8c")) +
+  labs(title = "Percentage of Books by Asian Author/Illustrator",
+       x = NULL, y = NULL)
+```
+
+Black
+```{r, echo = F}
+
+table <- table(dWide$blackAuthorIll)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "BlackAuthorIllustrator" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+ggplot(result, aes(x = "", y = Percentage, fill = BlackAuthorIllustrator)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5), size = 4) +
+  scale_fill_manual(values = c("lightgreen", "#FFEE8c")) +
+  labs(title = "Percentage of Books by Black Author/Illustrator",
+       x = NULL, y = NULL)
+```
+
+Hispanic
+```{r, echo = F}
+
+table <- table(dWide$hispanicAuthorIll)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "HispanicAuthorIllustrator" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+ggplot(result, aes(x = "", y = Percentage, fill = HispanicAuthorIllustrator)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5), size = 4) +
+  scale_fill_manual(values = c("lightgreen", "#FFEE8c")) +
+  labs(title = "Percentage of Books by Hispanic Author/Illustrator",
+       x = NULL, y = NULL)
+```
+
+Middle Eastern
+```{r, echo = F}
+
+table <- table(dWide$middleEasternIll)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "MiddleEasternAuthorIllustrator" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+ggplot(result, aes(x = "", y = Percentage, fill = MiddleEasternAuthorIllustrator)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5), size = 4) +
+  scale_fill_manual(values = c("lightgreen", "#FFEE8c")) +
+  labs(title = "Percentage of Books by Middle Eastern Author/Illustrator",
+       x = NULL, y = NULL)
+```
+
+Native American
+```{r, echo = F}
+
+table <- table(dWide$nativeAuthorIll)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "NativeAmericanAuthorIllustrator" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+ggplot(result, aes(x = "", y = Percentage, fill = NativeAmericanAuthorIllustrator)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5), size = 4) +
+  scale_fill_manual(values = c("lightgreen", "#FFEE8c")) +
+  labs(title = "Percentage of Books by Native American Author/Illustrator",
+       x = NULL, y = NULL)
+```
+
+Native Hawaiian / Pacific Islander
+```{r, echo = F}
+
+table <- table(dWide$nhpiAuthorIll)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "NativeHawaiianPacificIslanderAuthorIllustrator" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+ggplot(result, aes(x = "", y = Percentage, fill = NativeHawaiianPacificIslanderAuthorIllustrator)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5), size = 4) +
+  scale_fill_manual(values = c("lightgreen", "#FFEE8c")) +
+  labs(title = "Percentage of Books by NHPI Author/Illustrator",
+       x = NULL, y = NULL)
+```
+This could either be lacking representation of NHPI authors/illustrators among the books we examined, or could be that the coders were unable to find further ethnic background information about the authors so they categrized them into Asians or other ethnic racial minority groups. 
+
+White
+```{r, echo = F}
+
+table <- table(dWide$whiteAuthorIll)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "WhiteAuthorIllustrator" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+ggplot(result, aes(x = "", y = Percentage, fill = WhiteAuthorIllustrator)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5), size = 4) +
+  scale_fill_manual(values = c("lightgreen", "#FFEE8c")) +
+  labs(title = "Percentage of Books by White Author/Illustrator",
+       x = NULL, y = NULL)
+```
+The general Pie Chart
+```{r}
+race_cols <- c("blackAuthorIll", "hispanicAuthorIll", "middleEasternIll", 
+               "nativeAuthorIll", "nhpiAuthorIll", "whiteAuthorIll", "asianAuthorIll")
+
+##Convert to logical (TRUE/FALSE) in case they are "Yes"/"No"
+d_logical <- dWide[, race_cols] == "Yes"
+
+##Sum 
+race_counts <- colSums(d_logical)
+total_books <- nrow(dWide)
+race_percent <- colSums(d_logical) / total_books * 100
+
+##Convert to a data frame for plotting
+race_num <- data.frame(
+  Race = names(race_counts),
+  Count = as.vector(race_counts)
+)
+race_percentage <- data.frame(
+  Race = names(race_percent),
+  Percentage = round(as.vector(race_percent), 1)
+)
+
+ggplot(race_num, aes(x = reorder(Race, -Count), y = Count, fill = Race)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Number of Books Featuring Each Ethnic/Racial Group (Author or Illustrator)",
+       x = "Ethnic/Racial Group", y = "Number of Books") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  geom_text(aes(label = Count), vjust = -0.5)
+
+ggplot(race_percentage, aes(x = reorder(Race, -Percentage), y = Percentage, fill = Race)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(Percentage, "%")), vjust = -0.5, size = 4) +
+  labs(title = "Percentage of Books Featuring Each Ethnic/Racial Group (Author or Illustrator)",
+       x = "Ethnic/Racial Group", y = "Percentage of Books") +
+  coord_flip() 
+```
+
+### Temporal settings of the books
+Question: Are the books contemporary, historical, fantastical, or combination of contemporary and historical?
+
+```{r setting}
+library(forcats)
+
+table <- table(dWide$temporalSetting)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "TemporalSetting" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+result <- result %>%
+  mutate(TemporalSetting = fct_recode(TemporalSetting,
+    "Contemporary" = "Contemporary (current day)",
+    "Contemporary + Historical" = "Contemporary (current day),Historical",
+    "Fantastical/non-human" = "Fantastical/non-human",
+    "Historical" = "Historical"
+  ))
+
+ggplot(result, aes(x = reorder(TemporalSetting, -Percentage), y = Percentage, fill = TemporalSetting)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")), vjust = -0.5, size = 4) +
+  labs(title = "Temporal Setting of Books",
+       x = "Setting Type", y = "Percentage of Books") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+ggplot(result, aes(x = "", y = Percentage, fill = TemporalSetting)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3.6) +
+  labs(title = "Temporal Setting of Books")+
+  scale_fill_manual(values = c("Contemporary" = "#d5d1e9", "Contemporary + Historical" = "#d0e4ee", "Fantastical/non-human" = "#F3f5a9", "Historical" = "#f5cf9f"))+
+  theme_void()
+```
+### Fiction/non-fiction/combo
+Question: Are the books fiction, non-fiction, or some combination??
+
+```{r setting 2}
+table <- table(dWide$fiction)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "Fiction" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+
+print(result)
+
+ggplot(result, aes(x = "", y = Percentage, fill = Fiction)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 4) +
+  scale_fill_manual(values = c("Non-fiction" = "#EDCBD2", "Fiction" = "#C3E0DD", "Combination of fiction and non-fiction" = "#FAE9DA"))+
+  labs(title = "Fiction, Nonfiction, or Combination of Both") +
+  theme_void()
+```
+
+##Step 2: Diversity of characters in the book
+
+Question: Who is captured in children’s books about race
+
+### Race diversity of the characters
+
+```{r diversity in the book}
+
+```
+
+### Gender representation and gender conformity of the characters
+
+### Age categories of the characters
+
+###Valence of each race depicted in the books
+
+would authors' race influence character diversity in the books?
+
+##Step 3: Intervention Strategies in the books
+We have included four main intervention strategies that might be depicted in the book to reduce intergroup racial bias, which are intergroup contact, individuation, perspective taking, and positive exemplars. 
+
+### presence of intergroup contact
+
+
+### presence of perspective taking
+
+### presence of positive exemplars
+
