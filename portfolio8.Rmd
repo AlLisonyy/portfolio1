@@ -12,7 +12,7 @@ output:
     fig_caption: true
 ---
 
-For this portfolio, I plans to explore 
+For this portfolio, I plans to explore a dataset with movies with lgbtq theme/ elements! I think this is a really interest dataset maybe can also be used for one of the portfolio. 
 
 This is the dataset I will be using for this portfolio because I think it is an interesting project to explore, and might also give me a good movie list! The link to the dataset: https://github.com/r-lgbtq/tidyrainbow/tree/main
 

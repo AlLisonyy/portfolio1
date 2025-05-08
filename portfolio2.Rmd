@@ -156,9 +156,9 @@ Thesis_scale$BS_TR_Crime_5 <- ifelse(Thesis_scale$CR5_score == 0, NA_integer_, T
 ## Next, I sum the recoded_TR_topic variables separately for each topic. If the participants wrote about five answers, they should all have five “sum_recoded_TR_topic” scores (one for each topic).
 Thesis_scale <- Thesis_scale %>%
   dplyr::mutate(
-    sum_recoded_TR_college = rowSums(select(., BS_TR_CG_1, BS_TR_CG_2, BS_TR_CG_3, BS_TR_CG_4, BS_TR_CG_5), na.rm = TRUE),
-    sum_recoded_TR_recycling = rowSums(select(., BS_TR_Recylcing_1, BS_TR_Recylcing_2, BS_TR_Recylcing_3, BS_TR_Recylcing_4, BS_TR_Recylcing_5), na.rm = TRUE),
-    sum_recoded_TR_crime = rowSums(select(., BS_TR_Crime_1, BS_TR_Crime_2, BS_TR_Crime_3, BS_TR_Crime_4, BS_TR_Crime_5), na.rm = TRUE)
+    sum_recoded_TR_college = rowSums(dplyr::select(., BS_TR_CG_1, BS_TR_CG_2, BS_TR_CG_3, BS_TR_CG_4, BS_TR_CG_5), na.rm = TRUE),
+    sum_recoded_TR_recycling = rowSums(dplyr::select(., BS_TR_Recylcing_1, BS_TR_Recylcing_2, BS_TR_Recylcing_3, BS_TR_Recylcing_4, BS_TR_Recylcing_5), na.rm = TRUE),
+    sum_recoded_TR_crime = rowSums(dplyr::select(., BS_TR_Crime_1, BS_TR_Crime_2, BS_TR_Crime_3, BS_TR_Crime_4, BS_TR_Crime_5), na.rm = TRUE)
     )
 ###I als0 just want to double check what does na.rm did for my data in terms of na.rm = TRUE/FALSE
 summary(Thesis_scale$recoded_college)

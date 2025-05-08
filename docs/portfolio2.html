@@ -387,23 +387,20 @@ This portfolio will focus on this process.</p>
 ##For this portfolio, I would like to use the dataset from my thesis study.
 library(psych)
 library(haven)
-library(ggplot2)
 library(ltm)
 library(ppcor)
 library(tidyverse)
-library(dplyr)
-Thesis &lt;- read_sav(&quot;~/Downloads/Thesis.sav&quot;)</code></pre>
+Thesis &lt;- read_sav(&quot;Thesis.sav&quot;)    </code></pre>
 </div>
 <div id="step-1-clean-data" class="section level2">
 <h2>Step 1: clean data</h2>
 <pre class="r"><code>##The first step is to clean data, and I started with getting rid of participants that did not finished the study, as well as deleting variable that does not have any data, such as recipient name.  
-library(dplyr)
 Thesis_clean &lt;- Thesis %&gt;% 
-  select(-StartDate, -EndDate, -IPAddress, -RecordedDate, -ResponseId, -RecipientLastName, -RecipientFirstName, -RecipientEmail, -ExternalReference, -LocationLatitude, -LocationLongitude, -DistributionChannel, -UserLanguage, -robot_timer_First_Click, -robot_timer_Last_Click, -robot_timer_Page_Submit, -robot_timer_Click_Count, -browser_info_Browser, -browser_info_Version, -browser_info_Operating_System, -browser_info_Resolution) %&gt;%
-  filter(Progress &gt;= 50,  ##Keep only participants with progress &gt;= 50
-  Consent1 != 2,  ##Remove people&#39;s answers who did not give consent to participate in the study
-  (!is.na(difficulties)),  ##Remove people&#39;s answers who had difficulties when answering questions, their data might be invalid
-  Status == 0,  ##Remove participants whose status is not 0
+ dplyr::select(-c(StartDate, EndDate, IPAddress, RecordedDate, ResponseId, RecipientLastName, RecipientFirstName, RecipientEmail,  ExternalReference, LocationLatitude, LocationLongitude, DistributionChannel, UserLanguage, robot_timer_First_Click, robot_timer_Last_Click, robot_timer_Page_Submit, robot_timer_Click_Count, browser_info_Browser, browser_info_Version, browser_info_Operating_System, browser_info_Resolution)) %&gt;%
+  filter(Progress &gt;= 50 &amp;  ##Keep only participants with progress &gt;= 50
+  Consent1 != 2 &amp; ##Remove people&#39;s answers who did not give consent to participate in the study
+  (!is.na(difficulties)) &amp; ##Remove people&#39;s answers who had difficulties when answering questions, their data might be invalid
+  Status == 0 &amp;  ##Remove participants whose status is not 0
   Finished == 1
   )</code></pre>
 </div>
@@ -417,12 +414,17 @@ text_cols &lt;- c(&quot;BS_TL_CG_1&quot;, &quot;BS_TL_CG_2&quot;, &quot;BS_TL_CG
 
 Thesis_clean &lt;- Thesis_clean %&gt;%
   mutate(across(-all_of(text_cols), ~ as.numeric(.)))</code></pre>
-<pre><code>## Warning: There were 3 warnings in `mutate()`.
+<pre><code>## Warning: There were 3 warnings in
+## `mutate()`.
 ## The first warning was:
-## ℹ In argument: `across(-all_of(text_cols), ~as.numeric(.))`.
+## ℹ In argument:
+##   `across(-all_of(text_cols),
+##   ~as.numeric(.))`.
 ## Caused by warning:
 ## ! NAs introduced by coercion
-## ℹ Run `dplyr::last_dplyr_warnings()` to see the 2 remaining warnings.</code></pre>
+## ℹ Run
+##   `dplyr::last_dplyr_warnings()`
+##   to see the 2 remaining warnings.</code></pre>
 <pre class="r"><code>##Convert the numeric columns: I noticed that SPSS assigned the wrong value for the thought rating items, so I have to recoded the wrong value first before reverse-coding it
 Thesis_scale &lt;- Thesis_clean %&gt;%
   mutate(
@@ -468,14 +470,16 @@ Thesis_scale &lt;- Thesis_scale %&gt;%
     
     across(c(nclos2, nclos5, nclos15, nclos12, nclos17, nclos18, nclos19, nclos20, nclos22, nclos24, nclos27, nclos28, nclos34, nclos37, nclos38, nclos42), ~ recode(.,
       `1` = 6, `2` = 5, `3` = 4, `4` = 3, `5` = 2, `6` = 1)), ##Need for closure
-    
-    across(c(hex1, hex9, hex10, hex12, hex14, hex15, hex19, hex20, hex21, hex24, hex26, hex28, hex30, hex31, hex32, hex35, hex41, hex44, hex46, hex48, hex49, hex52, hex53, hex55, hex56, hex57, hex59, hex60), ~ recode(.,
+
+    across(c(hex1, hex9, hex10, hex12, hex14, hex15, hex19, hex20, hex21, hex24, hex26, hex28, hex30, hex31, hex32, hex35, hex41, hex42, hex44, hex46, hex48, hex49, hex52, hex53, hex55, hex56, hex57, hex59, hex60), ~ recode(.,
       `1` = 5, `2` = 4, `4` = 2, `5` = 1)) ##HEXACO
     )</code></pre>
 <p>I realized that I should have create new variables for the recoded
 ones, so that would be easier for me to keep track on if the numbers are
 already recoded. I had too many variables this time so I did not do
-that.</p>
+that. I also had HEXACO’s Honesty-Humility subscale with a low
+reliability, I ran a more close analysis looking at item correlations
+and found that I was missing one item for reverse coding…</p>
 </div>
 <div id="step-3.1-calculating-the-thought-listing-and-rating-task"
 class="section level2">
@@ -485,11 +489,26 @@ class="section level2">
 ## How to compute: I Sum the total number of thoughts for each participant per the topic. In other words, if a participant wrote three valid thoughts for topic 1, they should have “3” for their “sum_recoded_TR_topic”.
 
 Thesis_scale &lt;- Thesis_scale %&gt;%
-  mutate(
-    recoded_college = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
-    recoded_recycling = rowSums(select(., RC1_score, RC2_score, RC3_score, RC4_score, RC5_score), na.rm = TRUE),
-    recoded_crime = rowSums(select(., CR1_score, CR2_score, CR3_score, CR4_score, CR5_score), na.rm = TRUE),
-    )
+  dplyr::mutate(
+    recoded_college = rowSums(dplyr::select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
+    recoded_recycling = rowSums(dplyr::select(., RC1_score, RC2_score, RC3_score, RC4_score, RC5_score), na.rm = TRUE),
+    recoded_crime = rowSums(dplyr::select(., CR1_score, CR2_score, CR3_score, CR4_score, CR5_score), na.rm = TRUE)
+  )
+
+#the two version I also tried but did not let me build the website:
+#Thesis_scale &lt;- Thesis_scale %&gt;%
+  #dplyr::mutate(
+   # recoded_college = rowSums(select(., CG1_score, CG2_score, CG3_score, CG4_score, CG5_score), na.rm = TRUE),
+    #recoded_recycling = rowSums(select(., RC1_score, RC2_score, RC3_score, RC4_score, RC5_score), na.rm = TRUE),
+    #recoded_crime = rowSums(select(., CR1_score, CR2_score, CR3_score, CR4_score, CR5_score), na.rm = TRUE)  )
+#Thesis_scale &lt;- Thesis_scale %&gt;%
+  #rowwise() %&gt;%
+ # dplyr::mutate(
+  #  recoded_college = sum(c_across(c(CG1_score, CG2_score, CG3_score, CG4_score, CG5_score)), na.rm = TRUE),
+  #  recoded_recycling = sum(c_across(c(RC1_score, RC2_score, RC3_score, RC4_score, RC5_score)), na.rm = TRUE),
+  #  recoded_crime = sum(c_across(c(CR1_score, CR2_score, CR3_score, CR4_score, CR5_score)), na.rm = TRUE),  ) %&gt;%
+ # ungroup()
+
 
 ## Next, I need to delete the scores in the BS_TR_topic items if I marked &quot;0&quot; in the accordingly topic_score variables. In other words, I need to put &quot;0&quot; in the BS_TR_topic when the participant did not provide valid answers.
 ##topic: college graduate
@@ -512,10 +531,10 @@ Thesis_scale$BS_TR_Crime_4 &lt;- ifelse(Thesis_scale$CR4_score == 0, NA_integer_
 Thesis_scale$BS_TR_Crime_5 &lt;- ifelse(Thesis_scale$CR5_score == 0, NA_integer_, Thesis_scale$BS_TR_Crime_5)
 ## Next, I sum the recoded_TR_topic variables separately for each topic. If the participants wrote about five answers, they should all have five “sum_recoded_TR_topic” scores (one for each topic).
 Thesis_scale &lt;- Thesis_scale %&gt;%
-  mutate(
-    sum_recoded_TR_college = rowSums(select(., BS_TR_CG_1, BS_TR_CG_2, BS_TR_CG_3, BS_TR_CG_4, BS_TR_CG_5), na.rm = TRUE),
-    sum_recoded_TR_recycling = rowSums(select(., BS_TR_Recylcing_1, BS_TR_Recylcing_2, BS_TR_Recylcing_3, BS_TR_Recylcing_4, BS_TR_Recylcing_5), na.rm = TRUE),
-    sum_recoded_TR_crime = rowSums(select(., BS_TR_Crime_1, BS_TR_Crime_2, BS_TR_Crime_3, BS_TR_Crime_4, BS_TR_Crime_5), na.rm = TRUE)
+  dplyr::mutate(
+    sum_recoded_TR_college = rowSums(dplyr::select(., BS_TR_CG_1, BS_TR_CG_2, BS_TR_CG_3, BS_TR_CG_4, BS_TR_CG_5), na.rm = TRUE),
+    sum_recoded_TR_recycling = rowSums(dplyr::select(., BS_TR_Recylcing_1, BS_TR_Recylcing_2, BS_TR_Recylcing_3, BS_TR_Recylcing_4, BS_TR_Recylcing_5), na.rm = TRUE),
+    sum_recoded_TR_crime = rowSums(dplyr::select(., BS_TR_Crime_1, BS_TR_Crime_2, BS_TR_Crime_3, BS_TR_Crime_4, BS_TR_Crime_5), na.rm = TRUE)
     )
 ###I als0 just want to double check what does na.rm did for my data in terms of na.rm = TRUE/FALSE
 summary(Thesis_scale$recoded_college)</code></pre>
@@ -523,17 +542,22 @@ summary(Thesis_scale$recoded_college)</code></pre>
 ##   0.000   5.000   5.000   4.487   5.000   5.000</code></pre>
 <pre class="r"><code>## Lastly, I use this equation to calculate the BS Proportion per topic, whereby each participant will have five individual BS Proportion scores (one for each topic): sum_recoded_thought_rating_topic1 / (sum thought_frequency_topic1 x 10)
 Thesis_scale &lt;- Thesis_scale %&gt;%
-  mutate(
+  dplyr::mutate(
     BSthought_college = sum_recoded_TR_college / (recoded_college * 10),
     BSthought_recycling = sum_recoded_TR_recycling / (recoded_recycling * 10),
     BSthought_crime = sum_recoded_TR_crime / (recoded_crime * 10)
     )
 ## Then I combine them into one score
 Thesis_scale &lt;- Thesis_scale %&gt;%
-  mutate(BSthought = (BSthought_college + BSthought_recycling + BSthought_crime)/ 3)
+  dplyr::mutate(BSthought = (BSthought_college + BSthought_recycling + BSthought_crime)/ 3)
 ## Check if it worked for one
 head(Thesis_scale$BSthought_college)</code></pre>
 <pre><code>## [1] 0.225 0.320 0.380 0.340 0.480 0.180</code></pre>
+<pre class="r"><code>## There is another variable called self-reported knowledge of each topic. I will need to average the knowledge of each topic and created a new variable called knowledge_score
+Thesis_scale &lt;- Thesis_scale %&gt;%
+  mutate(
+    knowledge_score = (Knowledge_CG + Knowledge_recycle + Knowledge_Crime)/3
+  )</code></pre>
 </div>
 <div id="step-3.2-calculating-the-cogntive-ability-measurements"
 class="section level2">
@@ -541,20 +565,20 @@ class="section level2">
 <pre class="r"><code>##For measuring cognitive ability, the scales are mainly short questions asking word/ math problems and is not likert scales. So I will need to calculate and code the participants&#39; answers into numeric values. 
 ##Numeracy scale
 ##compute their answers, if they answer one question right, they will get one point.
-Thesis_scale$ns1 &lt;- ifelse(Thesis_scale$NS1 == 500, 1, 0)
-Thesis_scale$ns2 &lt;- ifelse(Thesis_scale$NS2 == 10, 1, 0)
-Thesis_scale$ns3 &lt;- ifelse(Thesis_scale$NS3 == 0.1, 1, 0)
-Thesis_scale$ns4 &lt;- ifelse(Thesis_scale$NS4 == 9, 1, 0)
-Thesis_scale$ns5 &lt;- ifelse(Thesis_scale$NS5 == 8, 1, 0)
-Thesis_scale$ns6 &lt;- ifelse(Thesis_scale$NS6 == 2, 1, 0)
-Thesis_scale$ns7 &lt;- ifelse(Thesis_scale$NS7 == 2, 1, 0)
-Thesis_scale$ns8 &lt;- ifelse(Thesis_scale$NS8 == 10, 1, 0)
-Thesis_scale$ns9 &lt;- ifelse(Thesis_scale$NS9 == 100, 1, 0)
-Thesis_scale$ns10 &lt;- ifelse(Thesis_scale$NS10 == 20, 1, 0)
-Thesis_scale$ns11 &lt;- ifelse(Thesis_scale$NS11 == 5, 1, 0)
+Thesis_scale$ns_1 &lt;- ifelse(Thesis_scale$NS1 == 500, 1, 0)
+Thesis_scale$ns_2 &lt;- ifelse(Thesis_scale$NS2 == 10, 1, 0)
+Thesis_scale$ns_3 &lt;- ifelse(Thesis_scale$NS3 == 0.1, 1, 0)
+Thesis_scale$ns_4 &lt;- ifelse(Thesis_scale$NS4 == 9, 1, 0)
+Thesis_scale$ns_5 &lt;- ifelse(Thesis_scale$NS5 == 8, 1, 0)
+Thesis_scale$ns_6 &lt;- ifelse(Thesis_scale$NS6 == 2, 1, 0)
+Thesis_scale$ns_7 &lt;- ifelse(Thesis_scale$NS7 == 2, 1, 0)
+Thesis_scale$ns_8 &lt;- ifelse(Thesis_scale$NS8 == 10, 1, 0)
+Thesis_scale$ns_9 &lt;- ifelse(Thesis_scale$NS9 == 100, 1, 0)
+Thesis_scale$ns_10 &lt;- ifelse(Thesis_scale$NS10 == 20, 1, 0)
+Thesis_scale$ns_11 &lt;- ifelse(Thesis_scale$NS11 == 5, 1, 0)
 ##calculate the mean of each question they got right
 Thesis_scale &lt;- Thesis_scale %&gt;%
-  mutate(NS_score = (ns1 + ns2 + ns3 + ns4 + ns5 + ns6 + ns7 + ns8 + ns9 + ns10)/ 10)
+  mutate(ns_score = (ns_1 + ns_2 + ns_3 + ns_4 + ns_5 + ns_6 + ns_7 + ns_8 + ns_9 + ns_10)/ 10)
 
 ##General Social Survey Wordsum Vocabulary Test
 ##compute their answers, if they answer one question right, they will get one point.
@@ -584,7 +608,8 @@ Thesis_scale &lt;- Thesis_scale %&gt;%
 <div id="step-4-save-the-cleaned-datset-for-analysis"
 class="section level2">
 <h2>Step 4: save the cleaned datset for analysis</h2>
-<pre class="r"><code>saveRDS(Thesis_scale, file = &quot;Thesis_scale.rds&quot;)</code></pre>
+<pre class="r"><code>saveRDS(Thesis_scale, file = &quot;Thesis_scale.rds&quot;)
+saveRDS(Thesis_clean, file = &quot;Thesis_clean.rds&quot;)</code></pre>
 </div>
 
 

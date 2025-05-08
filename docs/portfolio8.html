@@ -374,7 +374,9 @@ div.tocify {
 </div>
 
 
-<p>For this portfolio, I plans to explore</p>
+<p>For this portfolio, I plans to explore a dataset with movies with
+lgbtq theme/ elements! I think this is a really interest dataset maybe
+can also be used for one of the portfolio.</p>
 <p>This is the dataset I will be using for this portfolio because I
 think it is an interesting project to explore, and might also give me a
 good movie list! The link to the dataset: <a
@@ -382,38 +384,21 @@ href="https://github.com/r-lgbtq/tidyrainbow/tree/main"
 class="uri">https://github.com/r-lgbtq/tidyrainbow/tree/main</a></p>
 <pre class="r"><code>##install.packages(&quot;tidytuesdayR&quot;)
 library(tidytuesdayR)
-library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>library(tidyr)
+library(dplyr)
+library(tidyr)
 library(stringr)
 library(ggplot2)
-library(lubridate)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;lubridate&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     date, intersect, setdiff, union</code></pre>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ forcats 1.0.0     ✔ readr   2.1.5
-## ✔ purrr   1.0.4     ✔ tibble  3.2.1</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
-## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>tuesdata &lt;- tidytuesdayR::tt_load(&#39;2024-06-25&#39;)</code></pre>
-<pre><code>## ---- Compiling #TidyTuesday Information for 2024-06-25 ----
+library(lubridate)
+library(tidyverse)
+
+
+tuesdata &lt;- tidytuesdayR::tt_load(&#39;2024-06-25&#39;)</code></pre>
+<pre><code>## ---- Compiling #TidyTuesday
+## Information for 2024-06-25 ----
 ## --- There is 1 file available ---
 ## 
 ## 
-## ── Downloading files ───────────────────────────────────────────────────────────
+## ── Downloading files ──────────────
 ## 
 ##   1 of 1: &quot;lgbtq_movies.csv&quot;</code></pre>
 <pre class="r"><code>lgbtq_movies &lt;- tuesdata$lgbtq_movies</code></pre>
@@ -555,7 +540,8 @@ movie?</h3>
   labs(title = &quot;Relationship Between Popularity and Audience Rating&quot;,
        x = &quot;Popularity&quot;,
        y = &quot;Average Rating&quot;)</code></pre>
-<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<pre><code>## `geom_smooth()` using formula = &#39;y
+## ~ x&#39;</code></pre>
 <p><img src="portfolio8_files/figure-html/cor%20btw%20popularity%20and%20ratings-1.png" width="672" /></p>
 <p>according to the table and graph, there is a positive correlation of
 .22 between popularity and average movie ratings.</p>
@@ -737,10 +723,14 @@ ggplot(movies_per_year, aes(x = year, y = n_movies)) +
        x = &quot;Year&quot;,
        y = &quot;Number of Films&quot;) +
   theme_minimal()</code></pre>
-<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+<pre><code>## Warning: Using `size` aesthetic for lines
+## was deprecated in ggplot2 3.4.0.
 ## ℹ Please use `linewidth` instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## This warning is displayed once
+## every 8 hours.
+## Call
+## `lifecycle::last_lifecycle_warnings()`
+## to see where this warning was
 ## generated.</code></pre>
 <p><img src="portfolio8_files/figure-html/number%20overtime-1.png" width="672" /></p>
 <p>According to the figure, lgbtq+ movie numbers have increased over the

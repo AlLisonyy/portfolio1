@@ -4,12 +4,7 @@ author: "Allison Li"
 date: "02102025"
 output: 
   html_document:
-    encoding: UTF-8
-    toc: true
-    number_sections: false
-    toc_float: true
-    toc_depth: 4
-    fig_caption: true
+    keep_md: true
 ---
 
 ```{r load-packages, message=FALSE}

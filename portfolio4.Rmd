@@ -339,6 +339,8 @@ pcor.test(partial_BFSpBFS$BFSp_score, partial_BFSpBFS$BFS_score, partial_BFSpBFS
 ### Bullshit Frequency subscale BFSevasive and other variables's partial correlation when controled for lying tendency
 
 ```{r}
+library(dplyr)
+
 ##1. BFSe and Thought listing and rating task
 partial_BFSepthoughtist <- Thesis_scale %>% 
   select(BFSe_score, BSthought, LIE_score) %>% 
@@ -411,11 +413,6 @@ partial_BFSeopen <- Thesis_scale %>%
   drop_na()
 pcor.test(partial_BFSeopen$BFSe_score, partial_BFSeopen$open_score, partial_BFSeopen$LIE_score)
 
-##15. BFSe and Intellectual Humility Scale
-partial_BFSeih <- Thesis_scale %>% 
-  select(BFSe_score, ihs_score, LIE_score) %>% 
-  drop_na()
-pcor.test(partial_BFSeih$BFSe_score, partial_BFSeih$ihs_score, partial_BFSeih$LIE_score)
 
 ##16. BFSe and Need for Closure
 pcor.test(Thesis_scale$BFSe_score, Thesis_scale$nclos_score, Thesis_scale$LIE_score)
@@ -566,12 +563,6 @@ partial_BPSopen <- Thesis_scale %>%
   select(BPS_score, open_score, LIE_score) %>% 
   drop_na()
 pcor.test(partial_BPSopen$BPS_score, partial_BPSopen$open_score, partial_BPSopen$LIE_score)
-
-##15. BPS and Intellectual Humility Scale
-partial_BPSih <- Thesis_scale %>% 
-  select(BPS_score, ihs_score, LIE_score) %>% 
-  drop_na()
-pcor.test(partial_BPSih$BPS_score, partial_BPSih$ihs_score, partial_BPSih$LIE_score)
 
 ##16. BPS and Need for Closure
 pcor.test(Thesis_scale$BPS_score, Thesis_scale$nclos_score, Thesis_scale$LIE_score)
@@ -725,11 +716,6 @@ partial_BSthoughtopen <- Thesis_scale %>%
   drop_na()
 pcor.test(partial_BSthoughtopen$BSthought, partial_BSthoughtopen$open_score, partial_BSthoughtopen$LIE_score)
 
-##16. BSthought and Intellectual Humility Scale
-partial_BSthoughtih <- Thesis_scale %>% 
-  select(BSthought, ihs_score, LIE_score) %>% 
-  drop_na()
-pcor.test(partial_BSthoughtih$BSthought, partial_BSthoughtih$ihs_score, partial_BSthoughtih$LIE_score)
 
 ##17. BSthought and Need for Closure
 partial_BSthoughtnclos <- Thesis_scale %>% 
@@ -812,10 +798,9 @@ pcor.test(partial_BSthoughtcrt$BSthought, partial_BSthoughtcrt$crt_score, partia
 ```{r pearson correlation BSF}
 ##Test to see if the correlation test is what i am looking for:
 cor.test(Thesis_scale$BSthought, Thesis_scale$ncog_score, method=c("pearson"))
-cor.test(Thesis_scale$BSthought, Thesis_scale$ihs_score, method=c("pearson"))
 
 ##Correlations
-bs_variables <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narcgrand_score", "narchyper_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "ihs_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score", "BSthought" )
+bs_variables <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narcgrand_score", "narchyper_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score", "BSthought" )
 
 correlates_bs <- Thesis_scale[, bs_variables]
 correlates <- round(cor(correlates_bs, use = "pairwise.complete.obs"), 2)
@@ -892,7 +877,7 @@ print(resultnarcgrand)
 
 ##After this worked and I knwo what I want from the output, I decided to create a function for calculating the hoteling tests for all the variables. 
 ##List of variable names you want to compare against BFS and BPS
-target_vars <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narcgrand_score", "narchyper_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "ihs_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score")
+target_vars <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narcgrand_score", "narchyper_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score")
 
 ##create a function since there are too many variables to be put manually
 compare_correlates <- function(var_name, x_name, y_name, Thesis_scale) {
