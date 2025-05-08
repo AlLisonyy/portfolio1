@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Allison Li" />
+
+
+<title>Exploring</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Portfolio</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="p01.html">Portfolio 1</a>
+</li>
+<li>
+  <a href="p02.html">Portfolio 2</a>
+</li>
+<li>
+  <a href="p03.html">Portfolio 3</a>
+</li>
+<li>
+  <a href="p04.html">Portfolio 4</a>
+</li>
+<li>
+  <a href="p05.html">Portfolio 5</a>
+</li>
+<li>
+  <a href="p06.html">Portfolio 6</a>
+</li>
+<li>
+  <a href="p07.html">Portfolio 7</a>
+</li>
+<li>
+  <a href="p08.html">Portfolio 8</a>
+</li>
+<li>
+  <a href="p09.html">Portfolio 9</a>
+</li>
+<li>
+  <a href="p10.html">Portfolio 10</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Exploring</h1>
+<h4 class="author">Allison Li</h4>
+<h4 class="date">04242025</h4>
+
+</div>
+
+
+<p>For this portfolio, I plans to explore</p>
+<p>This is the dataset I will be using for this portfolio because I
+think it is an interesting project to explore, and might also give me a
+good movie list! The link to the dataset: <a
+href="https://github.com/r-lgbtq/tidyrainbow/tree/main"
+class="uri">https://github.com/r-lgbtq/tidyrainbow/tree/main</a></p>
+<pre class="r"><code>##install.packages(&quot;tidytuesdayR&quot;)
+library(tidytuesdayR)
+library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(tidyr)
+library(stringr)
+library(ggplot2)
+library(lubridate)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     date, intersect, setdiff, union</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ forcats 1.0.0     ✔ readr   2.1.5
+## ✔ purrr   1.0.4     ✔ tibble  3.2.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>tuesdata &lt;- tidytuesdayR::tt_load(&#39;2024-06-25&#39;)</code></pre>
+<pre><code>## ---- Compiling #TidyTuesday Information for 2024-06-25 ----
+## --- There is 1 file available ---
+## 
+## 
+## ── Downloading files ───────────────────────────────────────────────────────────
+## 
+##   1 of 1: &quot;lgbtq_movies.csv&quot;</code></pre>
+<pre class="r"><code>lgbtq_movies &lt;- tuesdata$lgbtq_movies</code></pre>
+<p>##Step 1</p>
+<pre class="r"><code>summary(lgbtq_movies)</code></pre>
+<pre><code>##        id            title           original_title     original_language 
+##  Min.   :    14   Length:7165        Length:7165        Length:7165       
+##  1st Qu.:261362   Class :character   Class :character   Class :character  
+##  Median :498605   Mode  :character   Mode  :character   Mode  :character  
+##  Mean   :476025                                                           
+##  3rd Qu.:663407                                                           
+##  Max.   :983153                                                           
+##                                                                           
+##    overview          release_date          popularity       vote_average   
+##  Length:7165        Min.   :1882-06-01   Min.   :  0.000   Min.   : 0.000  
+##  Class :character   1st Qu.:2006-11-11   1st Qu.:  0.600   1st Qu.: 0.000  
+##  Mode  :character   Median :2014-03-07   Median :  0.676   Median : 3.800  
+##                     Mean   :2010-01-15   Mean   :  2.156   Mean   : 3.334  
+##                     3rd Qu.:2018-05-07   3rd Qu.:  1.759   3rd Qu.: 6.000  
+##                     Max.   :2022-12-21   Max.   :321.755   Max.   :10.000  
+##                     NA&#39;s   :90                                             
+##    vote_count         adult           video          genre_ids        
+##  Min.   :    0.00   Mode :logical   Mode :logical   Length:7165       
+##  1st Qu.:    0.00   FALSE:4940      FALSE:6933      Class :character  
+##  Median :    1.00   TRUE :2225      TRUE :232       Mode  :character  
+##  Mean   :   52.46                                                     
+##  3rd Qu.:    7.00                                                     
+##  Max.   :14668.00                                                     
+## </code></pre>
+<p>First, I wanted to take a look at this dataset and what variables are
+included. As we can see, there is the ID of each moive, the title and
+the original languae of each movie, the overview of each movie, the date
+each movie is released, the popularity, the average rating, whether the
+movie is adult film or not, video(not sure what this variable means?),
+and the genre of each film.</p>
+<p>###Recode genre</p>
+<pre class="r"><code>##I found that genre variable has the movie&#39;s genre number, which is not directly showing what type of movie it is. I found what does each value represents for online and plan to create a new variable representing what genre the movie is with text value.
+##The website I found with what does these number represent: https://www.themoviedb.org/talk/5daf6eb0ae36680011d7e6ee
+
+#step1 Define the genre ID-to-name mapping
+genre_lookup &lt;- tibble::tibble(
+  genre_id = c(28, 12, 16, 35, 80, 99, 18, 10751, 14, 36, 27, 10402, 9648, 10749, 878, 10770, 53, 10752, 37),
+  genre_name = c(&quot;Action&quot;, &quot;Adventure&quot;, &quot;Animation&quot;, &quot;Comedy&quot;, &quot;Crime&quot;, &quot;Documentary&quot;, &quot;Drama&quot;, &quot;Family&quot;,
+                 &quot;Fantasy&quot;, &quot;History&quot;, &quot;Horror&quot;, &quot;Music&quot;, &quot;Mystery&quot;, &quot;Romance&quot;, &quot;ScienceFiction&quot;, 
+                 &quot;TVMovie&quot;, &quot;Thriller&quot;, &quot;War&quot;, &quot;Western&quot;)
+)
+
+#step2 Expand genre_ids and map to genre names
+expanded &lt;- lgbtq_movies %&gt;%
+  mutate(genre_ids = str_remove_all(genre_ids, &quot;\\[|\\]&quot;)) %&gt;%
+  separate_rows(genre_ids, sep = &quot;,\\s*&quot;) %&gt;%
+  mutate(genre_ids = as.integer(genre_ids)) %&gt;%
+  left_join(genre_lookup, by = c(&quot;genre_ids&quot; = &quot;genre_id&quot;))
+
+#step3.1 Create a genre text column for each movie 
+genre_text_df &lt;- expanded %&gt;%
+  group_by(id) %&gt;%
+  summarise(genre_text = paste(sort(unique(genre_name)), collapse = &quot;, &quot;), .groups = &quot;drop&quot;)
+
+#step3.2 Wide format: one column for each genre, showing presence (1) or absence (0)
+genre_binary_df &lt;- expanded %&gt;%
+  mutate(present = 1) %&gt;%
+  select(id, title, genre_name, present) %&gt;%
+  pivot_wider(names_from = genre_name, values_from = present, values_fill = 0)
+
+#step4 Merge everything back together
+lgbtq_movies_final &lt;- lgbtq_movies %&gt;%
+  left_join(genre_text_df, by = &quot;id&quot;) %&gt;%
+  left_join(genre_binary_df, by = &quot;id&quot;)</code></pre>
+<p>##Step 2 Radom questions!</p>
+<div
+id="question-1-do-certain-genres-tend-to-receive-higher-audience-ratings"
+class="section level3">
+<h3>Question 1: Do certain genres tend to receive higher audience
+ratings?</h3>
+<pre class="r"><code>avg_ratings_by_genre &lt;- expanded %&gt;%
+  group_by(genre_name) %&gt;%
+  summarise(
+    avg_rating = mean(vote_average, na.rm = TRUE),
+    n_movies = n()
+  ) %&gt;%
+  arrange(desc(avg_rating))
+
+#Plot
+ggplot(avg_ratings_by_genre, aes(x = reorder(genre_name, avg_rating), y = avg_rating, fill = genre_name)) +
+  geom_col() +
+  coord_flip() +
+  geom_text(aes(label = round(avg_rating, 2)),
+            hjust = -0.1, size = 3.5) +  
+  labs(title = &quot;Average Audience Rating by Genre&quot;,
+       x = &quot;Genre&quot;,
+       y = &quot;Average Rating&quot;) +
+  theme_minimal() +
+  theme(legend.position = &quot;none&quot;) + 
+  ylim(0, max(avg_ratings_by_genre$avg_rating) + 1)</code></pre>
+<p><img src="portfolio8_files/figure-html/genre%20higher%20audience%20ratings-1.png" width="672" /></p>
+<p>based on the graph, I can see that action movies tend to have the
+highest averate rating, whie the category labeled as NA has the lowest
+rating.</p>
+</div>
+<div id="question-2-do-certain-genres-tend-to-have-higher-popularity"
+class="section level3">
+<h3>Question 2: Do certain genres tend to have higher popularity?</h3>
+<pre class="r"><code>genre_popularity &lt;- expanded %&gt;%
+  group_by(genre_name) %&gt;%
+  summarise(
+    avg_popularity = mean(popularity, na.rm = TRUE),
+    n_movies = n()
+  ) %&gt;%
+  arrange(desc(avg_popularity))
+
+ggplot(genre_popularity, aes(x = reorder(genre_name, avg_popularity), y = avg_popularity, fill = genre_name)) +
+  geom_col() +
+  coord_flip() +
+  geom_text(aes(label = round(avg_popularity, 2)),
+            hjust = -0.1, size = 3.5) +
+  labs(title = &quot;Average Popularity by Genre&quot;,
+       x = &quot;Genre&quot;,
+       y = &quot;Average Popularity&quot;) +
+  theme_minimal() +
+  theme(legend.position = &quot;none&quot;) +
+  ylim(0, max(genre_popularity$avg_popularity, na.rm = TRUE) + 5)</code></pre>
+<p><img src="portfolio8_files/figure-html/popularity%20genre-1.png" width="672" /></p>
+<p>The result showed that War genre tends to have a high popularity,
+with NA still having least popularity. It is surprising to see war films
+becoming the most popular one. I am wondering if more popular = higher
+rating</p>
+</div>
+<div
+id="question-3-is-popularity-positively-correlated-with-rating-of-the-movie"
+class="section level3">
+<h3>Question 3: is popularity positively correlated with rating of the
+movie?</h3>
+<pre class="r"><code>cor(lgbtq_movies$popularity, lgbtq_movies$vote_average, use = &quot;complete.obs&quot;)</code></pre>
+<pre><code>## [1] 0.2231234</code></pre>
+<pre class="r"><code>ggplot(lgbtq_movies, aes(x = popularity, y = vote_average)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;, se = FALSE, color = &quot;pink&quot;) +
+  labs(title = &quot;Relationship Between Popularity and Audience Rating&quot;,
+       x = &quot;Popularity&quot;,
+       y = &quot;Average Rating&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<p><img src="portfolio8_files/figure-html/cor%20btw%20popularity%20and%20ratings-1.png" width="672" /></p>
+<p>according to the table and graph, there is a positive correlation of
+.22 between popularity and average movie ratings.</p>
+</div>
+<div id="question-4-voting-popularity-and-rating"
+class="section level3">
+<h3>Question 4: voting, popularity, and rating</h3>
+<pre class="r"><code>genre_votes &lt;- expanded %&gt;%
+  group_by(genre_name) %&gt;%
+  summarise(
+    avg_votes = mean(vote_count, na.rm = TRUE),
+    n_movies = n()
+  ) %&gt;%
+  arrange(desc(avg_votes))
+
+ggplot(genre_votes, aes(x = reorder(genre_name, avg_votes), y = avg_votes, fill = genre_name)) +
+  geom_col() +
+  coord_flip() +
+  geom_text(aes(label = round(avg_votes, 0)), 
+            hjust = -0.1, size = 3.5) +
+  labs(title = &quot;Average Vote Count by Genre&quot;,
+       x = &quot;Genre&quot;,
+       y = &quot;Average Number of Votes&quot;) +
+  theme_minimal() +
+  theme(legend.position = &quot;none&quot;) +
+  ylim(0, max(genre_votes$avg_votes, na.rm = TRUE) + 100)</code></pre>
+<p><img src="portfolio8_files/figure-html/voting%20total%20and%20genre-1.png" width="672" /></p>
+<p>Interesting, history genre has the most votings, with documentary
+having the least next to NA.</p>
+<p>###These results lead me to wonder: Which genres are highly rated but
+not popular?</p>
+<pre class="r"><code>genre_summary &lt;- expanded %&gt;%
+  group_by(genre_name) %&gt;%
+  summarise(
+    avg_rating = mean(vote_average, na.rm = TRUE),
+    avg_popularity = mean(popularity, na.rm = TRUE),
+    n_movies = n()
+  ) %&gt;%
+  ungroup()
+
+genre_summary &lt;- genre_summary %&gt;%
+  mutate(
+    z_rating = scale(avg_rating)[,1],
+    z_popularity = scale(avg_popularity)[,1],
+    rating_vs_popularity_gap = z_rating - z_popularity
+  ) %&gt;%
+  arrange(desc(rating_vs_popularity_gap))
+
+genre_summary</code></pre>
+<pre><code>## # A tibble: 20 × 7
+##    genre_name     avg_rating avg_popularity n_movies z_rating z_popularity
+##    &lt;chr&gt;               &lt;dbl&gt;          &lt;dbl&gt;    &lt;int&gt;    &lt;dbl&gt;        &lt;dbl&gt;
+##  1 Fantasy              4.87          1.93       173   0.515      -1.17   
+##  2 TVMovie              5.06          3.10        85   0.745      -0.585  
+##  3 Family               4.59          2.16        62   0.164      -1.06   
+##  4 Comedy               4.83          3.78      1026   0.464      -0.239  
+##  5 Drama                4.52          3.08      2905   0.0782     -0.592  
+##  6 Mystery              4.91          4.59       112   0.557       0.171  
+##  7 Animation            4.41          3.64       150  -0.0574     -0.312  
+##  8 Music                4.63          4.27       130   0.216       0.00985
+##  9 Documentary          3.23          1.34       830  -1.51       -1.47   
+## 10 Western              5.07          6.10        17   0.759       0.930  
+## 11 Action               5.44          7.00        73   1.21        1.39   
+## 12 Crime                4.60          5.00       119   0.181       0.375  
+## 13 ScienceFiction       4.28          4.26        91  -0.218       0.00161
+## 14 Horror               4.07          3.92       220  -0.473      -0.168  
+## 15 Romance              3.59          2.96      1883  -1.07       -0.652  
+## 16 Thriller             4.63          5.79       247   0.212       0.778  
+## 17 History              4.96          6.66       108   0.626       1.22   
+## 18 Adventure            4.81          6.96        39   0.441       1.36   
+## 19 War                  4.83          7.74        36   0.466       1.76   
+## 20 &lt;NA&gt;                 1.78          0.807     1768  -3.31       -1.74   
+## # ℹ 1 more variable: rating_vs_popularity_gap &lt;dbl&gt;</code></pre>
+<pre class="r"><code>ggplot(genre_summary, aes(x = reorder(genre_name, rating_vs_popularity_gap), y = rating_vs_popularity_gap, fill = rating_vs_popularity_gap &gt; 0)) +
+  geom_col() +
+  coord_flip() +
+  labs(title = &quot;Genres: Ratings vs. Popularity&quot;,
+       x = &quot;Genre&quot;,
+       y = &quot;Z(Rating) - Z(Popularity)&quot;,
+       fill = &quot;Higher Rating than Popularity?&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="portfolio8_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>By looking at the results, ratings &gt; 0 indicates that these genres
+have good ratings but are not popular, these genres include: fanasy,
+TVmovie, and family movies. ratings &lt; 0 suggests that these movies
+are popular but have relatively less good ratings, including a lot of
+genres, such as War, Adventure, History, Thriller, and romance.</p>
+<p>###Which genres are widely voted on but have relatively lower
+ratings?</p>
+<pre class="r"><code>genre_engagement_vs_quality &lt;- expanded %&gt;%
+  filter(!is.na(vote_average), !is.na(vote_count), !is.na(genre_name)) %&gt;%
+  group_by(genre_name) %&gt;%
+  summarise(
+    avg_rating = mean(vote_average),
+    avg_votes = mean(vote_count),
+    n_movies = n()
+  ) %&gt;%
+  mutate(
+    z_rating = scale(avg_rating)[,1],
+    z_votes = scale(avg_votes)[,1],
+    vote_gap = z_votes - z_rating
+  ) %&gt;%
+  arrange(desc(vote_gap))
+
+ggplot(genre_engagement_vs_quality, aes(x = reorder(genre_name, vote_gap), y = vote_gap, fill = vote_gap &gt; 0)) +
+  geom_col() +
+  coord_flip() +
+  geom_text(aes(label = round(vote_gap, 2)), hjust = -0.1, size = 3.5) +
+  labs(title = &quot;Genres with High Voting but Low Ratings (or vice versa)&quot;,
+       x = &quot;Genre&quot;,
+       y = &quot;Z(Votes) - Z(Rating)&quot;,
+       fill = &quot;Overvoted?&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="portfolio8_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>It seems like War movies recevied high voting yet less high ratings,
+while TVmovies have low votings but are actually rated relatively high
+by the audience.</p>
+<p>These results got me surprised and confused, so I decied to look at
+the top and least 5 movies instead of the genres.</p>
+<p>By rating</p>
+<pre class="r"><code>##By rating
+top5_rated &lt;- lgbtq_movies %&gt;%
+  filter(!is.na(vote_average)) %&gt;%
+  arrange(desc(vote_average)) %&gt;%
+  select(title, vote_average, popularity, vote_count) %&gt;%
+  head(5)
+
+bottom5_rated &lt;- lgbtq_movies %&gt;%
+  filter(!is.na(vote_average)) %&gt;%
+  arrange(vote_average) %&gt;%
+  select(title, vote_average, popularity, vote_count) %&gt;%
+  head(5)</code></pre>
+<p>By popularity</p>
+<pre class="r"><code>##By popularity
+top5_popular &lt;- lgbtq_movies %&gt;%
+  filter(!is.na(popularity)) %&gt;%
+  arrange(desc(popularity)) %&gt;%
+  select(title, vote_average, popularity, vote_count) %&gt;%
+  head(5)
+
+bottom5_popular &lt;- lgbtq_movies %&gt;%
+  filter(!is.na(popularity)) %&gt;%
+  arrange(popularity) %&gt;%
+  select(title, vote_average, popularity, vote_count) %&gt;%
+  head(5)</code></pre>
+<p>By vote</p>
+<pre class="r"><code>##By vote
+top5_votes &lt;- lgbtq_movies %&gt;%
+  filter(!is.na(vote_count)) %&gt;%
+  arrange(desc(vote_count)) %&gt;%
+  select(title, vote_average, popularity, vote_count) %&gt;%
+  head(5)
+
+bottom5_votes &lt;- lgbtq_movies %&gt;%
+  filter(!is.na(vote_count)) %&gt;%
+  arrange(vote_count) %&gt;%
+  select(title, vote_average, popularity, vote_count) %&gt;%
+  head(5)</code></pre>
+<p>Overall, i found that call me by your name is a top movie that has
+high rating and popularity! I do like that movie so yay!</p>
+</div>
+<div
+id="question-5-does-the-number-of-lgbtq-themed-films-increased-over-time"
+class="section level3">
+<h3>Question 5: Does the number of LGBTQ-themed films increased over
+time?</h3>
+<pre class="r"><code>movies_per_year &lt;- lgbtq_movies %&gt;%
+  filter(!is.na(release_date)) %&gt;%
+  mutate(year = year(release_date)) %&gt;%
+  group_by(year) %&gt;%
+  summarise(n_movies = n()) %&gt;%
+  filter(!is.na(year), year &gt;= 1950)  # Optional: remove very early years
+
+# Plot
+ggplot(movies_per_year, aes(x = year, y = n_movies)) +
+  geom_line(color = &quot;pink&quot;, size = 1) +
+  geom_point(color = &quot;lightblue&quot;, size = 2) +
+  labs(title = &quot;LGBTQ-themed Films Released Over Time&quot;,
+       x = &quot;Year&quot;,
+       y = &quot;Number of Films&quot;) +
+  theme_minimal()</code></pre>
+<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## ℹ Please use `linewidth` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
+<p><img src="portfolio8_files/figure-html/number%20overtime-1.png" width="672" /></p>
+<p>According to the figure, lgbtq+ movie numbers have increased over the
+years, with a sharp increase from the past two decades. I think the
+sudden drop is because of COVID has influenced the production of film,
+as well as the strike. Overall, I think it is a good news that more and
+more movies including lgbtq elements have been produced. However, one
+concern I have is the valence of lgbtq community depicted in the movies.
+For example, one of the top movies in this dataset is American Beauty.
+Although gay characters are presented in the movie, they were portraied
+with mixed valence, with one main character a homosexual in the closet
+but was also homophobic. I do not see this as necessarily negatively
+portraiting gay individuals, but I think future studies can take a look
+at how lgbtq characters’ valence is presented in movies from the past 20
+years. My speculation is more and more movies are portraing them as
+relatively positive or less stereotyped, at least I hope so!</p>
+</div>
+<div
+id="question-6-are-certain-genres-becoming-more-common-in-recent-years"
+class="section level3">
+<h3>Question 6: Are certain genres becoming more common in recent
+years?</h3>
+<pre class="r"><code>genre_year_counts &lt;- expanded %&gt;%
+  filter(!is.na(release_date), !is.na(genre_name)) %&gt;%
+  mutate(year = year(release_date)) %&gt;%
+  filter(year &gt;= 2000) %&gt;%  # Optional: focus on recent decades
+  count(year, genre_name)
+
+# Step 2: Heatmap of genre frequency by year
+ggplot(genre_year_counts, aes(x = year, y = fct_reorder(genre_name, -n, .fun = max), fill = n)) +
+  geom_tile(color = &quot;white&quot;) +
+  scale_fill_gradient(low = &quot;#ffe5ec&quot;, high = &quot;#c9184a&quot;) +
+  labs(title = &quot;Frequency of LGBTQ-Themed Movie Genres Over Time&quot;,
+       x = &quot;Year&quot;,
+       y = &quot;Genre&quot;,
+       fill = &quot;Count&quot;) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<p><img src="portfolio8_files/figure-html/heat%20map-1.png" width="672" /></p>
+<p>Based on the graph, Drama, Romance, and Documentary seem to become
+more and more popular these years, while the rest remain relatively
+stable.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
