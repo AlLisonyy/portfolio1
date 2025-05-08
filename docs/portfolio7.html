@@ -9,9 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Allison Li" />
 
 
-<title>Portfolio 7</title>
+<title>Basic Visualization for Book Coding Projects</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -29,6 +30,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -219,6 +223,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -226,6 +293,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -290,7 +367,10 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Portfolio 7</h1>
+<h1 class="title toc-ignore">Basic Visualization for Book Coding
+Projects</h1>
+<h4 class="author">Allison Li</h4>
+<h4 class="date">04242025</h4>
 
 </div>
 
@@ -447,9 +527,9 @@ ggplot(result, aes(x = reorder(TemporalSetting, -Percentage), y = Percentage, fi
   labs(title = &quot;Temporal Setting of Books&quot;)+
   scale_fill_manual(values = c(&quot;Contemporary&quot; = &quot;#d5d1e9&quot;, &quot;Contemporary + Historical&quot; = &quot;#d0e4ee&quot;, &quot;Fantastical/non-human&quot; = &quot;#F3f5a9&quot;, &quot;Historical&quot; = &quot;#f5cf9f&quot;))+
   theme_void()</code></pre>
-<p><img src="portfolio7_files/figure-html/setting-2.png" width="672" /></p>
-<p>Question: Are the books fiction, non-fiction, or some
-combination??</p>
+<p><img src="portfolio7_files/figure-html/setting-2.png" width="672" />
+### Fiction/non-fiction/combo Question: Are the books fiction,
+non-fiction, or some combination??</p>
 <pre class="r"><code>table &lt;- table(dWide$fiction)
 counts &lt;- as.vector(table)
 percentages &lt;- counts / sum(counts) * 100
@@ -474,18 +554,531 @@ print(result)</code></pre>
   labs(title = &quot;Fiction, Nonfiction, or Combination of Both&quot;) +
   theme_void()</code></pre>
 <p><img src="portfolio7_files/figure-html/setting%202-1.png" width="672" /></p>
+<p>##Step 2: Diversity of characters in the book</p>
+<p>This whole chunk is analyzed by Dr. Scott because I am not sure how
+to do this. According to her “control for the similarities among
+characters within a particular book, I gave each book a single value for
+the percent of characters in the book of each race/value/gender/etc.
+Then we can look at the representation across books that controls for
+the number of characters in a book.” I only copy paste this part because
+the following analysis needs this part</p>
+<pre class="r"><code>result &lt;- dLong %&gt;%
+  # Group by book and race
+  group_by(bookID, characterRace) %&gt;%
+  # Count occurrences of each race within each book
+  summarise(count = n(), .groups = &quot;drop&quot;) %&gt;%
+  # Calculate total characters per book
+  group_by(bookID) %&gt;%
+  mutate(total_characters = sum(count),
+         percentage = count / total_characters) %&gt;%
+  # Pivot to create percentage columns for each race
+  pivot_wider(
+    id_cols = bookID,
+    names_from = characterRace,
+    values_from = percentage,
+    names_prefix = &quot;characterRacePercent&quot;,
+    values_fill = 0
+  )
+
+# Join the results back to the original dataframe and create dLongChar
+dLongChar &lt;- dLong %&gt;%
+  left_join(result, by = &quot;bookID&quot;)</code></pre>
+<p><strong>Main Question: Who is captured in children’s books about
+race</strong></p>
 </div>
-<div id="fictionnon-fictioncombo" class="section level3">
-<h3>Fiction/non-fiction/combo</h3>
+<div id="race-diversity-of-each-character-per-book"
+class="section level3">
+<h3>Race diversity of each character per book</h3>
+<pre class="r"><code>#Create a vector of column names
+columns &lt;- c(&quot;characterRacePercentW&quot;, &quot;characterRacePercentB&quot;, &quot;characterRacePercentambi&quot;, 
+             &quot;characterRacePercentH&quot;, &quot;characterRacePercentNative&quot;, &quot;characterRacePercentA&quot;, 
+             &quot;characterRacePercentME&quot;, &quot;characterRacePercentmulti&quot;, &quot;characterRacePercentNHPI&quot;)
+
+#Create an empty dataframe to store results
+result_table &lt;- data.frame(Column = columns,
+                           Mean = numeric(length(columns)),
+                           SD = numeric(length(columns)))
+
+#Calculate mean and SD for each column
+for (i in 1:length(columns)) {
+  result_table$Mean[i] &lt;- mean(dW[[columns[i]]], na.rm = TRUE)
+  result_table$SD[i] &lt;- sd(dW[[columns[i]]], na.rm = TRUE)
+}
+
+#Round the results to 2 decimal places
+result_table$Mean &lt;- round(result_table$Mean, 2)
+result_table$SD &lt;- round(result_table$SD, 2)
+
+#Print the resulting table
+print(result_table)</code></pre>
+<pre><code>##                       Column Mean   SD
+## 1      characterRacePercentW 0.26 0.23
+## 2      characterRacePercentB 0.47 0.34
+## 3   characterRacePercentambi 0.07 0.14
+## 4      characterRacePercentH 0.04 0.15
+## 5 characterRacePercentNative 0.05 0.20
+## 6      characterRacePercentA 0.07 0.16
+## 7     characterRacePercentME 0.02 0.07
+## 8  characterRacePercentmulti 0.02 0.06
+## 9   characterRacePercentNHPI 0.00 0.01</code></pre>
+<pre class="r"><code>#Plot!
+result_table$Race &lt;- c(&quot;White&quot;, &quot;Black&quot;, &quot;Ambiguous&quot;, &quot;Latinx&quot;, &quot;Native&quot;, 
+                       &quot;Asian&quot;, &quot;Middle Eastern&quot;, &quot;Multiracial&quot;, &quot;NHPI&quot;)
+
+ggplot(result_table, aes(x = reorder(Race, -Mean), y = Mean)) +
+  geom_bar(stat = &quot;identity&quot;, fill = &quot;lightblue&quot;) +
+  geom_errorbar(aes(ymin = Mean - SD, ymax = Mean + SD), width = 0.2) +
+  labs(title = &quot;Average Racial Representation of Characters per Book&quot;,
+       x = &quot;Character Race&quot;,
+       y = &quot;Mean Percentage of Characters&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="portfolio7_files/figure-html/race%20character-1.png" width="672" /></p>
 </div>
-<div id="diversity-of-characters-in-the-book" class="section level3">
-<h3>Diversity of characters in the book</h3>
-<pre class="r"><code>#Question 4: Who is captured in children’s books about race</code></pre>
+<div id="valence-representation-of-each-character-per-book"
+class="section level3">
+<h3>Valence representation of each character per book</h3>
+<pre class="r"><code>columns &lt;- c(&quot;characterValencePercentpos&quot;, &quot;characterValencePercentneg&quot;, &quot;characterValencePercentneut&quot;, &quot;characterValencePercentmix&quot;)
+
+#Create an empty dataframe to store results
+result_table &lt;- data.frame(Column = columns,
+                           Mean = numeric(length(columns)),
+                           SD = numeric(length(columns)))
+
+#Calculate mean and SD for each column
+for (i in 1:length(columns)) {
+  result_table$Mean[i] &lt;- mean(dW[[columns[i]]], na.rm = TRUE)
+  result_table$SD[i] &lt;- sd(dW[[columns[i]]], na.rm = TRUE)
+}
+
+#Round the results to 2 decimal places
+result_table$Mean &lt;- round(result_table$Mean, 2)
+result_table$SD &lt;- round(result_table$SD, 2)
+
+#Print the resulting table
+print(result_table)</code></pre>
+<pre><code>##                        Column Mean   SD
+## 1  characterValencePercentpos 0.84 0.22
+## 2  characterValencePercentneg 0.10 0.16
+## 3 characterValencePercentneut 0.05 0.12
+## 4  characterValencePercentmix 0.01 0.05</code></pre>
+<pre class="r"><code>#Plot again!
+result_table$Column &lt;- c()
+
+ggplot(result_table, aes(x = reorder(columns, -Mean), y = Mean)) +
+  geom_bar(stat = &quot;identity&quot;, fill = &quot;lightblue&quot;) +
+  geom_errorbar(aes(ymin = Mean - SD, ymax = Mean + SD), width = 0.2) +
+  labs(title = &quot;Average Valence of Each Character per Book&quot;,
+       x = &quot;Character Valence&quot;,
+       y = &quot;Mean Percentage of Characters&quot;) +
+  scale_x_discrete(labels = c(
+    &quot;characterValencePercentpos&quot; = &quot;Positive&quot;,
+    &quot;characterValencePercentneg&quot; = &quot;Negative&quot;,
+    &quot;characterValencePercentneut&quot; = &quot;Neutral&quot;,
+    &quot;characterValencePercentmix&quot; = &quot;Mixed&quot;
+  )) +
+  theme_minimal()</code></pre>
+<p><img src="portfolio7_files/figure-html/valence%20character-1.png" width="672" /></p>
+<p>###Gender of each race depicted in the books</p>
+<pre class="r"><code>columns &lt;- c(&quot;characterGenderPercentfemale&quot;, &quot;characterGenderPercentmale&quot;, &quot;characterGenderPercentunclear&quot;)
+
+#Create an empty dataframe to store results
+result_table &lt;- data.frame(Column = columns,
+                           Mean = numeric(length(columns)),
+                           SD = numeric(length(columns)))
+
+#Calculate mean and SD for each column
+for (i in 1:length(columns)) {
+  result_table$Mean[i] &lt;- mean(dW[[columns[i]]], na.rm = TRUE)
+  result_table$SD[i] &lt;- sd(dW[[columns[i]]], na.rm = TRUE)
+}
+
+#Round the results to 2 decimal places
+result_table$Mean &lt;- round(result_table$Mean, 2)
+result_table$SD &lt;- round(result_table$SD, 2)
+
+#Print the resulting table
+print(result_table)</code></pre>
+<pre><code>##                          Column Mean   SD
+## 1  characterGenderPercentfemale 0.50 0.18
+## 2    characterGenderPercentmale 0.47 0.18
+## 3 characterGenderPercentunclear 0.03 0.07</code></pre>
+<pre class="r"><code>#Plot again!
+result_table$Column &lt;- c()
+
+ggplot(result_table, aes(x = reorder(columns, -Mean), y = Mean)) +
+  geom_bar(stat = &quot;identity&quot;, fill = &quot;#f5cf9f&quot;) +
+  geom_errorbar(aes(ymin = Mean - SD, ymax = Mean + SD), width = 0.2) +
+  labs(title = &quot;Average Valence of Each Character per Book&quot;,
+       x = &quot;Character Valence&quot;,
+       y = &quot;Mean Percentage of Characters&quot;) +
+  scale_x_discrete(labels = c(
+    &quot;characterGenderPercentfemale&quot; = &quot;female&quot;,
+    &quot;characterGenderPercentmale&quot; = &quot;male&quot;,
+    &quot;characterGenderPercentunclear&quot; = &quot;unclear&quot;
+  )) +
+  theme_minimal()</code></pre>
+<p><img src="portfolio7_files/figure-html/gender%20character-1.png" width="672" /></p>
+<p>##Step 3: Intervention Strategies in the books</p>
+<p>We have included four main intervention strategies that might be
+depicted in the book to reduce intergroup racial bias, which are
+intergroup contact, individuation, perspective taking, and positive
+exemplars.</p>
+</div>
+<div id="presence-of-intergroup-contact" class="section level3">
+<h3>presence of intergroup contact</h3>
+<p><strong>What percentage of books depicted intergroup
+contact?</strong></p>
+<pre class="r"><code>interventions_clean &lt;- interventions %&gt;%
+  filter(!is.na(contact))
+
+table &lt;- table(interventions_clean$contact)
+counts &lt;- as.vector(table)
+percentages &lt;- counts / sum(counts) * 100
+
+result &lt;- data.frame(
+  &quot;contact&quot; = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)</code></pre>
+<pre><code>##   contact Count Percentage
+## 1       0    41   21.80851
+## 2       1   147   78.19149</code></pre>
+<p><strong>What percentage of books depicted intergroup contact between
+children</strong></p>
+<pre class="r"><code>table &lt;- table(interventions$contactChildren)
+counts &lt;- as.vector(table)
+percentages &lt;- counts / sum(counts) * 100
+
+result &lt;- data.frame(
+  &quot;Contact Between Children&quot; = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)</code></pre>
+<pre><code>##   Contact.Between.Children Count Percentage
+## 1                        0    84   44.68085
+## 2                        1   104   55.31915</code></pre>
+<p><strong>What percentage of books depict intergroup contact between
+children, between adults, and between children and adult?</strong></p>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+
+contact_long &lt;- interventions %&gt;%
+  select(contactChildren, contactAdults, contactChildAdult) %&gt;%
+  pivot_longer(cols = everything(),
+               names_to = &quot;ContactType&quot;,
+               values_to = &quot;Presence&quot;) %&gt;%
+  filter(!is.na(Presence)) %&gt;%
+  dplyr::mutate(ContactType = dplyr::recode(ContactType,
+                              &quot;contactChildren&quot; = &quot;Children&quot;,
+                              &quot;contactAdults&quot; = &quot;Adults&quot;,
+                              &quot;contactChildAdult&quot; = &quot;Child + Adult&quot;),
+         Presence = dplyr::recode(as.character(Presence),
+                           &quot;1&quot; = &quot;Yes&quot;,
+                           &quot;0&quot; = &quot;No&quot;))
+contact_summary &lt;- contact_long %&gt;%
+  group_by(ContactType, Presence) %&gt;%
+  summarise(Count = n(), .groups = &quot;drop&quot;) %&gt;%
+  group_by(ContactType) %&gt;%
+  mutate(Percentage = Count / sum(Count) * 100,
+         Label = paste0(Presence, &quot;\n&quot;, round(Percentage, 1), &quot;%&quot;))
+
+ggplot(contact_summary, aes(x = &quot;&quot;, y = Percentage, fill = Presence)) +
+  geom_bar(stat = &quot;identity&quot;, width = 1) +
+  coord_polar(&quot;y&quot;) +
+  geom_text(aes(label = Label),
+            position = position_stack(vjust = 0.5),
+            size = 3, color = &quot;black&quot;) +
+  facet_wrap(~ ContactType) +
+  scale_fill_manual(values = c(&quot;No&quot; = &quot;#d5d1e9&quot;, &quot;Yes&quot; = &quot;#d0e4ee&quot;)) +
+  labs(title = &quot;Presence of Intergroup Contact Types in Books&quot;,
+       fill = &quot;Contact Present&quot;) +
+  theme_void() +
+  theme(
+    strip.background = element_rect(fill = &quot;gray90&quot;),
+    strip.text = element_text(size = 12, face = &quot;bold&quot;),
+    legend.position = &quot;bottom&quot;
+  )</code></pre>
+<p><img src="portfolio7_files/figure-html/types%20of%20contact-1.png" width="672" /></p>
+</div>
+<div id="presence-of-perspective-taking" class="section level3">
+<h3>presence of perspective taking</h3>
+<p><strong>What percentage of books depicted perspective
+taking?</strong></p>
+<pre class="r"><code>interventions &lt;- interventions %&gt;%
+  mutate(pt_any = if_else(
+    emotionsBasic == 1 | emotionsDiscrim == 1 | emotionsPT == 1 | emotionsPT2 == 1,
+    1, 0
+  ))
+
+##four codes for PT
+interventions %&gt;%
+  summarise(percent_with_PT = round(mean(pt_any == 1, na.rm = TRUE) * 100, 1))</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   percent_with_PT
+##             &lt;dbl&gt;
+## 1              83</code></pre>
+<pre class="r"><code>pt_vars &lt;- c(&quot;emotionsBasic&quot;, &quot;emotionsDiscrim&quot;, &quot;emotionsPT&quot;, &quot;emotionsPT2&quot;)
+
+#Reshape to long format
+pt_long &lt;- interventions %&gt;%
+  select(all_of(pt_vars)) %&gt;%
+  pivot_longer(cols = everything(),
+               names_to = &quot;PerspectiveType&quot;,
+               values_to = &quot;Present&quot;) %&gt;%
+  filter(!is.na(Present))  # remove any missing values
+
+##Summarize the percent of books with each type
+pt_summary &lt;- pt_long %&gt;%
+  group_by(PerspectiveType) %&gt;%
+  summarise(
+    Count = sum(Present == 1),
+    Total = n(),
+    Percentage = round(Count / Total * 100, 1),
+    .groups = &quot;drop&quot;
+  )
+
+print(pt_summary)</code></pre>
+<pre><code>## # A tibble: 4 × 4
+##   PerspectiveType Count Total Percentage
+##   &lt;chr&gt;           &lt;int&gt; &lt;int&gt;      &lt;dbl&gt;
+## 1 emotionsBasic     147   188       78.2
+## 2 emotionsDiscrim    68   188       36.2
+## 3 emotionsPT         56   188       29.8
+## 4 emotionsPT2        19   188       10.1</code></pre>
+<pre class="r"><code>#Plot~~
+pt_summary$PerspectiveType &lt;- dplyr::recode(pt_summary$PerspectiveType,
+  &quot;emotionsBasic&quot; = &quot;Emotion highlighted&quot;,
+  &quot;emotionsDiscrim&quot; = &quot;Feelings of Discrimination&quot;,
+  &quot;emotionsPT&quot; = &quot;Perspective Taking Implicit&quot;,
+  &quot;emotionsPT2&quot; = &quot;Perspective Taking Explicit&quot;
+)
+
+# Create bar plot
+ggplot(pt_summary, aes(x = reorder(PerspectiveType, -Percentage), y = Percentage, fill = PerspectiveType)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  geom_text(aes(label = paste0(Percentage, &quot;%&quot;)), vjust = -0.5, size = 3) +
+  labs(
+    title = &quot;Percentage of Books Showing Each Type of Perspective Taking&quot;,
+    x = &quot;Perspective-Taking Type&quot;,
+    y = &quot;Percentage of Books&quot;
+  ) +
+  scale_fill_manual(values = c(&quot;Emotion highlighted&quot; = &quot;#EDCBD2&quot;, &quot;Feelings of Discrimination&quot; = &quot;#C3E0DD&quot;, &quot;Perspective Taking Implicit&quot; = &quot;#FAE9DA&quot;, &quot;Perspective Taking Explicit&quot; = &quot;#d5d1e9&quot;))+
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 30, hjust = 1),
+    legend.position = &quot;none&quot;
+  )</code></pre>
+<p><img src="portfolio7_files/figure-html/total%20pt-1.png" width="672" /></p>
+</div>
+<div id="presence-of-positive-exemplars" class="section level3">
+<h3>presence of positive exemplars</h3>
+</div>
+<div id="presence-of-individuation" class="section level3">
+<h3>presence of individuation</h3>
+<p><strong>Percentage of perceptual individuation presented</strong></p>
+<pre class="r"><code>table &lt;- table(interventions$perceptualIndiv)
+counts &lt;- as.vector(table)
+percentages &lt;- counts / sum(counts) * 100
+
+result &lt;- data.frame(
+  &quot;perceptualIndividuation&quot; = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)</code></pre>
+<pre><code>##   perceptualIndividuation Count Percentage
+## 1                       0     7   3.723404
+## 2                       1   181  96.276596</code></pre>
+<pre class="r"><code># Plot
+ggplot(result, aes(x = &quot;&quot;, y = Percentage, fill = perceptualIndividuation)) +
+  geom_bar(stat = &quot;identity&quot;, width = 1) +
+  coord_polar(&quot;y&quot;) +
+  geom_text(aes(label = paste0(round(Percentage, 1), &quot;%&quot;)),
+            position = position_stack(vjust = 0.5), size = 3.5, color = &quot;black&quot;) +
+  scale_fill_manual(values = c(&quot;1&quot; = &quot;#f5a7a6&quot;, &quot;0&quot; = &quot;#f3f5a9&quot;),
+                    labels = c(&quot;0&quot; = &quot;Not Present&quot;, &quot;1&quot; = &quot;Present&quot;)) +
+  labs(title = &quot;Perceptual Individuation in Books&quot;,
+       fill = &quot;Perceptual Individuation&quot;) +
+  theme_void()</code></pre>
+<p><img src="portfolio7_files/figure-html/perindi-1.png" width="672" /></p>
+<p><strong>Percentage of perceptual individuation presented</strong></p>
+<pre class="r"><code>table &lt;- table(interventions$conceptualIndiv)
+counts &lt;- as.vector(table)
+percentages &lt;- counts / sum(counts) * 100
+
+result &lt;- data.frame(
+  &quot;conceptualIndividuation&quot; = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)</code></pre>
+<pre><code>##   conceptualIndividuation Count Percentage
+## 1                       0    50   26.59574
+## 2                       1   138   73.40426</code></pre>
+<pre class="r"><code># Plot
+ggplot(result, aes(x = &quot;&quot;, y = Percentage, fill = conceptualIndividuation)) +
+  geom_bar(stat = &quot;identity&quot;, width = 1) +
+  coord_polar(&quot;y&quot;) +
+  geom_text(aes(label = paste0(round(Percentage, 1), &quot;%&quot;)),
+            position = position_stack(vjust = 0.5), size = 3.5, color = &quot;black&quot;) +
+  scale_fill_manual(values = c(&quot;1&quot; = &quot;#f5a7a6&quot;, &quot;0&quot; = &quot;#f3f5a9&quot;),
+                    labels = c(&quot;0&quot; = &quot;Not Present&quot;, &quot;1&quot; = &quot;Present&quot;)) +
+  labs(title = &quot;Conceptual Individuation in Books&quot;,
+       fill = &quot;Conceptual Individuation&quot;) +
+  theme_void()</code></pre>
+<p><img src="portfolio7_files/figure-html/concepindi-1.png" width="672" /></p>
+<p>##Step 4: Knowledge Aquisition ### Knowledge Acquisition</p>
+<p>We coded for seven types of knowledge that might be presented in the
+books, including: Information about current racial inequality or
+contemporary prejudice; Information about historical racism; information
+about what race is (e.g., teaching about melanin, social construction of
+race, different skin colors); Information about culture (e.g.,
+explaining what the cultural markers are, why they are important, social
+norms/practices in a group); Information on anti-racist values and
+norms; Information on structural racism (e.g., “Because of unfair rules
+that were made up a long time ago, there are differences in how these
+groups are treated today.” or Addressing racism in an institution.); and
+Information on police violence/brutality. I would like to know what
+types are presented in the book, and if different time setting of the
+books might have more certain types of knowledge presented. For example,
+would historical books have more information about historical racism,
+while contemporary have more information about anti-racist value?</p>
+<p><strong>Information about current racial inequality or contemporary
+prejudice</strong></p>
+<pre class="r"><code>table &lt;- table(interventions$contempPrej)
+counts &lt;- as.vector(table)
+percentages &lt;- counts / sum(counts) * 100
+
+result &lt;- data.frame(
+  &quot;contemporaryPrejudice&quot; = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)</code></pre>
+<pre><code>##   contemporaryPrejudice Count Percentage
+## 1                     0   144   76.59574
+## 2                     1    44   23.40426</code></pre>
+<p><strong>Information about historical racism</strong></p>
+<pre><code>##   historicalRacism Count Percentage
+## 1                0   128   68.08511
+## 2                1    60   31.91489</code></pre>
+<p><strong>Information about what race is</strong></p>
+<pre><code>##   raceKnowledge Count Percentage
+## 1             0   157   83.51064
+## 2             1    31   16.48936</code></pre>
+<p><strong>Information about culture</strong></p>
+<pre><code>##   cultureKnowledge Count Percentage
+## 1                0   129   68.61702
+## 2                1    59   31.38298</code></pre>
+<p><strong>Information on anti-racist values and norms</strong></p>
+<pre><code>##   antiRacistValues Count Percentage
+## 1                0   114    60.6383
+## 2                1    74    39.3617</code></pre>
+<p><strong>Information on structural racism</strong></p>
+<pre><code>##   structuralRacism Count Percentage
+## 1                0   147   78.19149
+## 2                1    41   21.80851</code></pre>
+<p><strong>Information on police violence/brutality</strong></p>
+<pre><code>##   policeViolence Count Percentage
+## 1              0   164   87.23404
+## 2              1    24   12.76596</code></pre>
+<p><strong>Total Visualization</strong></p>
+<pre class="r"><code>knowledge_vars &lt;- c(&quot;contempPrej&quot;, &quot;historicalPrej&quot;, &quot;knowRace&quot;, 
+                    &quot;knowCulture&quot;, &quot;antiRacism&quot;, &quot;structuralRacism&quot;, &quot;policeViolence&quot;)
+
+# Convert to long format and calculate percentages
+knowledge_long &lt;- interventions %&gt;%
+  select(all_of(knowledge_vars)) %&gt;%
+  pivot_longer(cols = everything(), names_to = &quot;KnowledgeType&quot;, values_to = &quot;Present&quot;) %&gt;%
+  filter(!is.na(Present)) %&gt;%
+  group_by(KnowledgeType) %&gt;%
+  summarise(
+    Count = sum(Present == 1),
+    Total = n(),
+    Percentage = round(Count / Total * 100, 1),
+    .groups = &quot;drop&quot;
+  )
+
+knowledge_long$KnowledgeType &lt;- dplyr::recode(knowledge_long$KnowledgeType,
+  &quot;contempPrej&quot; = &quot;Contemporary Prejudice&quot;,
+  &quot;historicalPrej&quot; = &quot;Historical Racism&quot;,
+  &quot;knowRace&quot; = &quot;What Race Is&quot;,
+  &quot;knowCulture&quot; = &quot;Culture&quot;,
+  &quot;antiRacism&quot; = &quot;Anti-Racist Values&quot;,
+  &quot;structuralRacism&quot; = &quot;Structural Racism&quot;,
+  &quot;policeViolence&quot; = &quot;Police Violence&quot;
+)
+
+ggplot(knowledge_long, aes(x = reorder(KnowledgeType, -Percentage), y = Percentage, fill = KnowledgeType)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  geom_text(aes(label = paste0(Percentage, &quot;%&quot;)), vjust = -0.5, size = 3) +
+  labs(
+    title = &quot;Types of Knowledge Presented in Children&#39;s Books&quot;,
+    x = &quot;Knowledge Type&quot;,
+    y = &quot;Percentage of Books&quot;
+  ) +
+  scale_fill_manual(values = c(&quot;Contemporary Prejudice&quot; = &quot;#ffcbe1&quot;, &quot;Historical Racism&quot; = &quot;#d6e5bd&quot;, &quot;What Race Is&quot; = &quot;#f9e1a8&quot;, &quot;Culture&quot; = &quot;#bcd8ec&quot;, &quot;Anti-Racist Values&quot; = &quot;#dcccec&quot;, &quot;Structural Racism&quot; = &quot;#ffdab4&quot;, &quot;Police Violence&quot; = &quot;#e5ecf8&quot;)) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 30, hjust = 1),
+    legend.position = &quot;none&quot;
+  )</code></pre>
+<p><img src="portfolio7_files/figure-html/total%20visualization-1.png" width="672" /></p>
+<p><strong>all seven types of knowledge acquisition grouped by temporal
+setting</strong></p>
+<pre class="r"><code>##First i would need to merge the two dataset to have temporal setting and strategies in one dataset
+
+d_temporal &lt;- dWide %&gt;%
+  select(book, temporalSetting)
+
+knowledge_vars &lt;- c(&quot;contempPrej&quot;, &quot;historicalPrej&quot;, &quot;knowRace&quot;, 
+                    &quot;knowCulture&quot;, &quot;antiRacism&quot;, &quot;structuralRacism&quot;, &quot;policeViolence&quot;)
+
+d_strategies &lt;- interventions %&gt;%
+  select(book, all_of(knowledge_vars))
+
+intertemp &lt;- left_join(d_strategies, d_temporal, by = &quot;book&quot;)
+
+knowledge_vars &lt;- c(&quot;contempPrej&quot;, &quot;historicalPrej&quot;, &quot;knowRace&quot;, 
+                    &quot;knowCulture&quot;, &quot;antiRacism&quot;, &quot;structuralRacism&quot;, &quot;policeViolence&quot;)
+
+knowledge_by_temporal &lt;- intertemp %&gt;%
+  select(temporalSetting, all_of(knowledge_vars)) %&gt;%
+  pivot_longer(cols = all_of(knowledge_vars), 
+               names_to = &quot;KnowledgeType&quot;, 
+               values_to = &quot;Present&quot;) %&gt;%
+  filter(!is.na(temporalSetting), !is.na(1)) %&gt;%
+  group_by(temporalSetting, KnowledgeType) %&gt;%
+  summarise(Percent = round(mean(Present == 1) * 100, 1), .groups = &quot;drop&quot;)
+
+knowledge_by_temporal$KnowledgeType &lt;- dplyr::recode(knowledge_by_temporal$KnowledgeType,
+  &quot;contempPrej&quot; = &quot;Contemporary Prejudice&quot;,
+  &quot;historicalPrej&quot; = &quot;Historical Racism&quot;,
+  &quot;knowRace&quot; = &quot;What Race Is&quot;,
+  &quot;knowCulture&quot; = &quot;Culture&quot;,
+  &quot;antiRacism&quot; = &quot;Anti-Racist Values&quot;,
+  &quot;structuralRacism&quot; = &quot;Structural Racism&quot;,
+  &quot;policeViolence&quot; = &quot;Police Violence&quot;)
+
+ggplot(knowledge_by_temporal, aes(x = KnowledgeType, y = Percent, fill = temporalSetting)) +
+  geom_bar(stat = &quot;identity&quot;, position = position_dodge()) +
+  labs(title = &quot;Knowledge Strategies by Temporal Setting&quot;,
+       x = &quot;Type of Knowledge&quot;,
+       y = &quot;Percentage of Books&quot;,
+       fill = &quot;Temporal Setting&quot;) +
+  theme_minimal() +
+  scale_fill_manual(values = c(&quot;Contemporary (current day)&quot; = &quot;#ffcbe1&quot;, &quot;Contemporary (current day),Historical&quot; = &quot;#d6e5bd&quot;, &quot;Fantastical/non-human&quot; = &quot;#bcd8ec&quot;, &quot;Historical&quot; = &quot;#dcccec&quot;)) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))</code></pre>
+<p><img src="portfolio7_files/figure-html/grouped%20by%20temporal-1.png" width="672" /></p>
 </div>
 </div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -518,6 +1111,35 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

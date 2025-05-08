@@ -1,5 +1,15 @@
 ---
-title: "Portfolio 7"
+title: "Basic Visualization for Book Coding Projects"
+author: "Allison Li"
+date: "04242025"
+output: 
+  html_document:
+    encoding: UTF-8
+    toc: true
+    number_sections: false
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
 ---
 
 > The projects should be numbered consecutively (i.e., in the order in which you began them), and should include for each project a description of the goal, the product (computer program, hand graph, computer graph, etc.), the data, and some interpretation. Reports must be reproducible and of high quality in terms of writing, grammar, presentation, etc.
@@ -314,29 +324,733 @@ ggplot(result, aes(x = "", y = Percentage, fill = Fiction)) +
 
 ##Step 2: Diversity of characters in the book
 
-Question: Who is captured in children’s books about race
-
-### Race diversity of the characters
+This whole chunk is analyzed by Dr. Scott because I am not sure how to do this. According to her "control for the similarities among characters within a particular book, I gave each book a single value for the percent of characters in the book of each race/value/gender/etc. Then we can look at the representation across books that controls for the number of characters in a book." I only copy paste this part because the following analysis needs this part
 
 ```{r diversity in the book}
+result <- dLong %>%
+  # Group by book and race
+  group_by(bookID, characterRace) %>%
+  # Count occurrences of each race within each book
+  summarise(count = n(), .groups = "drop") %>%
+  # Calculate total characters per book
+  group_by(bookID) %>%
+  mutate(total_characters = sum(count),
+         percentage = count / total_characters) %>%
+  # Pivot to create percentage columns for each race
+  pivot_wider(
+    id_cols = bookID,
+    names_from = characterRace,
+    values_from = percentage,
+    names_prefix = "characterRacePercent",
+    values_fill = 0
+  )
+
+# Join the results back to the original dataframe and create dLongChar
+dLongChar <- dLong %>%
+  left_join(result, by = "bookID")
 
 ```
 
-### Gender representation and gender conformity of the characters
+```{r, include = F}
 
-### Age categories of the characters
+# Calculate percentages for character valence
+result <- dLongChar %>%
+  # Group by book and valence
+  group_by(bookID, characterValence) %>%
+  # Count occurrences of each valence within each book
+  summarise(count = n(), .groups = "drop") %>%
+  # Calculate total characters per book
+  group_by(bookID) %>%
+  mutate(total_characters = sum(count),
+         percentage = count / total_characters) %>%
+  # Pivot to create percentage columns for each valence
+  pivot_wider(
+    id_cols = bookID,
+    names_from = characterValence,
+    values_from = percentage,
+    names_prefix = "characterValencePercent",
+    values_fill = 0
+  )
 
-###Valence of each race depicted in the books
+# Join the results back to the original dataframe and overwrite dLongChar
+dLongChar <- dLongChar %>%
+  left_join(result, by = "bookID")
 
-would authors' race influence character diversity in the books?
+```
+
+```{r, include = F}
+
+# Calculate percentages for character centrality
+result <- dLongChar %>%
+  # Group by book and centrality
+  group_by(bookID, characterCentrality) %>%
+  # Count occurrences of each centrality within each book
+  summarise(count = n(), .groups = "drop") %>%
+  # Calculate total characters per book
+  group_by(bookID) %>%
+  mutate(total_characters = sum(count),
+         percentage = count / total_characters) %>%
+  # Pivot to create percentage columns for each centrality
+  pivot_wider(
+    id_cols = bookID,
+    names_from = characterCentrality,
+    values_from = percentage,
+    names_prefix = "characterCentralityPercent",
+    values_fill = 0
+  )
+
+# Join the results back to the original dataframe and overwrite dLongChar
+dLongChar <- dLongChar %>%
+  left_join(result, by = "bookID")
+
+```
+
+```{r, include = F}
+
+# Calculate percentages for character gender
+result <- dLongChar %>%
+  # Group by book and gender
+  group_by(bookID, characterGender) %>%
+  # Count occurrences of each gender within each book
+  summarise(count = n(), .groups = "drop") %>%
+  # Calculate total characters per book
+  group_by(bookID) %>%
+  mutate(total_characters = sum(count),
+         percentage = count / total_characters) %>%
+  # Pivot to create percentage columns for each gender
+  pivot_wider(
+    id_cols = bookID,
+    names_from = characterGender,
+    values_from = percentage,
+    names_prefix = "characterGenderPercent",
+    values_fill = 0
+  )
+
+# Join the results back to the original dataframe and overwrite dLongChar
+dLongChar <- dLongChar %>%
+  left_join(result, by = "bookID")
+
+```
+
+```{r, include = F}
+
+# Calculate percentages for character gender conformity
+result <- dLongChar %>%
+  # Group by book and gender conformity
+  group_by(bookID, characterGenderConf) %>%
+  # Count occurrences of each gender conformity within each book
+  summarise(count = n(), .groups = "drop") %>%
+  # Calculate total characters per book
+  group_by(bookID) %>%
+  mutate(total_characters = sum(count),
+         percentage = count / total_characters) %>%
+  # Pivot to create percentage columns for each gender conformity
+  pivot_wider(
+    id_cols = bookID,
+    names_from = characterGenderConf,
+    values_from = percentage,
+    names_prefix = "characterGenderConfPercent",
+    values_fill = 0
+  )
+
+# Clean column names
+names(result) <- names(result) %>%
+  make.names() %>%
+  str_remove_all("\\.")
+
+# Join the results back to the original dataframe and overwrite dLong
+dLongChar <- dLongChar %>%
+  left_join(result, by = "bookID")
+
+
+```
+
+```{r, include = F}
+
+# Calculate percentages for character age
+result <- dLongChar %>%
+  # Group by book and age
+  group_by(bookID, characterAge) %>%
+  # Count occurrences of each age category within each book
+  summarise(count = n(), .groups = "drop") %>%
+  # Calculate total characters per book
+  group_by(bookID) %>%
+  mutate(total_characters = sum(count),
+         percentage = count / total_characters) %>%
+  # Pivot to create percentage columns for each age category
+  pivot_wider(
+    id_cols = bookID,
+    names_from = characterAge,
+    values_from = percentage,
+    names_prefix = "characterAgePercent",
+    values_fill = 0
+  )
+
+# Clean column names
+names(result) <- names(result) %>%
+  make.names() %>%
+  str_remove_all("\\.") %>%
+  str_replace_all("\\s", "")
+
+# Join the results back to the original dataframe and overwrite dLong
+dLongChar <- dLongChar %>%
+  left_join(result, by = "bookID")
+
+```
+
+```{r, include = F}
+
+# Select only between-book columns and only one row per book to do some basic summarizing. 
+
+dW = dLongChar %>%
+  select(characterNumber, book:allBlackCreators, characterRacePercentA:characterAgePercentunclear) %>%
+  filter(characterNumber == 1) %>%
+  select(-characterNumber)
+
+```
+
+**Main Question: Who is captured in children’s books about race**
+
+### Race diversity of each character per book
+
+```{r race character}
+#Create a vector of column names
+columns <- c("characterRacePercentW", "characterRacePercentB", "characterRacePercentambi", 
+             "characterRacePercentH", "characterRacePercentNative", "characterRacePercentA", 
+             "characterRacePercentME", "characterRacePercentmulti", "characterRacePercentNHPI")
+
+#Create an empty dataframe to store results
+result_table <- data.frame(Column = columns,
+                           Mean = numeric(length(columns)),
+                           SD = numeric(length(columns)))
+
+#Calculate mean and SD for each column
+for (i in 1:length(columns)) {
+  result_table$Mean[i] <- mean(dW[[columns[i]]], na.rm = TRUE)
+  result_table$SD[i] <- sd(dW[[columns[i]]], na.rm = TRUE)
+}
+
+#Round the results to 2 decimal places
+result_table$Mean <- round(result_table$Mean, 2)
+result_table$SD <- round(result_table$SD, 2)
+
+#Print the resulting table
+print(result_table)
+
+
+#Plot!
+result_table$Race <- c("White", "Black", "Ambiguous", "Latinx", "Native", 
+                       "Asian", "Middle Eastern", "Multiracial", "NHPI")
+
+ggplot(result_table, aes(x = reorder(Race, -Mean), y = Mean)) +
+  geom_bar(stat = "identity", fill = "lightblue") +
+  geom_errorbar(aes(ymin = Mean - SD, ymax = Mean + SD), width = 0.2) +
+  labs(title = "Average Racial Representation of Characters per Book",
+       x = "Character Race",
+       y = "Mean Percentage of Characters") +
+  theme_minimal()
+```
+
+### Valence representation of each character per book
+
+```{r valence character}
+columns <- c("characterValencePercentpos", "characterValencePercentneg", "characterValencePercentneut", "characterValencePercentmix")
+
+#Create an empty dataframe to store results
+result_table <- data.frame(Column = columns,
+                           Mean = numeric(length(columns)),
+                           SD = numeric(length(columns)))
+
+#Calculate mean and SD for each column
+for (i in 1:length(columns)) {
+  result_table$Mean[i] <- mean(dW[[columns[i]]], na.rm = TRUE)
+  result_table$SD[i] <- sd(dW[[columns[i]]], na.rm = TRUE)
+}
+
+#Round the results to 2 decimal places
+result_table$Mean <- round(result_table$Mean, 2)
+result_table$SD <- round(result_table$SD, 2)
+
+#Print the resulting table
+print(result_table)
+
+#Plot again!
+result_table$Column <- c()
+
+ggplot(result_table, aes(x = reorder(columns, -Mean), y = Mean)) +
+  geom_bar(stat = "identity", fill = "lightblue") +
+  geom_errorbar(aes(ymin = Mean - SD, ymax = Mean + SD), width = 0.2) +
+  labs(title = "Average Valence of Each Character per Book",
+       x = "Character Valence",
+       y = "Mean Percentage of Characters") +
+  scale_x_discrete(labels = c(
+    "characterValencePercentpos" = "Positive",
+    "characterValencePercentneg" = "Negative",
+    "characterValencePercentneut" = "Neutral",
+    "characterValencePercentmix" = "Mixed"
+  )) +
+  theme_minimal()
+```
+
+###Gender of each race depicted in the books
+
+```{r gender character}
+columns <- c("characterGenderPercentfemale", "characterGenderPercentmale", "characterGenderPercentunclear")
+
+#Create an empty dataframe to store results
+result_table <- data.frame(Column = columns,
+                           Mean = numeric(length(columns)),
+                           SD = numeric(length(columns)))
+
+#Calculate mean and SD for each column
+for (i in 1:length(columns)) {
+  result_table$Mean[i] <- mean(dW[[columns[i]]], na.rm = TRUE)
+  result_table$SD[i] <- sd(dW[[columns[i]]], na.rm = TRUE)
+}
+
+#Round the results to 2 decimal places
+result_table$Mean <- round(result_table$Mean, 2)
+result_table$SD <- round(result_table$SD, 2)
+
+#Print the resulting table
+print(result_table)
+
+#Plot again!
+result_table$Column <- c()
+
+ggplot(result_table, aes(x = reorder(columns, -Mean), y = Mean)) +
+  geom_bar(stat = "identity", fill = "#f5cf9f") +
+  geom_errorbar(aes(ymin = Mean - SD, ymax = Mean + SD), width = 0.2) +
+  labs(title = "Average Valence of Each Character per Book",
+       x = "Character Valence",
+       y = "Mean Percentage of Characters") +
+  scale_x_discrete(labels = c(
+    "characterGenderPercentfemale" = "female",
+    "characterGenderPercentmale" = "male",
+    "characterGenderPercentunclear" = "unclear"
+  )) +
+  theme_minimal()
+```
 
 ##Step 3: Intervention Strategies in the books
+
 We have included four main intervention strategies that might be depicted in the book to reduce intergroup racial bias, which are intergroup contact, individuation, perspective taking, and positive exemplars. 
 
 ### presence of intergroup contact
 
+**What percentage of books depicted intergroup contact?**
+
+```{r}
+interventions_clean <- interventions %>%
+  filter(!is.na(contact))
+
+table <- table(interventions_clean$contact)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "contact" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+```
+**What percentage of books depicted intergroup contact between children**
+
+```{r children intergroup contact}
+table <- table(interventions$contactChildren)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "Contact Between Children" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+```
+
+**What percentage of books depict intergroup contact between children, between adults, and between children and adult?**
+
+```{r types of contact}
+
+library(dplyr)
+library(tidyr)
+
+contact_long <- interventions %>%
+  select(contactChildren, contactAdults, contactChildAdult) %>%
+  pivot_longer(cols = everything(),
+               names_to = "ContactType",
+               values_to = "Presence") %>%
+  filter(!is.na(Presence)) %>%
+  dplyr::mutate(ContactType = dplyr::recode(ContactType,
+                              "contactChildren" = "Children",
+                              "contactAdults" = "Adults",
+                              "contactChildAdult" = "Child + Adult"),
+         Presence = dplyr::recode(as.character(Presence),
+                           "1" = "Yes",
+                           "0" = "No"))
+contact_summary <- contact_long %>%
+  group_by(ContactType, Presence) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  group_by(ContactType) %>%
+  mutate(Percentage = Count / sum(Count) * 100,
+         Label = paste0(Presence, "\n", round(Percentage, 1), "%"))
+
+ggplot(contact_summary, aes(x = "", y = Percentage, fill = Presence)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  geom_text(aes(label = Label),
+            position = position_stack(vjust = 0.5),
+            size = 3, color = "black") +
+  facet_wrap(~ ContactType) +
+  scale_fill_manual(values = c("No" = "#d5d1e9", "Yes" = "#d0e4ee")) +
+  labs(title = "Presence of Intergroup Contact Types in Books",
+       fill = "Contact Present") +
+  theme_void() +
+  theme(
+    strip.background = element_rect(fill = "gray90"),
+    strip.text = element_text(size = 12, face = "bold"),
+    legend.position = "bottom"
+  )
+```
 
 ### presence of perspective taking
 
+**What percentage of books depicted perspective taking?**
+
+```{r total pt}
+interventions <- interventions %>%
+  mutate(pt_any = if_else(
+    emotionsBasic == 1 | emotionsDiscrim == 1 | emotionsPT == 1 | emotionsPT2 == 1,
+    1, 0
+  ))
+
+##four codes for PT
+interventions %>%
+  summarise(percent_with_PT = round(mean(pt_any == 1, na.rm = TRUE) * 100, 1))
+pt_vars <- c("emotionsBasic", "emotionsDiscrim", "emotionsPT", "emotionsPT2")
+
+#Reshape to long format
+pt_long <- interventions %>%
+  select(all_of(pt_vars)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "PerspectiveType",
+               values_to = "Present") %>%
+  filter(!is.na(Present))  # remove any missing values
+
+##Summarize the percent of books with each type
+pt_summary <- pt_long %>%
+  group_by(PerspectiveType) %>%
+  summarise(
+    Count = sum(Present == 1),
+    Total = n(),
+    Percentage = round(Count / Total * 100, 1),
+    .groups = "drop"
+  )
+
+print(pt_summary)
+
+
+#Plot~~
+pt_summary$PerspectiveType <- dplyr::recode(pt_summary$PerspectiveType,
+  "emotionsBasic" = "Emotion highlighted",
+  "emotionsDiscrim" = "Feelings of Discrimination",
+  "emotionsPT" = "Perspective Taking Implicit",
+  "emotionsPT2" = "Perspective Taking Explicit"
+)
+
+# Create bar plot
+ggplot(pt_summary, aes(x = reorder(PerspectiveType, -Percentage), y = Percentage, fill = PerspectiveType)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(Percentage, "%")), vjust = -0.5, size = 3) +
+  labs(
+    title = "Percentage of Books Showing Each Type of Perspective Taking",
+    x = "Perspective-Taking Type",
+    y = "Percentage of Books"
+  ) +
+  scale_fill_manual(values = c("Emotion highlighted" = "#EDCBD2", "Feelings of Discrimination" = "#C3E0DD", "Perspective Taking Implicit" = "#FAE9DA", "Perspective Taking Explicit" = "#d5d1e9"))+
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 30, hjust = 1),
+    legend.position = "none"
+  )
+```
+
 ### presence of positive exemplars
+
+
+
+### presence of individuation
+
+**Percentage of perceptual individuation presented**
+
+```{r perindi}
+table <- table(interventions$perceptualIndiv)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "perceptualIndividuation" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+
+# Plot
+ggplot(result, aes(x = "", y = Percentage, fill = perceptualIndividuation)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3.5, color = "black") +
+  scale_fill_manual(values = c("1" = "#f5a7a6", "0" = "#f3f5a9"),
+                    labels = c("0" = "Not Present", "1" = "Present")) +
+  labs(title = "Perceptual Individuation in Books",
+       fill = "Perceptual Individuation") +
+  theme_void()
+```
+
+**Percentage of perceptual individuation presented**
+
+```{r concepindi}
+table <- table(interventions$conceptualIndiv)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "conceptualIndividuation" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+# Plot
+ggplot(result, aes(x = "", y = Percentage, fill = conceptualIndividuation)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3.5, color = "black") +
+  scale_fill_manual(values = c("1" = "#f5a7a6", "0" = "#f3f5a9"),
+                    labels = c("0" = "Not Present", "1" = "Present")) +
+  labs(title = "Conceptual Individuation in Books",
+       fill = "Conceptual Individuation") +
+  theme_void()
+```
+
+##Step 4: Knowledge Aquisition
+### Knowledge Acquisition  
+
+We coded for seven types of knowledge that might be presented in the books, including: Information about current racial inequality or contemporary prejudice; Information about historical racism; information about what race is (e.g., teaching about melanin, social construction of race, different skin colors); Information about culture (e.g., explaining what the cultural markers are, why they are important, social norms/practices in a group); Information on anti-racist values and norms; Information on structural racism (e.g., "Because of unfair rules that were made up a long time ago, there are differences in how these groups are treated today." or Addressing racism in an institution.); and Information on police violence/brutality. I would like to know what types are presented in the book, and if different time setting of the books might have more certain types of knowledge presented. For example, would historical books have more information about historical racism, while contemporary have more information about anti-racist value?
+
+**Information about current racial inequality or contemporary prejudice**
+
+```{r}
+
+table <- table(interventions$contempPrej)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "contemporaryPrejudice" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+```
+**Information about historical racism**
+
+```{r, echo = F}
+
+table <- table(interventions$historicalPrej)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "historicalRacism" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+```
+
+**Information about what race is**
+
+```{r, echo = F}
+
+table <- table(interventions$knowRace)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "raceKnowledge" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+```
+
+**Information about culture**
+
+```{r, echo = F}
+
+table <- table(interventions$knowCulture)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "cultureKnowledge" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+```
+
+**Information on anti-racist values and norms**
+
+```{r, echo = F}
+
+table <- table(interventions$antiRacism)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "antiRacistValues" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+```
+
+**Information on structural racism**
+
+```{r, echo = F}
+
+table <- table(interventions$structuralRacism)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "structuralRacism" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+```
+
+**Information on police violence/brutality**
+
+```{r, echo = F}
+
+table <- table(interventions$policeViolence)
+counts <- as.vector(table)
+percentages <- counts / sum(counts) * 100
+
+result <- data.frame(
+  "policeViolence" = names(table),
+  Count = counts,
+  Percentage = percentages
+)
+print(result)
+
+```
+
+**Total Visualization**
+
+```{r total visualization}
+knowledge_vars <- c("contempPrej", "historicalPrej", "knowRace", 
+                    "knowCulture", "antiRacism", "structuralRacism", "policeViolence")
+
+# Convert to long format and calculate percentages
+knowledge_long <- interventions %>%
+  select(all_of(knowledge_vars)) %>%
+  pivot_longer(cols = everything(), names_to = "KnowledgeType", values_to = "Present") %>%
+  filter(!is.na(Present)) %>%
+  group_by(KnowledgeType) %>%
+  summarise(
+    Count = sum(Present == 1),
+    Total = n(),
+    Percentage = round(Count / Total * 100, 1),
+    .groups = "drop"
+  )
+
+knowledge_long$KnowledgeType <- dplyr::recode(knowledge_long$KnowledgeType,
+  "contempPrej" = "Contemporary Prejudice",
+  "historicalPrej" = "Historical Racism",
+  "knowRace" = "What Race Is",
+  "knowCulture" = "Culture",
+  "antiRacism" = "Anti-Racist Values",
+  "structuralRacism" = "Structural Racism",
+  "policeViolence" = "Police Violence"
+)
+
+ggplot(knowledge_long, aes(x = reorder(KnowledgeType, -Percentage), y = Percentage, fill = KnowledgeType)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(Percentage, "%")), vjust = -0.5, size = 3) +
+  labs(
+    title = "Types of Knowledge Presented in Children's Books",
+    x = "Knowledge Type",
+    y = "Percentage of Books"
+  ) +
+  scale_fill_manual(values = c("Contemporary Prejudice" = "#ffcbe1", "Historical Racism" = "#d6e5bd", "What Race Is" = "#f9e1a8", "Culture" = "#bcd8ec", "Anti-Racist Values" = "#dcccec", "Structural Racism" = "#ffdab4", "Police Violence" = "#e5ecf8")) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 30, hjust = 1),
+    legend.position = "none"
+  )
+```
+
+**all seven types of knowledge acquisition grouped by temporal setting**
+
+```{r grouped by temporal}
+##First i would need to merge the two dataset to have temporal setting and strategies in one dataset
+
+d_temporal <- dWide %>%
+  select(book, temporalSetting)
+
+knowledge_vars <- c("contempPrej", "historicalPrej", "knowRace", 
+                    "knowCulture", "antiRacism", "structuralRacism", "policeViolence")
+
+d_strategies <- interventions %>%
+  select(book, all_of(knowledge_vars))
+
+intertemp <- left_join(d_strategies, d_temporal, by = "book")
+
+knowledge_vars <- c("contempPrej", "historicalPrej", "knowRace", 
+                    "knowCulture", "antiRacism", "structuralRacism", "policeViolence")
+
+knowledge_by_temporal <- intertemp %>%
+  select(temporalSetting, all_of(knowledge_vars)) %>%
+  pivot_longer(cols = all_of(knowledge_vars), 
+               names_to = "KnowledgeType", 
+               values_to = "Present") %>%
+  filter(!is.na(temporalSetting), !is.na(1)) %>%
+  group_by(temporalSetting, KnowledgeType) %>%
+  summarise(Percent = round(mean(Present == 1) * 100, 1), .groups = "drop")
+
+knowledge_by_temporal$KnowledgeType <- dplyr::recode(knowledge_by_temporal$KnowledgeType,
+  "contempPrej" = "Contemporary Prejudice",
+  "historicalPrej" = "Historical Racism",
+  "knowRace" = "What Race Is",
+  "knowCulture" = "Culture",
+  "antiRacism" = "Anti-Racist Values",
+  "structuralRacism" = "Structural Racism",
+  "policeViolence" = "Police Violence")
+
+ggplot(knowledge_by_temporal, aes(x = KnowledgeType, y = Percent, fill = temporalSetting)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  labs(title = "Knowledge Strategies by Temporal Setting",
+       x = "Type of Knowledge",
+       y = "Percentage of Books",
+       fill = "Temporal Setting") +
+  theme_minimal() +
+  scale_fill_manual(values = c("Contemporary (current day)" = "#ffcbe1", "Contemporary (current day),Historical" = "#d6e5bd", "Fantastical/non-human" = "#bcd8ec", "Historical" = "#dcccec")) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```
 
