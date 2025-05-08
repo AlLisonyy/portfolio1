@@ -1,7 +1,8 @@
 ---
 title: "Haunted Houses"
 output: 
-  html_document
+  html_document:
+    keep_md: true
 ---
 
 Data from https://github.com/rfordatascience/tidytuesday/blob/main/data/2023/2023-10-10/readme.md

@@ -1,5 +1,8 @@
 ---
 title: "Thesis data Visualization Analyses"
+output: 
+  html_document:
+    keep_md: true
 ---
 
 For this portfolio, I will continue to use the dataset from my thesis study. This portfolio will focus on creating visualization for my main statistical analysis. I would like to compare how each individual differences is differently or similarly correlated with one of the three bullshitting measures. Additionally, I applied the EFA and CFA just to see how Bullshitting Frequency scale and Bullshitting Propensity scale has loaded on either one or more factors.

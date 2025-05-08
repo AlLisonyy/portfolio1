@@ -1,15 +1,9 @@
 ---
 title: "Basic Visualization for Book Coding Projects"
 author: "Allison Li"
-date: "04242025"
 output: 
   html_document:
-    encoding: UTF-8
-    toc: true
-    number_sections: false
-    toc_float: true
-    toc_depth: 4
-    fig_caption: true
+    keep_md: true
 ---
 
 I would like to create some basic visualization for a book coding project. This book coding project is an exploratory study that codes and examines how race/ethnicity is depicted in children's books about race. By investigating both representation of diversity, types of intergroup contacts, acquired information about race and culture, and intergroup bias reduction strategies, this project aims to understand how the present books talks about diversity and build the first step for future studies to investigate whether certain strategy is more effective in media for bias reduction.

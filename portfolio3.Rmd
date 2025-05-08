@@ -1,15 +1,8 @@
 ---
 title: "Thesis data descriptives and demographic information"
-author: "Allison Li"
-date: "03222025"
 output: 
   html_document:
-    encoding: UTF-8
-    toc: true
-    number_sections: false
-    toc_float: true
-    toc_depth: 4
-    fig_caption: true
+    keep_md: true
 ---
 ## Goal
 For this portfolio, I will continue to use the dataset from my thesis study. This portfolio will focus on analyzing the descriptive information for each scale and visual representation of the demographic information for the participants.
