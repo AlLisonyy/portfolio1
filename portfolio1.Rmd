@@ -1,10 +1,7 @@
 ---
 title: "Haunted Houses"
-author: "Allison Li"
-date: "02102025"
 output: 
-  html_document:
-    keep_md: true
+  html_document
 ---
 
 Data from https://github.com/rfordatascience/tidytuesday/blob/main/data/2023/2023-10-10/readme.md
