@@ -1,19 +1,14 @@
 ---
 title: "Thesis data cleaning"
-author: "Allison Li"
 output: 
   html_document:
-    encoding: UTF-8
-    toc: true
-    number_sections: false
-    toc_float: true
-    toc_depth: 4
-    fig_caption: true
+    keep_md: true
 ---
 ## Goal
 For this portfolio, I plan to use the dataset from my thesis study. The study is a correlational design, so there are many scales and variables that need to be cleaned and organized, such as reverse coding. This portfolio will focus on this process.
 
-```{r load-packages, message=FALSE}
+
+``` r
 ##install packages
 ##install.packages("ltm")
 ##install.packages("psych")
@@ -28,7 +23,8 @@ Thesis <- read_sav("Thesis.sav")
 ```
 
 ## Step 1: clean data
-```{r clean variables}
+
+``` r
 ##The first step is to clean data, and I started with getting rid of participants that did not finished the study, as well as deleting variable that does not have any data, such as recipient name.  
 Thesis_clean <- Thesis %>% 
  dplyr::select(-c(StartDate, EndDate, IPAddress, RecordedDate, ResponseId, RecipientLastName, RecipientFirstName, RecipientEmail,  ExternalReference, LocationLatitude, LocationLongitude, DistributionChannel, UserLanguage, robot_timer_First_Click, robot_timer_Last_Click, robot_timer_Page_Submit, robot_timer_Click_Count, browser_info_Browser, browser_info_Version, browser_info_Operating_System, browser_info_Resolution)) %>%
@@ -38,11 +34,11 @@ Thesis_clean <- Thesis %>%
   Status == 0 &  ##Remove participants whose status is not 0
   Finished == 1
   )
-
 ```
 
 ## Step 2: reverse coding the scales
-```{r reverse coding scales}
+
+``` r
 ##Define columns that should remain as text, which are my short-answer responses
 text_cols <- c("BS_TL_CG_1", "BS_TL_CG_2", "BS_TL_CG_3", "BS_TL_CG_4", "BS_TL_CG_5", 
 "BS_TL_Recycle_1", "BS_TL_Recycling_2", "BS_TL_Recycling_3", "BS_TL_Recycling_4", "BS_TL_Recycling_5", 
@@ -51,7 +47,23 @@ text_cols <- c("BS_TL_CG_1", "BS_TL_CG_2", "BS_TL_CG_3", "BS_TL_CG_4", "BS_TL_CG
 
 Thesis_clean <- Thesis_clean %>%
   mutate(across(-all_of(text_cols), ~ as.numeric(.)))
+```
 
+```
+## Warning: There were 3 warnings in
+## `mutate()`.
+## The first warning was:
+## ℹ In argument:
+##   `across(-all_of(text_cols),
+##   ~as.numeric(.))`.
+## Caused by warning:
+## ! NAs introduced by coercion
+## ℹ Run
+##   `dplyr::last_dplyr_warnings()`
+##   to see the 2 remaining warnings.
+```
+
+``` r
 ##Convert the numeric columns: I noticed that SPSS assigned the wrong value for the thought rating items, so I have to recoded the wrong value first before reverse-coding it
 Thesis_scale <- Thesis_clean %>%
   mutate(
@@ -106,7 +118,8 @@ I realized that I should have create new variables for the recoded ones, so that
 I also had HEXACO's Honesty-Humility subscale with a low reliability, I ran a more close analysis looking at item correlations and found that I was missing one item for reverse coding... 
 
 ## Step 3.1: calculating the Thought listing and rating task
-```{r BS Thought rating and listing measurement calculation}
+
+``` r
 ## For the thought listing and rating task, I need to first identify participants' valid responses. I coded 1 for all valid responses and 0 for all the invalid ones. The criteria is that if the participant answered NA, not sure, or answers suggesting they do not have answers, I code it as 0. I created variables such as CG_score, RC_score, and CR_score for each question. I verify all of the thought rating scores by sliding the thought rating variables next to their respective thought scores (e.g., “thought_rating1” should be next to “thought1_score”)
 
 ## How to compute: I Sum the total number of thoughts for each participant per the topic. In other words, if a participant wrote three valid thoughts for topic 1, they should have “3” for their “sum_recoded_TR_topic”.
@@ -161,7 +174,14 @@ Thesis_scale <- Thesis_scale %>%
     )
 ###I als0 just want to double check what does na.rm did for my data in terms of na.rm = TRUE/FALSE
 summary(Thesis_scale$recoded_college)
+```
 
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   5.000   5.000   4.487   5.000   5.000
+```
+
+``` r
 ## Lastly, I use this equation to calculate the BS Proportion per topic, whereby each participant will have five individual BS Proportion scores (one for each topic): sum_recoded_thought_rating_topic1 / (sum thought_frequency_topic1 x 10)
 Thesis_scale <- Thesis_scale %>%
   dplyr::mutate(
@@ -174,17 +194,23 @@ Thesis_scale <- Thesis_scale %>%
   dplyr::mutate(BSthought = (BSthought_college + BSthought_recycling + BSthought_crime)/ 3)
 ## Check if it worked for one
 head(Thesis_scale$BSthought_college)
+```
 
+```
+## [1] 0.225 0.320 0.380 0.340 0.480 0.180
+```
+
+``` r
 ## There is another variable called self-reported knowledge of each topic. I will need to average the knowledge of each topic and created a new variable called knowledge_score
 Thesis_scale <- Thesis_scale %>%
   mutate(
     knowledge_score = (Knowledge_CG + Knowledge_recycle + Knowledge_Crime)/3
   )
-
 ```
 
 ## Step 3.2: calculating the cogntive ability measurements
-```{r cognitive ability}
+
+``` r
 ##For measuring cognitive ability, the scales are mainly short questions asking word/ math problems and is not likert scales. So I will need to calculate and code the participants' answers into numeric values. 
 ##Numeracy scale
 ##compute their answers, if they answer one question right, they will get one point.
@@ -231,7 +257,8 @@ Thesis_scale <- Thesis_scale %>%
 
 
 ## Step 4: save the cleaned datset for analysis
-```{r save}
+
+``` r
 saveRDS(Thesis_scale, file = "Thesis_scale.rds")
 saveRDS(Thesis_clean, file = "Thesis_clean.rds")
 ```

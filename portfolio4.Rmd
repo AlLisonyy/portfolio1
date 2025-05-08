@@ -3,7 +3,12 @@ title: "Thesis data Main Analysis"
 author: "Allison Li"
 output: 
   html_document:
-    keep_md: true
+    encoding: UTF-8
+    toc: true
+    number_sections: false
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
 ---
 For this portfolio, I will continue to use the dataset from my thesis study. This portfolio will focus on the main analysis for my thesis study's data, which is mainly correlation analysis. In addition, I would like to create some visualization for presenting the correlations since I have around 30 variables. 
 

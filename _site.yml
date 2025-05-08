@@ -8,22 +8,22 @@ navbar:
     - text: "About"
       href: about.html
     - text: "Portfolio 1"
-      href: p01.html
+      href: portfolio1.html
     - text: "Portfolio 2"
-      href: p02.html
+      href: portfolio2.html
     - text: "Portfolio 3"
-      href: p03.html
+      href: portfolio3.html
     - text: "Portfolio 4"
-      href: p04.html
+      href: portfolio4.html
     - text: "Portfolio 5"
-      href: p05.html
+      href: portfolio5.html
     - text: "Portfolio 6"
-      href: p06.html
+      href: portfolio6.html
     - text: "Portfolio 7"
-      href: p07.html
+      href: portfolio7.html
     - text: "Portfolio 8"
-      href: p08.html
+      href: portfolio8.html
     - text: "Portfolio 9"
-      href: p09.html
+      href: portfolio9.html
     - text: "Portfolio 10"
-      href: p10.html
+      href: portfolio10.html

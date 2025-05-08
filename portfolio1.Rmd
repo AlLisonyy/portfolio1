@@ -1,8 +1,14 @@
 ---
 title: "Haunted Houses"
+author: "Allison Li"
 output: 
   html_document:
-    keep_md: true
+    encoding: UTF-8
+    toc: true
+    number_sections: false
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
 ---
 
 Data from https://github.com/rfordatascience/tidytuesday/blob/main/data/2023/2023-10-10/readme.md

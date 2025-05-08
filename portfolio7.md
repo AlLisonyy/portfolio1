@@ -1,21 +1,16 @@
 ---
 title: "Basic Visualization for Book Coding Project Part 2"
-author: "Allison Li"
 output: 
   html_document:
-    encoding: UTF-8
-    toc: true
-    number_sections: false
-    toc_float: true
-    toc_depth: 4
-    fig_caption: true
+    keep_md: true
 ---
 
 This is a continued project from portfolio 6. I would like to focus on some analysis for a book coding project. This book coding project is an exploratory study that codes and examines how race/ethnicity is depicted in children's books about race. By investigating both representation of diversity, types of intergroup contacts, acquired information about race and culture, and intergroup bias reduction strategies, this project aims to understand how the present books talks about diversity and build the first step for future studies to investigate whether certain strategy is more effective in media for bias reduction.
 One thing I would like to note is that these dataset are from Dr. Katharine Scott, me and Sophie Boyld's project, and some of the codes are already written by Dr. Scott, which are identified in portfolio 6.
 
 
-```{r load packages}
+
+``` r
 library(readxl)
 library(tidyverse)
 library(writexl)
@@ -43,7 +38,8 @@ Comparison = read_excel("~/Downloads/Character_Compare.xlsx")
 
 ### all seven types of knowledge acquisition grouped by temporal setting
 
-```{r grouped by temporal}
+
+``` r
 ##First i would need to merge the two dataset to have temporal setting and strategies in one dataset
 
 d_temporal <- dWide %>%
@@ -92,12 +88,14 @@ ggplot(knowledge_by_temporal, aes(x = KnowledgeType, y = Percent, fill = tempora
             vjust = -0.3, size = 2)
 ```
 
+![](portfolio7_files/figure-html/grouped by temporal-1.png)<!-- -->
+
 Based on the graph, we can see that for contemporary setting, information about culture is most mentioned, with police violence and structure racism least mentioned. For combination of contemporary and historical contexts, most of the information are mentioned. More specifically, Historical Racism is most mentioned, followed by anti-racist value and structureal racism. For Fantastical or non-human settings, it seems like anti-racist value, contemporary prejudice, structural racism, and what is race is relatively equally mentioned. Lastly, in the historical setting, police violence is most mentioned, which is expected. Additionally, what race is is least mentioned, since these books might be focusing more on the experiences of racial minority individuals rather than explaining. 
 
 ### all seven types of knowledge acquisition grouped by fiction vs non-fiction
 
-```{r fiction}
 
+``` r
 d_fiction <- dWide %>%
   dplyr::select(book, fiction)
 
@@ -139,11 +137,14 @@ ggplot(knowledge_by_fiction, aes(x = KnowledgeType, y = Percent, fill = fiction)
             vjust = -0.3, size = 2)
 ```
 
+![](portfolio7_files/figure-html/fiction-1.png)<!-- -->
+
 Based on the graph, we can see that for fiction books, information about culture is mostly mentioned, with police violence least mentioned. For combination of fiction and non-fiction, Historical Racism is most mentioned, followed by anti-racist value and structureal racism. For non-fiction boooks, it seems like anti-racist value is most mentioned, followed by historical racism and structural racism. what race is and police violence seemed to be least mentioned. 
 
 ### What types of knowledge tend to co-occur?
 
-```{r correlation matrix}
+
+``` r
 library(corrplot)
 
 knowledge_vars <- c("contempPrej", "historicalPrej", "knowRace", 
@@ -157,14 +158,16 @@ cor_matrix <- cor(knowledge_matrix, use = "pairwise.complete.obs")
 
 #plot!
 corrplot(cor_matrix, method = "color", type = "upper", tl.col = "black", tl.srt = 45)
-
 ```
+
+![](portfolio7_files/figure-html/correlation matrix-1.png)<!-- -->
 
 Based on the map, it seems like structural racism tends to co-occur with historical racism (the strongest correlation). Additionally, anti-racist value is positively related with presence of historical racism, as well as with police violence. I believe books that depicting historical racism and police violence's ultimate goal is to promote anti-racist value, so they tend to co-occur. Interestingly, knowledge about race and culture tend not to occur together, which makes sense since one book might want to focus on educating one major theme.
 
 ### Do historical books focus more on structural issues while contemporary books promote personal values?
 
-```{r}
+
+``` r
 ## To answer this question, I see structuralRacism, historicalPrej, and policeViolence to be structural issues, while antiRacism, emotionsPT, emotionsPT2, emotionsDiscrim, emotionsBasic more aligning with personal values. 
 
 knowpt_vars <- c("contempPrej", "historicalPrej", "knowRace", "knowCulture", "antiRacism", "structuralRacism", "policeViolence", "emotionsPT", "emotionsPT2", "emotionsDiscrim")
@@ -202,12 +205,15 @@ ggplot(setting_comparison, aes(x = Type, y = Percent, fill = temporalSetting)) +
   scale_fill_manual(values = c("Contemporary (current day)" = "#ffcbe1", "Contemporary (current day),Historical" = "#d6e5bd", "Fantastical/non-human" = "#bcd8ec", "Historical" = "#dcccec"))
 ```
 
+![](portfolio7_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
+
 Based on the results, historical books also seem to have the highest rates of structural racism and historical prejudice, which aligns with the structural/systemic focus hypothesis. For the contemporary books, it looks like they show lower emphasis on structural or historical issues. However, they are moderate or even relatively low on personal-level emotional content, such as perspective taking and discrimination-related emotion.
 Therefore, the result did not really align with my expectation. Historical books did show greater emphasis on structural racism and historical content, but contemporary books did not show much emphasis on emotional or personal learning neither.
 
 ### Is the racial background of the author associated with the themes emphasized in their books?
 
-```{r author race and themes}
+
+``` r
 dWide <- dWide %>%
   mutate(authorRaceGroup = case_when(
     authorRace == "White" ~ "White",
@@ -259,16 +265,55 @@ ggplot(author_race_comparison, aes(x = Strategy, y = Percent, fill = authorRaceG
   theme(axis.text.x = element_text(angle = 30, hjust = 1))
 ```
 
+![](portfolio7_files/figure-html/author race and themes-1.png)<!-- -->
+
 Based on the graph, we can see that for what is culture and anti-racist value, there is a huge gap, with people of color creative team having mentioning more about these two knowledge than white authors. For knowledge about what race is and police violence, these two themes are more likely to be mentioned by white creative teams.
 
 ## Word Cloud
 
-```{r}
+
+``` r
 # Install required packages
 ##install.packages(c("tm", "wordcloud", "RColorBrewer"))
 library(tidyverse)
 library(tm)
+```
+
+```
+## Loading required package: NLP
+```
+
+```
+## 
+## Attaching package: 'NLP'
+```
+
+```
+## The following object is masked from 'package:ggplot2':
+## 
+##     annotate
+```
+
+```
+## 
+## Attaching package: 'tm'
+```
+
+```
+## The following object is masked from 'package:lavaan':
+## 
+##     inspect
+```
+
+``` r
 library(wordcloud)
+```
+
+```
+## Loading required package: RColorBrewer
+```
+
+``` r
 library(RColorBrewer)
 
 # Text preprocessing
@@ -279,7 +324,34 @@ corpus_clean <- corpus %>%
   tm_map(removeNumbers) %>%
   tm_map(removeWords, stopwords("english")) %>%
   tm_map(stripWhitespace)
+```
 
+```
+## Warning in tm_map.SimpleCorpus(., content_transformer(tolower)): transformation
+## drops documents
+```
+
+```
+## Warning in tm_map.SimpleCorpus(., removePunctuation): transformation drops
+## documents
+```
+
+```
+## Warning in tm_map.SimpleCorpus(., removeNumbers): transformation drops
+## documents
+```
+
+```
+## Warning in tm_map.SimpleCorpus(., removeWords, stopwords("english")):
+## transformation drops documents
+```
+
+```
+## Warning in tm_map.SimpleCorpus(., stripWhitespace): transformation drops
+## documents
+```
+
+``` r
 # Create term-document matrix
 tdm <- TermDocumentMatrix(corpus_clean)
 tdm_matrix <- as.matrix(tdm)
@@ -297,6 +369,8 @@ wordcloud(words = word_data$word,
           random.order = FALSE,
           colors = brewer.pal(8, "Dark2"))
 ```
+
+![](portfolio7_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
 
 Having black the most in the title is not surprising. I think including the race/ethnicity in the book title is important since parents would definetly like to know what this book is about when simply looking at a book's title. For the words such as skin, different, color, hair, brown, face, mixed, I think they tend to emphasize the physical traits that might help normalize difference and promote equality, especially regarding natural Black hair and diverse skin tones. There are also words such as love, beautiful, celebration, or dream, which I think is promoting positive emotions or affects from these books, so children would be positively embracing the content mentioned here. There are also words including history, racism, freedom, luther king, which i think reflect an educational intention to teach about racial history, knowledge and social justice.
 In general, I believe this word cloud reveals a set of books that including themes such as: affirming Black identity, celebrating cultural difference, educating about history, and introducing concepts of justice and inequality.

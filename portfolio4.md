@@ -1,0 +1,3451 @@
+---
+title: "Thesis data Main Analysis"
+author: "Allison Li"
+output: 
+  html_document:
+    keep_md: true
+---
+For this portfolio, I will continue to use the dataset from my thesis study. This portfolio will focus on the main analysis for my thesis study's data, which is mainly correlation analysis. In addition, I would like to create some visualization for presenting the correlations since I have around 30 variables. 
+
+
+
+## Step 1: partial correlations
+### Bullshit Frequency scales and other variables's partial correlation when controled for lying tendency
+
+``` r
+partial_ci <- function(r, n, conf_level = 0.95) {
+  z <- 0.5 * log((1 + r) / (1 - r))
+  se <- 1 / sqrt(n - 3)
+  z_crit <- qnorm((1 + conf_level) / 2)
+  
+  z_lower <- z - z_crit * se
+  z_upper <- z + z_crit * se
+  
+  r_lower <- (exp(2 * z_lower) - 1) / (exp(2 * z_lower) + 1)
+  r_upper <- (exp(2 * z_upper) - 1) / (exp(2 * z_upper) + 1)
+  
+  return(c(lower = r_lower, upper = r_upper))
+}
+```
+
+
+``` r
+##1. BFS and BPS
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$BPS_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.1965404 5.436469e-05  4.078555 417  1 pearson
+```
+
+``` r
+##2. BFS and narcissism (short scale)
+partial_BFSsdtnarc <- Thesis_scale %>% 
+  select(BFS_score, sdtnarc_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSsdtnarc$BFS_score, partial_BFSsdtnarc$sdtnarc_score, partial_BFSsdtnarc$LIE_score)
+```
+
+```
+##    estimate     p.value statistic   n gp  Method
+## 1 0.1480524 0.002497544  3.042308 416  1 pearson
+```
+
+``` r
+r <- 0.20
+n <- 417
+partial_ci(r, n)
+```
+
+```
+##     lower     upper 
+## 0.1060058 0.2904517
+```
+
+``` r
+##3, BFS and machiavellianism (short scale)
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.2438125 4.802929e-07  5.115216 417  1 pearson
+```
+
+``` r
+##4. BFS and psychopathy (short scale)
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$sdtpsych_score, Thesis_scale$LIE_score)
+```
+
+```
+##   estimate     p.value statistic   n gp  Method
+## 1 0.141914 0.003725995  2.917047 417  1 pearson
+```
+
+``` r
+##5.1 BFS and Narcissistic Personality Inventory
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$narcgrand_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate     p.value statistic   n gp  Method
+## 1 0.1498232 0.002184556  3.083253 417  1 pearson
+```
+
+``` r
+##5.2 BFS and Hypersensitive Narcissism Scale
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$narchyper_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.2472604 3.264684e-07  5.192229 417  1 pearson
+```
+
+``` r
+##6. BFS and Machiavellianism Personality scale
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$mach_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.2640329 4.594391e-08  5.569932 417  1 pearson
+```
+
+``` r
+##7. BFS and Levenson Self-Report Psychopathy Scale
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$psycho_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate     p.value statistic   n gp  Method
+## 1 0.1811911 0.000202992  3.748742 417  1 pearson
+```
+
+``` r
+##7.1
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$psychopri_score, Thesis_scale$LIE_score)
+```
+
+```
+##   estimate      p.value statistic   n gp  Method
+## 1 0.166816 0.0006352032  3.442438 417  1 pearson
+```
+
+``` r
+partial_BFSpsychosec <- Thesis_scale %>% 
+  select(BFS_score, psychosec_score, LIE_score) %>%
+  drop_na()
+##7.2
+pcor.test(partial_BFSpsychosec$BFS_score, partial_BFSpsychosec$psychosec_score, partial_BFSpsychosec$LIE_score)
+```
+
+```
+##    estimate     p.value statistic   n gp  Method
+## 1 0.1453326 0.003002406  2.985203 416  1 pearson
+```
+
+``` r
+##8. BFS and self-esteem
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$se_score, Thesis_scale$LIE_score)
+```
+
+```
+##      estimate   p.value statistic   n gp  Method
+## 1 -0.07890241 0.1080624 -1.610447 417  1 pearson
+```
+
+``` r
+##BFS and HEXACO
+##9. Honesty-Humility
+partial_BFShon<- Thesis_scale %>% 
+  select(BFS_score, hon_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFShon$BFS_score, partial_BFShon$hon_score, partial_BFShon$LIE_score)
+```
+
+```
+##     estimate      p.value statistic   n gp  Method
+## 1 -0.2407731 6.929454e-07 -5.041399 416  1 pearson
+```
+
+``` r
+##10. Emotionality
+partial_BFSemo <- Thesis_scale %>% 
+  select(BFS_score, emo_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSemo$BFS_score, partial_BFSemo$emo_score, partial_BFSemo$LIE_score)
+```
+
+```
+##     estimate    p.value statistic   n gp  Method
+## 1 0.09729685 0.04761247  1.986732 416  1 pearson
+```
+
+``` r
+##11. Extraversion
+partial_BFSextra <- Thesis_scale %>% 
+  select(BFS_score, extra_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSextra$BFS_score, partial_BFSextra$extra_score, partial_BFSextra$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.01186298 0.8095963 0.2411013 416  1 pearson
+```
+
+``` r
+##12. Agreeableness
+partial_BFSagree <- Thesis_scale %>% 
+  select(BFS_score, agree_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSagree$BFS_score, partial_BFSagree$agree_score, partial_BFSagree$LIE_score)
+```
+
+```
+##     estimate     p.value statistic   n gp  Method
+## 1 -0.1268451 0.009690186 -2.598789 416  1 pearson
+```
+
+``` r
+##13. CONSCIENTIOUSNESS
+partial_BFScons <- Thesis_scale %>% 
+  select(BFS_score, cons_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFScons$BFS_score, partial_BFScons$cons_score, partial_BFScons$LIE_score)
+```
+
+```
+##     estimate      p.value statistic   n gp  Method
+## 1 -0.1728528 0.0004042115 -3.566467 416  1 pearson
+```
+
+``` r
+##14. Openness
+partial_BFSopen <- Thesis_scale %>% 
+  select(BFS_score, open_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSopen$BFS_score, partial_BFSopen$open_score, partial_BFSopen$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.03077178 0.5318883 -0.6256528 416  1 pearson
+```
+
+``` r
+##15. BFS and Intellectual Humility Scale
+
+
+##16. BFS and Need for Closure
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$nclos_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.04073323 0.4073069  0.829487 417  1 pearson
+```
+
+``` r
+##17. BFS and Need for Cognition
+partial_BFSncog <- Thesis_scale %>% 
+  select(BFS_score, ncog_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSncog$BFS_score, partial_BFSncog$ncog_score, partial_BFSncog$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.02215745 0.6526561 -0.4504031 416  1 pearson
+```
+
+``` r
+##18. BFS and Actively Open Thinking Style
+partial_BFSopenTS <- Thesis_scale %>% 
+  select(BFS_score, openTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSopenTS$BFS_score, partial_BFSopenTS$openTS_score, partial_BFSopenTS$LIE_score)
+```
+
+```
+##     estimate      p.value statistic   n gp  Method
+## 1 -0.2304123 2.098764e-06 -4.812007 416  1 pearson
+```
+
+``` r
+##19. BFS and Close-minded Thinking Style
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$closeTS_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate    p.value statistic   n gp  Method
+## 1 0.09288445 0.05837491  1.898125 417  1 pearson
+```
+
+``` r
+##20. BFS and prefer intuitive Thinking Style
+partial_BFSintuitiveTS <- Thesis_scale %>% 
+  select(BFS_score, intuitiveTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSintuitiveTS$BFS_score, partial_BFSintuitiveTS$intuitiveTS_score, partial_BFSintuitiveTS$LIE_score)
+```
+
+```
+##    estimate     p.value statistic   n gp  Method
+## 1 0.1593803 0.001122483  3.280929 416  1 pearson
+```
+
+``` r
+##21. BFS and prefer effortful Thinking Style
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$effortTS_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate    p.value statistic   n gp  Method
+## 1 -0.1013629 0.03878032 -2.073108 417  1 pearson
+```
+
+``` r
+##22. BFS and Actively Open-Minded Thinking about Evidence Scale 
+partial_BFSactiveopen <- Thesis_scale %>% 
+  select(BFS_score, activeopen_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSactiveopen$BFS_score, partial_BFSactiveopen$activeopen_score, partial_BFSactiveopen$LIE_score)
+```
+
+```
+##     estimate     p.value statistic   n gp  Method
+## 1 -0.1353853 0.005737482 -2.776922 416  1 pearson
+```
+
+``` r
+##23. BFS and Faith in Intuition Scale
+pcor.test(Thesis_scale$BFS_score, Thesis_scale$fi_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate     p.value statistic   n gp  Method
+## 1 0.1426406 0.003551459  2.932291 417  1 pearson
+```
+
+``` r
+##24. BFS and BS thought listing and rating task
+partial_BFSthoughlist <- Thesis_scale %>% 
+  select(BFS_score, BSthought, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSthoughlist$BFS_score, partial_BFSthoughlist$BSthought, partial_BFSthoughlist$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.03360933 0.4968317 0.6800908 412  1 pearson
+```
+
+``` r
+##25. BFS and Wordsum Vocabulary Test
+partial_BFSns <- Thesis_scale %>% 
+  select(BFS_score, ns_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSns$BFS_score, partial_BFSns$ns_score, partial_BFSns$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.03360096 0.4943171 0.6840646 417  1 pearson
+```
+
+``` r
+##26. BFS and Numeracy scale
+partial_BFSword <- Thesis_scale %>% 
+  select(BFS_score, word_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSword$BFS_score, partial_BFSword$word_score, partial_BFSword$LIE_score)
+```
+
+```
+##    estimate    p.value statistic   n gp  Method
+## 1 0.1194975 0.01474055  2.448963 417  1 pearson
+```
+
+``` r
+##27. BFS and Cognitive Reflection Test
+partial_BFScrt<- Thesis_scale %>% 
+  select(BFS_score, crt_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFScrt$BFS_score, partial_BFScrt$crt_score, partial_BFScrt$LIE_score)
+```
+
+```
+##     estimate    p.value statistic   n gp  Method
+## 1 -0.1249813 0.01101582 -2.553786 414  1 pearson
+```
+
+### Bullshit Frequency subscale BFSpersuasive and other variables's partial correlation when controled for lying tendency
+
+
+``` r
+##1. BFSp and Thought listing and rating task
+partial_BFSpthoughlist <- Thesis_scale %>% 
+  select(BFSp_score, BSthought, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpthoughlist$BFSp_score, partial_BFSpthoughlist$BSthought, partial_BFSpthoughlist$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.06330273 0.2002917  1.282791 412  1 pearson
+```
+
+``` r
+##2. BFSp and narcissism (short scale)
+partial_BFSpsdtnarc <- Thesis_scale %>% 
+  select(BFSp_score, sdtnarc_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpsdtnarc$BFSp_score, partial_BFSpsdtnarc$sdtnarc_score, partial_BFSpsdtnarc$LIE_score)
+```
+
+```
+##    estimate     p.value statistic   n gp  Method
+## 1 0.2037433 2.88964e-05  4.229265 416  1 pearson
+```
+
+``` r
+##3, BFSp and machiavellianism (short scale)
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.2864235 2.690625e-09  6.082703 417  1 pearson
+```
+
+``` r
+##4. BFSp and psychopathy (short scale)
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$sdtpsych_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.1846813 0.0001518191  3.823479 417  1 pearson
+```
+
+``` r
+##5.1 BFSp and Narcissistic Personality Inventory
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$narcgrand_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.2113798 1.376556e-05  4.400373 417  1 pearson
+```
+
+``` r
+##5.2 BFSp and Hypersensitive Narcissism Scale
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$narchyper_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.2119531 1.302792e-05   4.41287 417  1 pearson
+```
+
+``` r
+##6. BFSp and Machiavellianism Personality scale
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$mach_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.3145369 5.261866e-11   6.74207 417  1 pearson
+```
+
+``` r
+##7. BFSp and Levenson Self-Report Psychopathy Scale
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$psycho_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.2060102 2.288923e-05  4.283571 417  1 pearson
+```
+
+``` r
+##7.1
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$psychopri_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate    p.value statistic   n gp  Method
+## 1 0.2069459 2.0968e-05  4.303895 417  1 pearson
+```
+
+``` r
+partial_BFSppsychosec <- Thesis_scale %>% 
+  select(BFSp_score, psychosec_score, LIE_score) %>% 
+  drop_na()
+##7.2
+pcor.test(partial_BFSppsychosec$BFSp_score, partial_BFSppsychosec$psychosec_score, partial_BFSppsychosec$LIE_score)
+```
+
+```
+##    estimate    p.value statistic   n gp  Method
+## 1 0.1387608 0.00462639  2.847499 416  1 pearson
+```
+
+``` r
+##8. BFSp and self-esteem
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$se_score, Thesis_scale$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.03734358 0.4474723 -0.7603598 417  1 pearson
+```
+
+``` r
+##BFSp and HEXACO
+##9. Honesty-Humility
+partial_BFSphon<- Thesis_scale %>% 
+  select(BFSp_score, hon_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSphon$BFSp_score, partial_BFSphon$hon_score, partial_BFSphon$LIE_score)
+```
+
+```
+##     estimate      p.value statistic   n gp  Method
+## 1 -0.2744878 1.312555e-08 -5.801068 416  1 pearson
+```
+
+``` r
+##10. Emotionality
+partial_BFSpemo <- Thesis_scale %>% 
+  select(BFSp_score, emo_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpemo$BFSp_score, partial_BFSpemo$emo_score, partial_BFSpemo$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.03956095 0.4215116 0.8046033 416  1 pearson
+```
+
+``` r
+##11. Extraversion
+partial_BFSpextra <- Thesis_scale %>% 
+  select(BFSp_score, extra_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpextra$BFSp_score, partial_BFSpextra$extra_score, partial_BFSpextra$LIE_score)
+```
+
+```
+##    estimate   p.value statistic   n gp  Method
+## 1 0.0464628 0.3450806 0.9452566 416  1 pearson
+```
+
+``` r
+##12. Agreeableness
+partial_BFSpagree <- Thesis_scale %>% 
+  select(BFSp_score, agree_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpagree$BFSp_score, partial_BFSpagree$agree_score, partial_BFSpagree$LIE_score)
+```
+
+```
+##     estimate     p.value statistic   n gp  Method
+## 1 -0.1469232 0.002696925 -3.018591 416  1 pearson
+```
+
+``` r
+##13. CONSCIENTIOUSNESS
+partial_BFSpcons <- Thesis_scale %>% 
+  select(BFSp_score, cons_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpcons$BFSp_score, partial_BFSpcons$cons_score, partial_BFSpcons$LIE_score)
+```
+
+```
+##     estimate      p.value statistic   n gp  Method
+## 1 -0.1753002 0.0003329831 -3.618555 416  1 pearson
+```
+
+``` r
+##14. Openness
+partial_BFSpopen <- Thesis_scale %>% 
+  select(BFSp_score, open_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpopen$BFSp_score, partial_BFSpopen$open_score, partial_BFSpopen$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.01091064 0.8246231 -0.2217436 416  1 pearson
+```
+
+``` r
+##15. BFSp and Intellectual Humility Scale
+
+
+##16. BFSp and Need for Closure
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$nclos_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.06614791 0.1781176  1.348865 417  1 pearson
+```
+
+``` r
+##17. BFSp and Need for Cognition
+partial_BFSpncog <- Thesis_scale %>% 
+  select(BFSp_score, ncog_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpncog$BFSp_score, partial_BFSpncog$ncog_score, partial_BFSpncog$LIE_score)
+```
+
+```
+##       estimate   p.value  statistic   n gp  Method
+## 1 -0.007894571 0.8726116 -0.1604416 416  1 pearson
+```
+
+``` r
+##18. BFSp and Actively Open Thinking Style
+partial_BFSpopenTS <- Thesis_scale %>% 
+  select(BFSp_score, openTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpopenTS$BFSp_score, partial_BFSpopenTS$openTS_score, partial_BFSpopenTS$LIE_score)
+```
+
+```
+##     estimate      p.value statistic   n gp  Method
+## 1 -0.2645832 4.461879e-08 -5.575667 416  1 pearson
+```
+
+``` r
+##19. BFSp and Close-minded Thinking Style
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$closeTS_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate     p.value statistic   n gp  Method
+## 1 0.1498178 0.002185368  3.083139 417  1 pearson
+```
+
+``` r
+##20. BFSp and prefer intuitive Thinking Style
+partial_BFSpintuitiveTS <- Thesis_scale %>% 
+  select(BFSp_score, intuitiveTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpintuitiveTS$BFSp_score, partial_BFSpintuitiveTS$intuitiveTS_score, partial_BFSpintuitiveTS$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.1953423 6.173466e-05  4.047804 416  1 pearson
+```
+
+``` r
+##21. BFSp and prefer effortful Thinking Style
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$effortTS_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate     p.value statistic   n gp  Method
+## 1 -0.1264195 0.009849566  -2.59306 417  1 pearson
+```
+
+``` r
+##22. BFSp and Actively Open-Minded Thinking about Evidence Scale 
+partial_BFSpactiveopen <- Thesis_scale %>% 
+  select(BFSp_score, activeopen_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpactiveopen$BFSp_score, partial_BFSpactiveopen$activeopen_score, partial_BFSpactiveopen$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 -0.167171 0.0006277059 -3.445805 416  1 pearson
+```
+
+``` r
+##23. BFSp and Faith in Intuition Scale
+pcor.test(Thesis_scale$BFSp_score, Thesis_scale$fi_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.1942988 6.632756e-05  4.030202 417  1 pearson
+```
+
+``` r
+##24. BFSp and Numeracy scale
+partial_BFSpns <- Thesis_scale %>% 
+  select(BFSp_score, ns_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpns$BFSp_score, partial_BFSpns$ns_score, partial_BFSpns$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.01036813 0.8330133 0.2109715 417  1 pearson
+```
+
+``` r
+##25. BFSp and Wordsum Vocabulary Test
+partial_BFSpword <- Thesis_scale %>% 
+  select(BFSp_score, word_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpword$BFSp_score, partial_BFSpword$word_score, partial_BFSpword$LIE_score)
+```
+
+```
+##   estimate    p.value statistic   n gp  Method
+## 1 0.100077 0.04133424  2.046541 417  1 pearson
+```
+
+``` r
+##26. BFSp and Cognitive Reflection Test
+partial_BFSpcrt<- Thesis_scale %>% 
+  select(BFSp_score, crt_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpcrt$BFSp_score, partial_BFSpcrt$crt_score, partial_BFSpcrt$LIE_score)
+```
+
+```
+##     estimate     p.value statistic   n gp  Method
+## 1 -0.1560683 0.001464705 -3.203246 414  1 pearson
+```
+
+``` r
+##27. BFSp and BPS
+partial_BFSpBPS<- Thesis_scale %>% 
+  select(BFSp_score, BPS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpBPS$BFSp_score, partial_BFSpBPS$BPS_score, partial_BFSpBPS$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.2274907 2.764829e-06  4.753384 417  1 pearson
+```
+
+``` r
+##28. BFSp and BFS
+partial_BFSpBFS<- Thesis_scale %>% 
+  select(BFSp_score, BFS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSpBFS$BFSp_score, partial_BFSpBFS$BFS_score, partial_BFSpBFS$LIE_score)
+```
+
+```
+##    estimate       p.value statistic   n gp  Method
+## 1 0.9191163 1.441478e-169  47.46675 417  1 pearson
+```
+
+### Bullshit Frequency subscale BFSevasive and other variables's partial correlation when controled for lying tendency
+
+
+``` r
+library(dplyr)
+
+##1. BFSe and Thought listing and rating task
+partial_BFSepthoughtist <- Thesis_scale %>% 
+  select(BFSe_score, BSthought, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSepthoughtist$BFSe_score, partial_BFSepthoughtist$BSthought, partial_BFSepthoughtist$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.03757572 0.4474185 -0.7604589 412  1 pearson
+```
+
+``` r
+##2. BFSe and narcissism (short scale)
+partial_BFSesdtnarc <- Thesis_scale %>% 
+  select(BFSe_score, sdtnarc_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSesdtnarc$BFSe_score, partial_BFSesdtnarc$sdtnarc_score, partial_BFSesdtnarc$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.02668536 0.5877641 -0.5425038 416  1 pearson
+```
+
+``` r
+##3, BFSe and machiavellianism (short scale)
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.04851283 0.3236057 0.9882536 417  1 pearson
+```
+
+``` r
+##4. BFSe and psychopathy (short scale)
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$sdtpsych_score, Thesis_scale$LIE_score)
+```
+
+```
+##       estimate   p.value  statistic   n gp  Method
+## 1 -0.005765607 0.9066676 -0.1173147 417  1 pearson
+```
+
+``` r
+##5.1 BFSe and Narcissistic Personality Inventory
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$narcgrand_score, Thesis_scale$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.03631223 0.4601244 -0.7393321 417  1 pearson
+```
+
+``` r
+##5.2 BFSe and Hypersensitive Narcissism Scale
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$narchyper_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.1970964 5.173005e-05  4.090558 417  1 pearson
+```
+
+``` r
+##6. BFSe and Machiavellianism Personality scale
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$mach_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.04462803 0.3639044 0.9089517 417  1 pearson
+```
+
+``` r
+##7. BFSe and Levenson Self-Report Psychopathy Scale
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$psycho_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.04916239 0.3171616  1.001518 417  1 pearson
+```
+
+``` r
+##7.1
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$psychopri_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.01294872 0.7923044 0.2634895 417  1 pearson
+```
+
+``` r
+partial_BFSepsychosec <- Thesis_scale %>% 
+  select(BFSe_score, psychosec_score, LIE_score) %>% 
+  drop_na()
+##7.2
+pcor.test(partial_BFSepsychosec$BFSe_score, partial_BFSepsychosec$psychosec_score, partial_BFSepsychosec$LIE_score)
+```
+
+```
+##     estimate    p.value statistic   n gp  Method
+## 1 0.08849241 0.07173058  1.805461 416  1 pearson
+```
+
+``` r
+##8. BFSe and self-esteem
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$se_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate    p.value statistic   n gp  Method
+## 1 -0.1195855 0.01466696 -2.450792 417  1 pearson
+```
+
+``` r
+##BFSe and HEXACO
+##9. Honesty-Humility
+partial_BFSehon<- Thesis_scale %>% 
+  select(BFSe_score, hon_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSehon$BFSe_score, partial_BFSehon$hon_score, partial_BFSehon$LIE_score)
+```
+
+```
+##      estimate  p.value statistic   n gp  Method
+## 1 -0.06307605 0.199717 -1.284414 416  1 pearson
+```
+
+``` r
+##10. Emotionality
+partial_BFSeemo <- Thesis_scale %>% 
+  select(BFSe_score, emo_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeemo$BFSe_score, partial_BFSeemo$emo_score, partial_BFSeemo$LIE_score)
+```
+
+```
+##    estimate     p.value statistic   n gp  Method
+## 1 0.1591297 0.001143177  3.275637 416  1 pearson
+```
+
+``` r
+##11. Extraversion
+partial_BFSeextra <- Thesis_scale %>% 
+  select(BFSe_score, extra_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeextra$BFSe_score, partial_BFSeextra$extra_score, partial_BFSeextra$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 -0.0585786 0.2337478 -1.192505 416  1 pearson
+```
+
+``` r
+##12. Agreeableness
+partial_BFSeagree <- Thesis_scale %>% 
+  select(BFSe_score, agree_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeagree$BFSe_score, partial_BFSeagree$agree_score, partial_BFSeagree$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.02889189 0.5572576 -0.5873978 416  1 pearson
+```
+
+``` r
+##13. CONSCIENTIOUSNESS
+partial_BFSecons <- Thesis_scale %>% 
+  select(BFSe_score, cons_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSecons$BFSe_score, partial_BFSecons$cons_score, partial_BFSecons$LIE_score)
+```
+
+```
+##      estimate  p.value statistic   n gp  Method
+## 1 -0.08602767 0.080036 -1.754794 416  1 pearson
+```
+
+``` r
+##14. Openness
+partial_BFSeopen <- Thesis_scale %>% 
+  select(BFSe_score, open_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeopen$BFSe_score, partial_BFSeopen$open_score, partial_BFSeopen$LIE_score)
+```
+
+```
+##      estimate   p.value statistic   n gp  Method
+## 1 -0.05332611 0.2784401 -1.085259 416  1 pearson
+```
+
+``` r
+##16. BFSe and Need for Closure
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$nclos_score, Thesis_scale$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.02521539 0.6080709 -0.5132204 417  1 pearson
+```
+
+``` r
+##17. BFSe and Need for Cognition
+partial_BFSencog <- Thesis_scale %>% 
+  select(BFSe_score, ncog_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSencog$BFSe_score, partial_BFSencog$ncog_score, partial_BFSencog$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.03832616 0.4361597 -0.7794524 416  1 pearson
+```
+
+``` r
+##18. BFSe and Actively Open Thinking Style
+partial_BFSeopenTS <- Thesis_scale %>% 
+  select(BFSe_score, openTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeopenTS$BFSe_score, partial_BFSeopenTS$openTS_score, partial_BFSeopenTS$LIE_score)
+```
+
+```
+##      estimate   p.value statistic   n gp  Method
+## 1 -0.05679041 0.2483563 -1.155983 416  1 pearson
+```
+
+``` r
+##19. BFSe and Close-minded Thinking Style
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$closeTS_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate  p.value statistic   n gp  Method
+## 1 -0.0572846 0.243686 -1.167486 417  1 pearson
+```
+
+``` r
+##20. BFSe and prefer intuitive Thinking Style
+partial_BFSeintuitiveTS <- Thesis_scale %>% 
+  select(BFSe_score, intuitiveTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeintuitiveTS$BFSe_score, partial_BFSeintuitiveTS$intuitiveTS_score, partial_BFSeintuitiveTS$LIE_score)
+```
+
+```
+##     estimate  p.value statistic   n gp  Method
+## 1 0.01620049 0.742114  0.329276 416  1 pearson
+```
+
+``` r
+##21. BFSe and prefer effortful Thinking Style
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$effortTS_score, Thesis_scale$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.00678445 0.8902709 -0.1380463 417  1 pearson
+```
+
+``` r
+##22. BFSe and Actively Open-Minded Thinking about Evidence Scale 
+partial_BFSeactiveopen <- Thesis_scale %>% 
+  select(BFSe_score, activeopen_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeactiveopen$BFSe_score, partial_BFSeactiveopen$activeopen_score, partial_BFSeactiveopen$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.01144336 0.8162091 -0.2325718 416  1 pearson
+```
+
+``` r
+##23. BFSe and Faith in Intuition Scale
+pcor.test(Thesis_scale$BFSe_score, Thesis_scale$fi_score, Thesis_scale$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.02145432 0.6626064 -0.4366313 417  1 pearson
+```
+
+``` r
+##24. BFSe and Numeracy scale
+partial_BFSens <- Thesis_scale %>% 
+  select(BFSe_score, ns_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSens$BFSe_score, partial_BFSens$ns_score, partial_BFSens$LIE_score)
+```
+
+```
+##     estimate  p.value statistic   n gp  Method
+## 1 0.06039434 0.218988   1.23109 417  1 pearson
+```
+
+``` r
+##25. BFSe and Wordsum Vocabulary Test
+partial_BFSeword <- Thesis_scale %>% 
+  select(BFSe_score, word_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeword$BFSe_score, partial_BFSeword$word_score, partial_BFSeword$LIE_score)
+```
+
+```
+##     estimate    p.value statistic   n gp  Method
+## 1 0.09944899 0.04263233  2.033569 417  1 pearson
+```
+
+``` r
+##26. BFSe and Cognitive Reflection Test
+partial_BFSecrt<- Thesis_scale %>% 
+  select(BFSe_score, crt_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSecrt$BFSe_score, partial_BFSecrt$crt_score, partial_BFSecrt$LIE_score)
+```
+
+```
+##       estimate   p.value statistic   n gp  Method
+## 1 -0.008346125 0.8657163 -0.169208 414  1 pearson
+```
+
+``` r
+##27. BFSe and BPS
+partial_BFSeBPS<- Thesis_scale %>% 
+  select(BFSe_score, BPS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeBPS$BFSe_score, partial_BFSeBPS$BPS_score, partial_BFSeBPS$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.04521033 0.3576725 0.9208356 417  1 pearson
+```
+
+``` r
+##28. BFSe and BFSp
+partial_BFSeBFSp <- Thesis_scale %>% 
+  select(BFSe_score, BFSp_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeBFSp$BFSe_score, partial_BFSeBFSp$BFSp_score, partial_BFSeBFSp$LIE_score)
+```
+
+```
+##   estimate     p.value statistic   n gp  Method
+## 1 0.331881 3.74296e-12  7.158516 417  1 pearson
+```
+
+``` r
+##29. BFSe and BFS
+partial_BFSeBFS <- Thesis_scale %>% 
+  select(BFSe_score, BFS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BFSeBFS$BFSe_score, partial_BFSeBFS$BFS_score, partial_BFSeBFS$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.6766862 5.191488e-57  18.70034 417  1 pearson
+```
+
+
+### Bullshit Propensity scales and other variables's partial correlation when controled for lying tendency
+
+
+``` r
+##1. BPS and Thought listing and rating task
+partial_BPSthoughlist <- Thesis_scale %>% 
+  select(BPS_score, BSthought, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPSthoughlist$BPS_score, partial_BPSthoughlist$BSthought, partial_BPSthoughlist$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.2552807 1.547974e-07  5.339651 412  1 pearson
+```
+
+``` r
+##2. BPS and narcissism (short scale)
+partial_BPSsdtnarc <- Thesis_scale %>% 
+  select(BPS_score, sdtnarc_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPSsdtnarc$BPS_score, partial_BPSsdtnarc$sdtnarc_score, partial_BPSsdtnarc$LIE_score)
+```
+
+```
+##     estimate    p.value statistic   n gp  Method
+## 1 0.08114849 0.09876762  1.654589 416  1 pearson
+```
+
+``` r
+##3, BPS and machiavellianism (short scale)
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$sdtmach_score, Thesis_scale$LIE_score)
+```
+
+```
+##   estimate    p.value statistic   n gp  Method
+## 1 0.110723 0.02391652  2.266817 417  1 pearson
+```
+
+``` r
+##4. BPS and psychopathy (short scale)
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$sdtpsych_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.1796262 0.0002308291  3.715282 417  1 pearson
+```
+
+``` r
+##5.1 BPS and Narcissistic Personality Inventory
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$narcgrand_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.1828917 0.0001763189   3.78514 417  1 pearson
+```
+
+``` r
+##5.2 BPS and Hypersensitive Narcissism Scale
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$narchyper_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.06732024 0.1705332  1.372879 417  1 pearson
+```
+
+``` r
+##6. BPS and Machiavellianism Personality scale
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$mach_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.1789717 0.0002434981  3.701296 417  1 pearson
+```
+
+``` r
+##7. BPS and Levenson Self-Report Psychopathy Scale
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$psycho_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.2609065 6.691853e-08  5.499129 417  1 pearson
+```
+
+``` r
+##7.1
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$psychopri_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.2137661 1.093497e-05  4.452414 417  1 pearson
+```
+
+``` r
+partial_BPSpsychosec <- Thesis_scale %>% 
+  select(BPS_score, psychosec_score, LIE_score) %>% 
+  drop_na()
+##7.2
+pcor.test(partial_BPSpsychosec$BPS_score, partial_BPSpsychosec$psychosec_score, partial_BPSpsychosec$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.2456668 4.033246e-07  5.150376 416  1 pearson
+```
+
+``` r
+##8. BPS and self-esteem
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$se_score, Thesis_scale$LIE_score)
+```
+
+```
+##       estimate   p.value  statistic   n gp  Method
+## 1 -0.006815272 0.8897756 -0.1386735 417  1 pearson
+```
+
+``` r
+##BPS and HEXACO
+##9. Honesty-Humility
+partial_BPShon<- Thesis_scale %>% 
+  select(BPS_score, hon_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPShon$BPS_score, partial_BPShon$hon_score, partial_BPShon$LIE_score)
+```
+
+```
+##     estimate      p.value statistic   n gp  Method
+## 1 -0.1648519 0.0007482745 -3.396658 416  1 pearson
+```
+
+``` r
+##10. Emotionality
+partial_BPSemo <- Thesis_scale %>% 
+  select(BPS_score, emo_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPSemo$BPS_score, partial_BPSemo$emo_score, partial_BPSemo$LIE_score)
+```
+
+```
+##      estimate   p.value statistic   n gp  Method
+## 1 -0.07990162 0.1040753 -1.629001 416  1 pearson
+```
+
+``` r
+##11. Extraversion
+partial_BPSextra <- Thesis_scale %>% 
+  select(BPS_score, extra_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPSextra$BPS_score, partial_BPSextra$extra_score, partial_BPSextra$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.06670536 0.1750025  1.358639 416  1 pearson
+```
+
+``` r
+##12. Agreeableness
+partial_BPSagree <- Thesis_scale %>% 
+  select(BPS_score, agree_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPSagree$BPS_score, partial_BPSagree$agree_score, partial_BPSagree$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.03324866 0.4993769 -0.6760663 416  1 pearson
+```
+
+``` r
+##13. CONSCIENTIOUSNESS
+partial_BPScons <- Thesis_scale %>% 
+  select(BPS_score, cons_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPScons$BPS_score, partial_BPScons$cons_score, partial_BPScons$LIE_score)
+```
+
+```
+##     estimate      p.value statistic   n gp  Method
+## 1 -0.2877373 2.362292e-09 -6.105727 416  1 pearson
+```
+
+``` r
+##14. Openness
+partial_BPSopen <- Thesis_scale %>% 
+  select(BPS_score, open_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPSopen$BPS_score, partial_BPSopen$open_score, partial_BPSopen$LIE_score)
+```
+
+```
+##     estimate      p.value statistic   n gp  Method
+## 1 -0.1813124 0.0002045784 -3.746804 416  1 pearson
+```
+
+``` r
+##16. BPS and Need for Closure
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$nclos_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate     p.value statistic   n gp  Method
+## 1 -0.1548461 0.001535559 -3.189118 417  1 pearson
+```
+
+``` r
+##17. BPS and Need for Cognition
+partial_BPSncog <- Thesis_scale %>% 
+  select(BPS_score, ncog_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPSncog$BPS_score, partial_BPSncog$ncog_score, partial_BPSncog$LIE_score)
+```
+
+```
+##     estimate      p.value statistic   n gp  Method
+## 1 -0.2894104 1.890077e-09 -6.144465 416  1 pearson
+```
+
+``` r
+##18. BPS and Actively Open Thinking Style
+partial_BPSopenTS <- Thesis_scale %>% 
+  select(BPS_score, openTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPSopenTS$BPS_score, partial_BPSopenTS$openTS_score, partial_BPSopenTS$LIE_score)
+```
+
+```
+##     estimate     p.value statistic   n gp  Method
+## 1 -0.3361009 2.03824e-12 -7.252271 416  1 pearson
+```
+
+``` r
+##19. BPS and Close-minded Thinking Style
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$closeTS_score, Thesis_scale$LIE_score)
+```
+
+```
+##    estimate     p.value statistic   n gp  Method
+## 1 0.1320181 0.007010169   2.70989 417  1 pearson
+```
+
+``` r
+##20. BPS and prefer intuitive Thinking Style
+partial_BPSintuitiveTS <- Thesis_scale %>% 
+  select(BPS_score, intuitiveTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPSintuitiveTS$BPS_score, partial_BPSintuitiveTS$intuitiveTS_score, partial_BPSintuitiveTS$LIE_score)
+```
+
+```
+##    estimate      p.value statistic   n gp  Method
+## 1 0.1839469 0.0001644401  3.803139 416  1 pearson
+```
+
+``` r
+##21. BPS and prefer effortful Thinking Style
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$effortTS_score, Thesis_scale$LIE_score)
+```
+
+```
+##     estimate      p.value statistic   n gp  Method
+## 1 -0.3363985 1.828378e-12 -7.268295 417  1 pearson
+```
+
+``` r
+##22. BPS and Actively Open-Minded Thinking about Evidence Scale 
+partial_BPSactiveopen <- Thesis_scale %>% 
+  select(BPS_score, activeopen_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPSactiveopen$BPS_score, partial_BPSactiveopen$activeopen_score, partial_BPSactiveopen$LIE_score)
+```
+
+```
+##     estimate      p.value statistic   n gp  Method
+## 1 -0.3651437 1.554154e-14 -7.970984 416  1 pearson
+```
+
+``` r
+##23. BPS and Faith in Intuition Scale
+pcor.test(Thesis_scale$BPS_score, Thesis_scale$fi_score, Thesis_scale$LIE_score)
+```
+
+```
+##       estimate   p.value   statistic   n gp  Method
+## 1 0.0002770085 0.9955056 0.005636289 417  1 pearson
+```
+
+``` r
+##24. BPS and Numeracy scale
+partial_BPSns <- Thesis_scale %>% 
+  select(BPS_score, ns_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPSns$BPS_score, partial_BPSns$ns_score, partial_BPSns$LIE_score)
+```
+
+```
+##     estimate     p.value statistic   n gp  Method
+## 1 -0.1328866 0.006642434 -2.728037 417  1 pearson
+```
+
+``` r
+##25. BPS and Wordsum Vocabulary Test
+partial_BPSword <- Thesis_scale %>% 
+  select(BPS_score, word_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPSword$BPS_score, partial_BPSword$word_score, partial_BPSword$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.05011051 0.3079072  1.020881 417  1 pearson
+```
+
+``` r
+##26. BPS and Cognitive Reflection Test
+partial_BPScrt<- Thesis_scale %>% 
+  select(BPS_score, crt_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BPScrt$BPS_score, partial_BPScrt$crt_score, partial_BPScrt$LIE_score)
+```
+
+```
+##      estimate p.value statistic   n gp  Method
+## 1 -0.07987367 0.10504  -1.62448 414  1 pearson
+```
+
+### Bullshit Thought Listing and Rating tasks and other variables's partial correlation when controled for lying tendency
+
+
+``` r
+##1. BSthought rating and listing and narcissism (short scale)
+partial_BSthoughtsdtnarc <- Thesis_scale %>% 
+  select(BSthought, sdtnarc_score, LIE_score, knowledge_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtsdtnarc$BSthought, partial_BSthoughtsdtnarc$sdtnarc_score, partial_BSthoughtsdtnarc[, c("LIE_score", "knowledge_score")])
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.07058816 0.1546746  1.425869 410  2 pearson
+```
+
+``` r
+##2, BSthought and machiavellianism (short scale)
+partial_BSthoughtsdtmach <- Thesis_scale %>% 
+  select(BSthought, sdtmach_score, LIE_score, knowledge_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtsdtmach$BSthought, partial_BSthoughtsdtmach$sdtmach_score, partial_BSthoughtsdtmach[, c("LIE_score", "knowledge_score")])
+```
+
+```
+##    estimate     p.value statistic   n gp  Method
+## 1 0.1537856 0.001813571  3.139858 411  2 pearson
+```
+
+``` r
+##3. BSthought and psychopathy (short scale)
+partial_BSthoughtsdtpsych <- Thesis_scale %>% 
+  select(BSthought, sdtpsych_score, LIE_score, knowledge_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtsdtpsych$BSthought, partial_BSthoughtsdtpsych$sdtpsych_score, partial_BSthoughtsdtpsych[, c("LIE_score", "knowledge_score")])
+```
+
+```
+##    estimate    p.value statistic   n gp  Method
+## 1 0.1034467 0.03650204  2.098215 411  2 pearson
+```
+
+``` r
+##4.1 BSthought and Narcissistic Personality Inventory
+partial_BSthoughtnarcgrand <- Thesis_scale %>% 
+  select(BSthought, narcgrand_score, LIE_score, knowledge_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtnarcgrand$BSthought, partial_BSthoughtnarcgrand$narcgrand_score, partial_BSthoughtnarcgrand[, c("LIE_score", "knowledge_score")])
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.01976854 0.6901811 0.3988932 411  2 pearson
+```
+
+``` r
+##4.2 BSthought and Hypersensitive Narcissism Scale
+partial_BSthoughtnarchyper <- Thesis_scale %>% 
+  select(BSthought, narchyper_score, LIE_score, knowledge_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtnarchyper$BSthought, partial_BSthoughtnarchyper$narchyper_score, partial_BSthoughtnarchyper[, c("LIE_score", "knowledge_score")])
+```
+
+```
+##    estimate    p.value statistic   n gp  Method
+## 1 0.1190021 0.01604616  2.417958 411  2 pearson
+```
+
+``` r
+##5. BSthought and Machiavellianism Personality scale
+partial_BSthoughtmach <- Thesis_scale %>% 
+  select(BSthought, mach_score, LIE_score, knowledge_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtmach$BSthought, partial_BSthoughtmach$mach_score, partial_BSthoughtmach[, c("LIE_score", "knowledge_score")])
+```
+
+```
+##   estimate      p.value statistic   n gp  Method
+## 1 0.182642 0.0002042624  3.747703 411  2 pearson
+```
+
+``` r
+##6. BSthought and Levenson Self-Report Psychopathy Scale
+partial_BSthoughtpsych <- Thesis_scale %>% 
+  select(BSthought, psycho_score, LIE_score, knowledge_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtpsych$BSthought, partial_BSthoughtpsych$psycho_score, partial_BSthoughtpsych[, c("LIE_score", "knowledge_score")])
+```
+
+```
+##    estimate     p.value statistic   n gp  Method
+## 1 0.1388394 0.004909765  2.828373 411  2 pearson
+```
+
+``` r
+##7. 
+partial_BSthoughtpsychopri <- Thesis_scale %>% 
+  select(BSthought, psychopri_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtpsychopri$BSthought, partial_BSthoughtpsychopri$psychopri_score, partial_BSthoughtpsychopri$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.05415758 0.2733397  1.096879 412  1 pearson
+```
+
+``` r
+##8.
+partial_BSthoughtpsychosec <- Thesis_scale %>% 
+  select(BSthought, psychosec_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtpsychosec$BSthought, partial_BSthoughtpsychosec$psychosec_score, partial_BSthoughtpsychosec$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.03738384 0.4502983 0.7556447 411  1 pearson
+```
+
+``` r
+##9. BSthought and self-esteem
+partial_BSthoughtse <- Thesis_scale %>% 
+  select(BSthought, se_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtse$BSthought, partial_BSthoughtse$se_score, partial_BSthoughtse$LIE_score)
+```
+
+```
+##      estimate  p.value statistic   n gp  Method
+## 1 -0.03493001 0.480064 -0.706847 412  1 pearson
+```
+
+``` r
+##BSthought and HEXACO
+##10. Honesty-Humility
+partial_BSthoughthon<- Thesis_scale %>% 
+  select(BSthought, hon_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughthon$BSthought, partial_BSthoughthon$hon_score, partial_BSthoughthon$LIE_score)
+```
+
+```
+##      estimate    p.value statistic   n gp  Method
+## 1 -0.09562242 0.05302338  -1.94037 411  1 pearson
+```
+
+``` r
+##11. Emotionality
+partial_BSthoughtemo <- Thesis_scale %>% 
+  select(BSthought, emo_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtemo$BSthought, partial_BSthoughtemo$emo_score, partial_BSthoughtemo$LIE_score)
+```
+
+```
+##    estimate   p.value statistic   n gp  Method
+## 1 0.0364267 0.4619883  0.736272 411  1 pearson
+```
+
+``` r
+##12. Extraversion
+partial_BSthoughtextra <- Thesis_scale %>% 
+  select(BSthought, extra_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtextra$BSthought, partial_BSthoughtextra$extra_score, partial_BSthoughtextra$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.03470231 0.4834691 0.7013747 411  1 pearson
+```
+
+``` r
+##13. Agreeableness
+partial_BSthoughtagree <- Thesis_scale %>% 
+  select(BSthought, agree_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtagree$BSthought, partial_BSthoughtagree$agree_score, partial_BSthoughtagree$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.03416912 0.4902186 -0.6905857 411  1 pearson
+```
+
+``` r
+##14. CONSCIENTIOUSNESS
+partial_BSthoughtcons <- Thesis_scale %>% 
+  select(BSthought, cons_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtcons$BSthought, partial_BSthoughtcons$cons_score, partial_BSthoughtcons$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.02490133 0.6151385 -0.5031383 411  1 pearson
+```
+
+``` r
+##15. Openness
+partial_BSthoughtopen <- Thesis_scale %>% 
+  select(BSthought, open_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtopen$BSthought, partial_BSthoughtopen$open_score, partial_BSthoughtopen$LIE_score)
+```
+
+```
+##      estimate  p.value statistic   n gp  Method
+## 1 -0.08126107 0.100361 -1.646839 411  1 pearson
+```
+
+``` r
+##17. BSthought and Need for Closure
+partial_BSthoughtnclos <- Thesis_scale %>% 
+  select(BSthought, nclos_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtnclos$BSthought, partial_BSthoughtnclos$nclos_score, partial_BSthoughtnclos$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.04599435 0.3523183 -0.9311635 412  1 pearson
+```
+
+``` r
+##18. BSthought and Need for Cognition
+partial_BSthoughtncog <- Thesis_scale %>% 
+  select(BSthought, ncog_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtncog$BSthought, partial_BSthoughtncog$ncog_score, partial_BSthoughtncog$LIE_score)
+```
+
+```
+##     estimate    p.value statistic   n gp  Method
+## 1 -0.1259402 0.01069591 -2.564285 411  1 pearson
+```
+
+``` r
+##19. BSthought and Actively Open Thinking Style
+partial_BSthoughtopenTS <- Thesis_scale %>% 
+  select(BSthought, openTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtopenTS$BSthought, partial_BSthoughtopenTS$openTS_score, partial_BSthoughtopenTS$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.02549255 0.6067679 -0.5150917 411  1 pearson
+```
+
+``` r
+##20. BSthought and Close-minded Thinking Style
+partial_BSthoughtcloseTS <- Thesis_scale %>% 
+  select(BSthought, closeTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtcloseTS$BSthought, partial_BSthoughtcloseTS$closeTS_score, partial_BSthoughtcloseTS$LIE_score)
+```
+
+```
+##      estimate   p.value statistic   n gp  Method
+## 1 -0.06402104 0.1952225 -1.297407 412  1 pearson
+```
+
+``` r
+##21. BSthought and prefer intuitive Thinking Style
+partial_BSthoughtintuitiveTS <- Thesis_scale %>% 
+  select(BSthought, intuitiveTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtintuitiveTS$BSthought, partial_BSthoughtintuitiveTS$intuitiveTS_score, partial_BSthoughtintuitiveTS$LIE_score)
+```
+
+```
+##      estimate  p.value  statistic   n gp  Method
+## 1 -0.04269756 0.388515 -0.8632357 411  1 pearson
+```
+
+``` r
+##22. BSthought and prefer effortful Thinking Style
+partial_BSthoughteffortTS <- Thesis_scale %>% 
+  select(BSthought, effortTS_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughteffortTS$BSthought, partial_BSthoughteffortTS$effortTS_score, partial_BSthoughteffortTS$LIE_score)
+```
+
+```
+##      estimate   p.value statistic   n gp  Method
+## 1 -0.06157436 0.2128798 -1.247632 412  1 pearson
+```
+
+``` r
+##23. BSthought and Actively Open-Minded Thinking about Evidence Scale 
+partial_BSthoughtactiveopen <- Thesis_scale %>% 
+  select(BSthought, activeopen_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtactiveopen$BSthought, partial_BSthoughtactiveopen$activeopen_score, partial_BSthoughtactiveopen$LIE_score)
+```
+
+```
+##      estimate   p.value statistic   n gp  Method
+## 1 -0.06447071 0.1926422 -1.304959 411  1 pearson
+```
+
+``` r
+##24. BSthought and Faith in Intuition Scale
+partial_BSthoughtfi <- Thesis_scale %>% 
+  select(BSthought, fi_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtfi$BSthought, partial_BSthoughtfi$fi_score, partial_BSthoughtfi$LIE_score)
+```
+
+```
+##      estimate   p.value  statistic   n gp  Method
+## 1 -0.03339252 0.4996138 -0.6756987 412  1 pearson
+```
+
+``` r
+##25. BSthought and Wordsum Vocabulary Test
+partial_BSthoughtns <- Thesis_scale %>% 
+  select(BSthought, ns_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtns$BSthought, partial_BSthoughtns$ns_score, partial_BSthoughtns$LIE_score)
+```
+
+```
+##     estimate  p.value statistic   n gp  Method
+## 1 0.03387515 0.493432 0.6854759 412  1 pearson
+```
+
+``` r
+##26. BSthought and Numeracy scale
+partial_BSthoughtword <- Thesis_scale %>% 
+  select(BSthought, word_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtword$BSthought, partial_BSthoughtword$word_score, partial_BSthoughtword$LIE_score)
+```
+
+```
+##     estimate   p.value statistic   n gp  Method
+## 1 0.07837496 0.1126241  1.589926 412  1 pearson
+```
+
+``` r
+##27. BSthought and Cognitive Reflection Test
+partial_BSthoughtcrt<- Thesis_scale %>% 
+  select(BSthought, crt_score, LIE_score) %>% 
+  drop_na()
+pcor.test(partial_BSthoughtcrt$BSthought, partial_BSthoughtcrt$crt_score, partial_BSthoughtcrt$LIE_score)
+```
+
+```
+##      estimate   p.value statistic   n gp  Method
+## 1 -0.07131021 0.1504887 -1.440528 409  1 pearson
+```
+
+### Partial conrrelations for BS thought when controling for both Lie scores and Self-reported knowledge
+
+``` r
+##knowledge and bs thought
+##each knowledge with BS thought listing
+```
+
+
+## Step 2: pearson correlation
+### correlations for all the variables
+
+``` r
+##Test to see if the correlation test is what i am looking for:
+cor.test(Thesis_scale$BSthought, Thesis_scale$ncog_score, method=c("pearson"))
+```
+
+```
+## 
+## 	Pearson's product-moment correlation
+## 
+## data:  Thesis_scale$BSthought and Thesis_scale$ncog_score
+## t = -2.4927, df = 409, p-value = 0.01307
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.21649883 -0.02590868
+## sample estimates:
+##        cor 
+## -0.1223314
+```
+
+``` r
+##Correlations
+bs_variables <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narcgrand_score", "narchyper_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score", "BSthought" )
+
+correlates_bs <- Thesis_scale[, bs_variables]
+correlates <- round(cor(correlates_bs, use = "pairwise.complete.obs"), 2)
+corr_results <- corr.test(correlates_bs, use = "pairwise", method = "pearson")
+corr_results$r      
+```
+
+```
+##                      BFS_score   BFSe_score   BFSp_score    BPS_score
+## BFS_score          1.000000000  0.724296725  0.932561153  0.231169701
+## BFSe_score         0.724296725  1.000000000  0.426544732  0.086831352
+## BFSp_score         0.932561153  0.426544732  1.000000000  0.257671254
+## BPS_score          0.231169701  0.086831352  0.257671254  1.000000000
+## LIE_score          0.448061999  0.353532362  0.402761803  0.126955291
+## sdtnarc_score      0.161823955 -0.001302517  0.212819643  0.088795697
+## sdtmach_score      0.425708984  0.229416688  0.438373525  0.161048128
+## sdtpsych_score     0.309124775  0.148910833  0.327392335  0.215655474
+## narcgrand_score    0.206778669  0.025457553  0.257926278  0.200041113
+## narchyper_score    0.378584032  0.307873964  0.335981270  0.111081850
+## mach_score         0.419446400  0.203529775  0.443807540  0.216413826
+## psycho_score       0.347395478  0.201159268  0.350566153  0.288229356
+## psychopri_score    0.315124947  0.151802310  0.334054855  0.245045742
+## psychosec_score    0.302221304  0.220722218  0.280821860  0.274613677
+## se_score          -0.167761535 -0.187185906 -0.122295714 -0.034634140
+## hon_score         -0.372234478 -0.191821300 -0.387709726 -0.200226965
+## emo_score          0.085465012  0.147603951  0.034888407 -0.079661888
+## extra_score       -0.046154768 -0.099117451 -0.008698624  0.049506971
+## agree_score       -0.190267687 -0.088794435 -0.203015289 -0.054855151
+## cons_score        -0.270674345 -0.173872502 -0.263953635 -0.309367183
+## open_score        -0.027688706 -0.050006481 -0.010160370 -0.179881333
+## nclos_score        0.020688081 -0.035964307  0.046390979 -0.157948737
+## ncog_score        -0.082405643 -0.085119924 -0.063536985 -0.302086195
+## openTS_score      -0.272830996 -0.107347838 -0.301551980 -0.349095890
+## closeTS_score      0.128918904 -0.016746531  0.178035512  0.143373976
+## intuitiveTS_score  0.190572990  0.053809323  0.221701552  0.195297819
+## effortTS_score    -0.188049429 -0.084855194 -0.202433755 -0.353560689
+## activeopen_score  -0.174130919 -0.053345974 -0.200389437 -0.374896555
+## fi_score           0.156945039  0.003412944  0.204152712  0.008690739
+## crt_score         -0.105929668 -0.003338320 -0.137507979 -0.077575104
+## word_score         0.084813326  0.075643800  0.071814574  0.043443249
+## ns_score          -0.009581238  0.025104868 -0.026056643 -0.142491162
+## BSthought          0.022328429 -0.041126311  0.051010827  0.251182195
+##                       LIE_score sdtnarc_score sdtmach_score sdtpsych_score
+## BFS_score          0.4480619986   0.161823955    0.42570898   0.3091247749
+## BFSe_score         0.3535323615  -0.001302517    0.22941669   0.1489108327
+## BFSp_score         0.4027618028   0.212819643    0.43837352   0.3273923353
+## BPS_score          0.1269552912   0.088795697    0.16104813   0.2156554736
+## LIE_score          1.0000000000   0.066432874    0.54096945   0.4349453208
+## sdtnarc_score      0.0664328741   1.000000000    0.25516420   0.2908014924
+## sdtmach_score      0.5409694489   0.255164200    1.00000000   0.5766679884
+## sdtpsych_score     0.4349453208   0.290801492    0.57666799   1.0000000000
+## narcgrand_score    0.1667436776   0.610682026    0.23682381   0.3405353686
+## narchyper_score    0.3908252641  -0.051186385    0.43121589   0.2478599034
+## mach_score         0.4715749877   0.273124673    0.66454155   0.5453422119
+## psycho_score       0.4530323647   0.108805697    0.57304923   0.6847810932
+## psychopri_score    0.3979557294   0.221481171    0.59077919   0.6504602624
+## psychosec_score    0.4090162696  -0.082028668    0.39251777   0.5528856270
+## se_score          -0.2208728047   0.440784884   -0.06405035  -0.1161733092
+## hon_score         -0.3871061660  -0.285196999   -0.52666840  -0.4555832095
+## emo_score         -0.0032544676  -0.100579826   -0.08484953  -0.3070652029
+## extra_score       -0.1261513132   0.559446444   -0.09819000  -0.0405739262
+## agree_score       -0.1751811099  -0.160532791   -0.29351610  -0.2982945485
+## cons_score        -0.2717041542   0.023356188   -0.24560690  -0.4697764127
+## open_score        -0.0004372885   0.074664961   -0.01132150  -0.0090156022
+## nclos_score       -0.0350512885   0.127016160    0.05869157  -0.2236984653
+## ncog_score        -0.1398091574   0.158150253   -0.07880631  -0.0266095109
+## openTS_score      -0.1546039046  -0.167541037   -0.26269666  -0.2557367997
+## closeTS_score      0.1033896796   0.190395348    0.21092566   0.3260645978
+## intuitiveTS_score  0.1091451064   0.334568062    0.23118481   0.1587028903
+## effortTS_score    -0.2225198920   0.076614378   -0.20105190  -0.2759534883
+## activeopen_score  -0.1203286817  -0.117228291   -0.14164708  -0.2802103347
+## fi_score           0.0662955970   0.307802623    0.21004861   0.0850559378
+## crt_score          0.0125900139  -0.158631010   -0.04394285  -0.0685585183
+## word_score        -0.0488552716   0.079590865   -0.04817960   0.0098755928
+## ns_score          -0.0881654737  -0.075126430   -0.07960149  -0.1013970442
+## BSthought         -0.0168949085   0.028295654    0.06609749   0.0001788794
+##                   narcgrand_score narchyper_score  mach_score psycho_score
+## BFS_score              0.20677867      0.37858403  0.41944640   0.34739548
+## BFSe_score             0.02545755      0.30787396  0.20352978   0.20115927
+## BFSp_score             0.25792628      0.33598127  0.44380754   0.35056615
+## BPS_score              0.20004111      0.11108185  0.21641383   0.28822936
+## LIE_score              0.16674368      0.39082526  0.47157499   0.45303236
+## sdtnarc_score          0.61068203     -0.05118638  0.27312467   0.10880570
+## sdtmach_score          0.23682381      0.43121589  0.66454155   0.57304923
+## sdtpsych_score         0.34053537      0.24785990  0.54534221   0.68478109
+## narcgrand_score        1.00000000      0.04168257  0.37121885   0.22660133
+## narchyper_score        0.04168257      1.00000000  0.44955980   0.41254397
+## mach_score             0.37121885      0.44955980  1.00000000   0.65435175
+## psycho_score           0.22660133      0.41254397  0.65435175   1.00000000
+## psychopri_score        0.30511258      0.31938752  0.67420894   0.92430227
+## psychosec_score        0.05278939      0.43369573  0.44769934   0.83709011
+## se_score               0.28112545     -0.36023555 -0.11939858  -0.30212470
+## hon_score             -0.35515123     -0.29778590 -0.60341824  -0.52526425
+## emo_score             -0.18490449      0.21309602 -0.17839845  -0.28330574
+## extra_score            0.38695652     -0.29340157 -0.06553324  -0.24231949
+## agree_score           -0.27675741     -0.24520559 -0.33687654  -0.24624189
+## cons_score            -0.12990426     -0.20029582 -0.29990685  -0.56925850
+## open_score             0.03893168     -0.08216319 -0.13198571  -0.13742409
+## nclos_score            0.07020698      0.13467630  0.07182969  -0.22879700
+## ncog_score             0.11061288     -0.20024394 -0.13627840  -0.22544795
+## openTS_score          -0.10650784     -0.22475385 -0.30095150  -0.32857451
+## closeTS_score          0.14946912      0.19444188  0.30656274   0.41545254
+## intuitiveTS_score      0.18618729      0.11094122  0.21484247   0.11575829
+## effortTS_score         0.07175641     -0.28256773 -0.29293940  -0.51859727
+## activeopen_score      -0.15943942     -0.11199529 -0.26595046  -0.38387434
+## fi_score               0.23204230      0.11577670  0.21168709   0.09408280
+## crt_score             -0.08814528     -0.06578751 -0.08529838  -0.08847826
+## word_score            -0.06129628      0.02347317  0.01782073   0.04190968
+## ns_score              -0.05290944     -0.02182248 -0.03100902  -0.11403971
+## BSthought              0.01096854      0.08526322  0.09380508   0.04334346
+##                   psychopri_score psychosec_score     se_score   hon_score
+## BFS_score              0.31512495      0.30222130 -0.167761535 -0.37223448
+## BFSe_score             0.15180231      0.22072222 -0.187185906 -0.19182130
+## BFSp_score             0.33405485      0.28082186 -0.122295714 -0.38770973
+## BPS_score              0.24504574      0.27461368 -0.034634140 -0.20022696
+## LIE_score              0.39795573      0.40901627 -0.220872805 -0.38710617
+## sdtnarc_score          0.22148117     -0.08202867  0.440784884 -0.28519700
+## sdtmach_score          0.59077919      0.39251777 -0.064050347 -0.52666840
+## sdtpsych_score         0.65046026      0.55288563 -0.116173309 -0.45558321
+## narcgrand_score        0.30511258      0.05278939  0.281125450 -0.35515123
+## narchyper_score        0.31938752      0.43369573 -0.360235548 -0.29778590
+## mach_score             0.67420894      0.44769934 -0.119398581 -0.60341824
+## psycho_score           0.92430227      0.83709011 -0.302124700 -0.52526425
+## psychopri_score        1.00000000      0.56454924 -0.134514452 -0.58178378
+## psychosec_score        0.56454924      1.00000000 -0.458796281 -0.30167435
+## se_score              -0.13451445     -0.45879628  1.000000000  0.11274960
+## hon_score             -0.58178378     -0.30167435  0.112749598  1.00000000
+## emo_score             -0.32969532     -0.13995169 -0.181887833  0.13779175
+## extra_score           -0.12552242     -0.34376052  0.609233934  0.01145696
+## agree_score           -0.20971072     -0.23160209  0.074583634  0.27354977
+## cons_score            -0.41575202     -0.63459840  0.240318552  0.28472043
+## open_score            -0.13519914     -0.10318230 -0.075122229  0.05151125
+## nclos_score           -0.12156397     -0.33171993  0.184204107  0.03307487
+## ncog_score            -0.18718843     -0.21897461  0.204735045  0.15263773
+## openTS_score          -0.31102233     -0.26451715 -0.007323082  0.14735136
+## closeTS_score          0.42462587      0.28794872  0.013038215 -0.10785997
+## intuitiveTS_score      0.14958727      0.03586087  0.176532657 -0.11364152
+## effortTS_score        -0.43931216     -0.49043047  0.282835489  0.17010950
+## activeopen_score      -0.35636090     -0.31910696  0.051127906  0.15048199
+## fi_score               0.16091004     -0.02783066  0.233502342 -0.06769435
+## crt_score             -0.09269670     -0.06081236 -0.030416812  0.01546018
+## word_score             0.03409575      0.03947055 -0.035691956  0.07331104
+## ns_score              -0.07209969     -0.13885408  0.056613755  0.03897561
+## BSthought              0.04348436      0.02668830 -0.030365675 -0.08109341
+##                      emo_score  extra_score agree_score   cons_score
+## BFS_score          0.085465012 -0.046154768 -0.19026769 -0.270674345
+## BFSe_score         0.147603951 -0.099117451 -0.08879444 -0.173872502
+## BFSp_score         0.034888407 -0.008698624 -0.20301529 -0.263953635
+## BPS_score         -0.079661888  0.049506971 -0.05485515 -0.309367183
+## LIE_score         -0.003254468 -0.126151313 -0.17518111 -0.271704154
+## sdtnarc_score     -0.100579826  0.559446444 -0.16053279  0.023356188
+## sdtmach_score     -0.084849534 -0.098190002 -0.29351610 -0.245606899
+## sdtpsych_score    -0.307065203 -0.040573926 -0.29829455 -0.469776413
+## narcgrand_score   -0.184904489  0.386956520 -0.27675741 -0.129904256
+## narchyper_score    0.213096019 -0.293401572 -0.24520559 -0.200295818
+## mach_score        -0.178398452 -0.065533239 -0.33687654 -0.299906854
+## psycho_score      -0.283305743 -0.242319493 -0.24624189 -0.569258503
+## psychopri_score   -0.329695323 -0.125522417 -0.20971072 -0.415752016
+## psychosec_score   -0.139951692 -0.343760521 -0.23160209 -0.634598399
+## se_score          -0.181887833  0.609233934  0.07458363  0.240318552
+## hon_score          0.137791752  0.011456957  0.27354977  0.284720428
+## emo_score          1.000000000 -0.028624134 -0.08090311  0.256000555
+## extra_score       -0.028624134  1.000000000  0.06152315  0.167263559
+## agree_score       -0.080903107  0.061523154  1.00000000  0.026410344
+## cons_score         0.256000555  0.167263559  0.02641034  1.000000000
+## open_score         0.099362871  0.088689899  0.10915037  0.004544973
+## nclos_score        0.247360831  0.081631222 -0.26692988  0.492880120
+## ncog_score        -0.096167231  0.231734141  0.02523789  0.232726456
+## openTS_score       0.044625452 -0.070192376 -0.07624958  0.264262169
+## closeTS_score     -0.179078325  0.043737652 -0.07411620 -0.280784405
+## intuitiveTS_score  0.089041523  0.266495791 -0.01832804 -0.088092144
+## effortTS_score     0.041777743  0.159596659 -0.05682873  0.435845192
+## activeopen_score   0.172182177  0.028951575  0.02270264  0.314672765
+## fi_score           0.019351407  0.225297253 -0.11051404  0.039961543
+## crt_score         -0.107582356 -0.073157270  0.10409164  0.093390834
+## word_score         0.018340348 -0.025479987  0.01305169 -0.014955881
+## ns_score           0.014019696  0.009568790  0.01867592  0.087736053
+## BSthought          0.036448395  0.036662429 -0.03008552 -0.018994781
+##                      open_score nclos_score   ncog_score openTS_score
+## BFS_score         -0.0276887058  0.02068808 -0.082405643 -0.272830996
+## BFSe_score        -0.0500064811 -0.03596431 -0.085119924 -0.107347838
+## BFSp_score        -0.0101603695  0.04639098 -0.063536985 -0.301551980
+## BPS_score         -0.1798813334 -0.15794874 -0.302086195 -0.349095890
+## LIE_score         -0.0004372885 -0.03505129 -0.139809157 -0.154603905
+## sdtnarc_score      0.0746649607  0.12701616  0.158150253 -0.167541037
+## sdtmach_score     -0.0113214999  0.05869157 -0.078806315 -0.262696660
+## sdtpsych_score    -0.0090156022 -0.22369847 -0.026609511 -0.255736800
+## narcgrand_score    0.0389316823  0.07020698  0.110612881 -0.106507840
+## narchyper_score   -0.0821631934  0.13467630 -0.200243935 -0.224753848
+## mach_score        -0.1319857082  0.07182969 -0.136278402 -0.300951502
+## psycho_score      -0.1374240917 -0.22879700 -0.225447947 -0.328574513
+## psychopri_score   -0.1351991401 -0.12156397 -0.187188431 -0.311022327
+## psychosec_score   -0.1031822972 -0.33171993 -0.218974614 -0.264517152
+## se_score          -0.0751222291  0.18420411  0.204735045 -0.007323082
+## hon_score          0.0515112528  0.03307487  0.152637726  0.147351359
+## emo_score          0.0993628714  0.24736083 -0.096167231  0.044625452
+## extra_score        0.0886898990  0.08163122  0.231734141 -0.070192376
+## agree_score        0.1091503689 -0.26692988  0.025237888 -0.076249580
+## cons_score         0.0045449729  0.49288012  0.232726456  0.264262169
+## open_score         1.0000000000 -0.21580624  0.407027809  0.127269767
+## nclos_score       -0.2158062353  1.00000000 -0.103764674  0.049933686
+## ncog_score         0.4070278095 -0.10376467  1.000000000  0.138365202
+## openTS_score       0.1272697668  0.04993369  0.138365202  1.000000000
+## closeTS_score     -0.0972425067  0.01276794 -0.092991869 -0.389182263
+## intuitiveTS_score  0.0234765676  0.12344139 -0.007085616 -0.487971409
+## effortTS_score     0.2595248466  0.17552298  0.523944384  0.435521731
+## activeopen_score   0.1505548936  0.16848508  0.185686743  0.583719631
+## fi_score           0.0671196198  0.17453286  0.136072520 -0.246276536
+## crt_score         -0.0468929816 -0.01013379  0.076076844  0.108128147
+## word_score        -0.0693857071 -0.01173001 -0.044503265 -0.095407864
+## ns_score          -0.0270686262  0.06120203 -0.035647650  0.123033192
+## BSthought         -0.0814889764 -0.04538803 -0.122331384 -0.022506227
+##                   closeTS_score intuitiveTS_score effortTS_score
+## BFS_score            0.12891890       0.190572990   -0.188049429
+## BFSe_score          -0.01674653       0.053809323   -0.084855194
+## BFSp_score           0.17803551       0.221701552   -0.202433755
+## BPS_score            0.14337398       0.195297819   -0.353560689
+## LIE_score            0.10338968       0.109145106   -0.222519892
+## sdtnarc_score        0.19039535       0.334568062    0.076614378
+## sdtmach_score        0.21092566       0.231184814   -0.201051896
+## sdtpsych_score       0.32606460       0.158702890   -0.275953488
+## narcgrand_score      0.14946912       0.186187293    0.071756405
+## narchyper_score      0.19444188       0.110941222   -0.282567725
+## mach_score           0.30656274       0.214842470   -0.292939399
+## psycho_score         0.41545254       0.115758287   -0.518597268
+## psychopri_score      0.42462587       0.149587265   -0.439312161
+## psychosec_score      0.28794872       0.035860871   -0.490430468
+## se_score             0.01303822       0.176532657    0.282835489
+## hon_score           -0.10785997      -0.113641517    0.170109502
+## emo_score           -0.17907833       0.089041523    0.041777743
+## extra_score          0.04373765       0.266495791    0.159596659
+## agree_score         -0.07411620      -0.018328042   -0.056828730
+## cons_score          -0.28078441      -0.088092144    0.435845192
+## open_score          -0.09724251       0.023476568    0.259524847
+## nclos_score          0.01276794       0.123441391    0.175522976
+## ncog_score          -0.09299187      -0.007085616    0.523944384
+## openTS_score        -0.38918226      -0.487971409    0.435521731
+## closeTS_score        1.00000000       0.237800072   -0.400752821
+## intuitiveTS_score    0.23780007       1.000000000   -0.193309049
+## effortTS_score      -0.40075282      -0.193309049    1.000000000
+## activeopen_score    -0.38555581      -0.234679280    0.397266787
+## fi_score             0.25144271       0.534137018   -0.006519085
+## crt_score           -0.15092205      -0.162243180    0.167515789
+## word_score           0.10412705       0.119612803   -0.139449808
+## ns_score            -0.13994303      -0.039119181    0.079691983
+## BSthought           -0.06527988      -0.044504582   -0.056655403
+##                   activeopen_score     fi_score   crt_score   word_score
+## BFS_score              -0.17413092  0.156945039 -0.10592967  0.084813326
+## BFSe_score             -0.05334597  0.003412944 -0.00333832  0.075643800
+## BFSp_score             -0.20038944  0.204152712 -0.13750798  0.071814574
+## BPS_score              -0.37489656  0.008690739 -0.07757510  0.043443249
+## LIE_score              -0.12032868  0.066295597  0.01259001 -0.048855272
+## sdtnarc_score          -0.11722829  0.307802623 -0.15863101  0.079590865
+## sdtmach_score          -0.14164708  0.210048612 -0.04394285 -0.048179596
+## sdtpsych_score         -0.28021033  0.085055938 -0.06855852  0.009875593
+## narcgrand_score        -0.15943942  0.232042299 -0.08814528 -0.061296283
+## narchyper_score        -0.11199529  0.115776700 -0.06578751  0.023473170
+## mach_score             -0.26595046  0.211687086 -0.08529838  0.017820733
+## psycho_score           -0.38387434  0.094082805 -0.08847826  0.041909682
+## psychopri_score        -0.35636090  0.160910038 -0.09269670  0.034095750
+## psychosec_score        -0.31910696 -0.027830659 -0.06081236  0.039470551
+## se_score                0.05112791  0.233502342 -0.03041681 -0.035691956
+## hon_score               0.15048199 -0.067694348  0.01546018  0.073311038
+## emo_score               0.17218218  0.019351407 -0.10758236  0.018340348
+## extra_score             0.02895158  0.225297253 -0.07315727 -0.025479987
+## agree_score             0.02270264 -0.110514042  0.10409164  0.013051694
+## cons_score              0.31467276  0.039961543  0.09339083 -0.014955881
+## open_score              0.15055489  0.067119620 -0.04689298 -0.069385707
+## nclos_score             0.16848508  0.174532863 -0.01013379 -0.011730008
+## ncog_score              0.18568674  0.136072520  0.07607684 -0.044503265
+## openTS_score            0.58371963 -0.246276536  0.10812815 -0.095407864
+## closeTS_score          -0.38555581  0.251442710 -0.15092205  0.104127052
+## intuitiveTS_score      -0.23467928  0.534137018 -0.16224318  0.119612803
+## effortTS_score          0.39726679 -0.006519085  0.16751579 -0.139449808
+## activeopen_score        1.00000000 -0.078535168  0.11110659 -0.114113382
+## fi_score               -0.07853517  1.000000000 -0.15093176  0.025704182
+## crt_score               0.11110659 -0.150931763  1.00000000 -0.081161889
+## word_score             -0.11411338  0.025704182 -0.08116189  1.000000000
+## ns_score                0.16864219  0.043247121  0.02784119 -0.172836398
+## BSthought              -0.06187767 -0.034360882 -0.07162952  0.079226756
+##                       ns_score     BSthought
+## BFS_score         -0.009581238  0.0223284288
+## BFSe_score         0.025104868 -0.0411263114
+## BFSp_score        -0.026056643  0.0510108269
+## BPS_score         -0.142491162  0.2511821949
+## LIE_score         -0.088165474 -0.0168949085
+## sdtnarc_score     -0.075126430  0.0282956539
+## sdtmach_score     -0.079601494  0.0660974940
+## sdtpsych_score    -0.101397044  0.0001788794
+## narcgrand_score   -0.052909436  0.0109685381
+## narchyper_score   -0.021822480  0.0852632158
+## mach_score        -0.031009016  0.0938050789
+## psycho_score      -0.114039714  0.0433434602
+## psychopri_score   -0.072099686  0.0434843643
+## psychosec_score   -0.138854083  0.0266883024
+## se_score           0.056613755 -0.0303656752
+## hon_score          0.038975613 -0.0810934100
+## emo_score          0.014019696  0.0364483950
+## extra_score        0.009568790  0.0366624287
+## agree_score        0.018675917 -0.0300855185
+## cons_score         0.087736053 -0.0189947807
+## open_score        -0.027068626 -0.0814889764
+## nclos_score        0.061202032 -0.0453880291
+## ncog_score        -0.035647650 -0.1223313844
+## openTS_score       0.123033192 -0.0225062275
+## closeTS_score     -0.139943033 -0.0652798839
+## intuitiveTS_score -0.039119181 -0.0445045822
+## effortTS_score     0.079691983 -0.0566554030
+## activeopen_score   0.168642192 -0.0618776687
+## fi_score           0.043247121 -0.0343608817
+## crt_score          0.027841191 -0.0716295226
+## word_score        -0.172836398  0.0792267559
+## ns_score           1.000000000  0.0351181782
+## BSthought          0.035118178  1.0000000000
+```
+
+``` r
+corr_results$p
+```
+
+```
+##                       BFS_score   BFSe_score    BFSp_score    BPS_score
+## BFS_score          0.000000e+00 2.758346e-66 5.211431e-183 6.573520e-04
+## BFSe_score         5.253992e-69 0.000000e+00  3.478061e-17 1.000000e+00
+## BFSp_score        9.870135e-186 7.261088e-20  0.000000e+00 3.622246e-05
+## BPS_score          1.831064e-06 7.653237e-02  9.482320e-08 0.000000e+00
+## LIE_score          5.531408e-22 1.012554e-13  1.076890e-17 9.452838e-03
+## sdtnarc_score      9.246573e-04 9.788694e-01  1.198408e-05 7.041843e-02
+## sdtmach_score      8.714859e-20 2.200877e-06  5.191367e-21 9.654963e-04
+## sdtpsych_score     1.101928e-10 2.298091e-03  7.116009e-12 8.872257e-06
+## narcgrand_score    2.081649e-05 6.041921e-01  9.200657e-08 3.882670e-05
+## narchyper_score    1.168753e-15 1.320371e-10  1.838662e-12 2.329440e-02
+## mach_score         3.366688e-19 2.818801e-05  1.491766e-21 8.235019e-06
+## psycho_score       2.848839e-13 3.506046e-05  1.674099e-13 2.024170e-09
+## psychopri_score    4.572979e-11 1.879633e-03  2.499921e-12 4.054026e-07
+## psychosec_score    3.106990e-10 5.506828e-06  5.605622e-09 1.240806e-08
+## se_score           5.818992e-04 1.205481e-04  1.244598e-02 4.806000e-01
+## hon_score          4.053531e-15 8.242003e-05  2.264371e-16 3.900701e-05
+## emo_score          8.166732e-02 2.544233e-03  4.779140e-01 1.047005e-01
+## extra_score        3.477081e-01 4.333133e-02  8.595969e-01 3.137774e-01
+## agree_score        9.431689e-05 7.042244e-02  3.022310e-05 2.642920e-01
+## cons_score         2.033485e-08 3.668913e-04  4.638695e-08 1.120046e-10
+## open_score         5.733330e-01 3.089138e-01  8.363117e-01 2.260593e-04
+## nclos_score        6.735802e-01 4.638974e-01  3.446610e-01 1.211925e-03
+## ncog_score         9.323969e-02 8.291153e-02  1.959028e-01 3.166667e-10
+## openTS_score       1.553149e-08 2.858112e-02  3.413737e-10 2.290315e-13
+## closeTS_score      8.396311e-03 7.331252e-01  2.582796e-04 3.344472e-03
+## intuitiveTS_score  9.185842e-05 2.735209e-01  4.990899e-06 6.071809e-05
+## effortTS_score     1.119713e-04 8.350290e-02  3.118969e-05 1.007678e-13
+## activeopen_score   3.594445e-04 2.776791e-01  3.843509e-05 2.494807e-15
+## fi_score           1.303376e-03 9.446033e-01  2.660612e-05 8.595551e-01
+## crt_score          3.116971e-02 9.460089e-01  5.067060e-03 1.150205e-01
+## word_score         8.365595e-02 1.230095e-01  1.431984e-01 3.762154e-01
+## ns_score           8.453369e-01 6.092127e-01  5.957067e-01 3.546527e-03
+## BSthought          6.513432e-01 4.050766e-01  3.016350e-01 2.391507e-07
+##                      LIE_score sdtnarc_score sdtmach_score sdtpsych_score
+## BFS_score         2.710390e-19  2.644520e-01  4.165703e-17   4.738289e-08
+## BFSe_score        4.556493e-11  1.000000e+00  7.857129e-04   6.089940e-01
+## BFSp_score        5.061385e-15  4.062603e-03  2.517813e-18   3.109696e-09
+## BPS_score         1.000000e+00  1.000000e+00  2.742010e-01   3.043184e-03
+## LIE_score         0.000000e+00  1.000000e+00  2.289191e-30   5.432766e-18
+## sdtnarc_score     1.762514e-01  0.000000e+00  4.996451e-05   6.160542e-07
+## sdtmach_score     4.533052e-33  1.318325e-07  0.000000e+00   1.277512e-35
+## sdtpsych_score    1.127130e-20  1.498915e-09  2.495140e-38   0.000000e+00
+## narcgrand_score   6.291066e-04  7.074205e-44  1.001639e-06   8.817901e-13
+## narchyper_score   1.143073e-16  2.976236e-01  2.593754e-20   2.952408e-07
+## mach_score        1.775950e-24  1.496917e-08  1.809257e-54   1.111063e-33
+## psycho_score      1.705068e-22  2.647829e-02  9.115543e-38   5.317981e-59
+## psychopri_score   2.819897e-17  5.102812e-06  1.363285e-40   1.609210e-51
+## psychosec_score   3.297116e-18  9.475217e-02  8.952997e-17   1.123904e-34
+## se_score          5.284467e-06  3.338717e-21  1.917704e-01   1.763252e-02
+## hon_score         2.541376e-16  3.164132e-09  4.606560e-31   1.040401e-22
+## emo_score         9.472355e-01  4.031922e-02  8.389707e-02   1.560596e-10
+## extra_score       1.000817e-02  1.246741e-35  4.533813e-02   4.091452e-01
+## agree_score       3.306068e-04  1.017214e-03  1.037622e-09   5.379520e-10
+## cons_score        1.788494e-08  6.347827e-01  3.931519e-07   3.174755e-24
+## open_score        9.929052e-01  1.284072e-01  8.179156e-01   8.545365e-01
+## nclos_score       4.753271e-01  9.504659e-03  2.317164e-01   3.970396e-06
+## ncog_score        4.276352e-03  1.210777e-03  1.084937e-01   5.883749e-01
+## openTS_score      1.562262e-03  6.009590e-04  5.398709e-08   1.233035e-07
+## closeTS_score     3.480683e-02  9.328145e-05  1.403875e-05   8.738955e-12
+## intuitiveTS_score 2.600829e-02  2.447683e-12  1.881159e-06   1.163078e-03
+## effortTS_score    4.475279e-06  1.187068e-01  3.540654e-05   1.005218e-08
+## activeopen_score  1.405802e-02  1.675429e-02  3.792048e-03   6.067319e-09
+## fi_score          1.766258e-01  1.403719e-10  1.526842e-05   8.277223e-02
+## crt_score         7.984107e-01  1.218577e-03  3.724828e-01   1.638072e-01
+## word_score        3.196134e-01  1.050113e-01  3.263600e-01   8.406479e-01
+## ns_score          7.209951e-02  1.260572e-01  1.045454e-01   3.847971e-02
+## BSthought         7.324173e-01  5.673158e-01  1.805638e-01   9.971118e-01
+##                   narcgrand_score narchyper_score   mach_score  psycho_score
+## BFS_score            6.952707e-03    5.352888e-13 1.602544e-16  1.273431e-10
+## BFSe_score           1.000000e+00    5.651188e-08 9.330230e-03  1.149983e-02
+## BFSp_score           3.523852e-05    8.145273e-10 7.279818e-19  7.516704e-11
+## BPS_score            1.259819e-02    1.000000e+00 2.832846e-03  8.299095e-07
+## LIE_score            1.805536e-01    5.315288e-14 8.808713e-22  8.388933e-20
+## sdtnarc_score        3.664438e-41    1.000000e+00 5.912823e-06  1.000000e+00
+## sdtmach_score        3.665997e-04    1.245002e-17 9.444321e-52  4.658042e-35
+## sdtpsych_score       3.923966e-10    1.110105e-04 5.621980e-31  2.786622e-56
+## narcgrand_score      0.000000e+00    1.000000e+00 2.056132e-12  1.046683e-03
+## narchyper_score      3.958834e-01    0.000000e+00 1.908896e-19  6.837632e-16
+## mach_score           4.518973e-15    3.887771e-22 0.000000e+00  1.331098e-49
+## psycho_score         2.948404e-06    1.445588e-18 2.554891e-52  0.000000e+00
+## psychopri_score      1.962377e-10    2.418825e-11 1.374039e-56 1.054549e-175
+## psychosec_score      2.827304e-01    1.657718e-20 6.743519e-22 1.652300e-110
+## se_score             5.165986e-09    3.187461e-14 1.470345e-02  2.998903e-10
+## hon_score            8.223498e-14    5.772486e-10 1.289208e-42  7.048335e-31
+## emo_score            1.489986e-04    1.166822e-05 2.551263e-04  4.056451e-09
+## extra_score          2.615049e-16    1.053933e-09 1.821929e-01  5.666770e-07
+## agree_score          9.451801e-09    4.112106e-07 1.693715e-12  3.661259e-07
+## cons_score           7.982374e-03    3.876366e-05 4.298235e-10  4.239710e-37
+## open_score           4.283813e-01    9.421020e-02 7.024234e-03  4.987938e-03
+## nclos_score          1.523929e-01    5.878695e-03 1.431140e-01  2.347938e-06
+## ncog_score           2.405761e-02    3.894689e-05 5.366299e-03  3.411592e-06
+## openTS_score         2.985663e-02    3.662540e-06 3.713859e-10  6.276846e-12
+## closeTS_score        2.211210e-03    6.417518e-05 1.594538e-10  7.855192e-19
+## intuitiveTS_score    1.337152e-04    2.363897e-02 9.848069e-06  1.818371e-02
+## effortTS_score       1.435235e-01    4.280188e-09 1.071850e-09  4.414732e-30
+## activeopen_score     1.102195e-03    2.233728e-02 3.639246e-08  4.695657e-16
+## fi_score             1.669938e-06    1.802575e-02 1.304807e-05  5.489350e-02
+## crt_score            7.320396e-02    1.815564e-01 8.301071e-02  7.212133e-02
+## word_score           2.116201e-01    6.326767e-01 7.167198e-01  3.933122e-01
+## ns_score             2.810546e-01    6.567947e-01 5.277312e-01  1.983945e-02
+## BSthought            8.243394e-01    8.389056e-02 5.711274e-02  3.802066e-01
+##                   psychopri_score psychosec_score     se_score    hon_score
+## BFS_score            1.980100e-08    1.311150e-07 1.693327e-01 1.848410e-12
+## BFSe_score           5.112601e-01    1.905362e-03 3.773154e-02 2.620957e-02
+## BFSp_score           1.102465e-09    2.253460e-06 1.000000e+00 1.048404e-13
+## BPS_score            1.504044e-04    4.926001e-06 1.000000e+00 1.259819e-02
+## LIE_score            1.319712e-14    1.556239e-15 1.833710e-03 1.174116e-13
+## sdtnarc_score        1.775779e-03    1.000000e+00 1.625955e-18 1.290966e-06
+## sdtmach_score        7.020916e-38    4.172097e-14 1.000000e+00 2.317100e-28
+## sdtpsych_score       8.367893e-49    5.698196e-32 1.000000e+00 5.129175e-20
+## narcgrand_score      8.320480e-08    1.000000e+00 2.081893e-06 3.717021e-11
+## narchyper_score      1.052189e-08    7.973623e-18 1.447108e-11 2.395582e-07
+## mach_score           7.186224e-54    3.297581e-19 1.000000e+00 6.652314e-40
+## psycho_score        5.557473e-173   8.691098e-108 1.268536e-07 3.538264e-28
+## psychopri_score      0.000000e+00    1.109036e-33 1.000000e+00 2.454432e-36
+## psychosec_score      2.178852e-36    0.000000e+00 2.366056e-20 1.409326e-07
+## se_score             5.938987e-03    4.789587e-23 0.000000e+00 1.000000e+00
+## hon_score            4.784468e-39    3.355538e-10 2.144433e-02 0.000000e+00
+## emo_score            5.271537e-12    4.236885e-03 1.916368e-04 4.871716e-03
+## extra_score          1.038903e-02    5.546095e-13 1.269403e-43 8.157758e-01
+## agree_score          1.614536e-05    1.800358e-06 1.288249e-01 1.418999e-08
+## cons_score           8.118130e-19    2.875526e-48 7.061084e-07 3.369131e-09
+## open_score           5.746140e-03    3.539590e-02 1.260784e-01 2.945639e-01
+## nclos_score          1.298522e-02    3.839001e-12 1.551484e-04 5.011052e-01
+## ncog_score           1.228236e-04    6.556313e-06 2.577748e-05 1.795309e-03
+## openTS_score         8.808135e-11    4.332548e-08 8.816209e-01 2.588421e-03
+## closeTS_score        1.103191e-19    2.197010e-09 7.906551e-01 2.782664e-02
+## intuitiveTS_score    2.220458e-03    4.657234e-01 2.966645e-04 2.042857e-02
+## effortTS_score       4.192056e-21    1.465563e-26 4.132808e-09 4.929534e-04
+## activeopen_score     6.684119e-14    2.665437e-11 2.981766e-01 2.087099e-03
+## fi_score             9.754089e-04    5.713680e-01 1.430264e-06 1.681644e-01
+## crt_score            5.950341e-02    2.174829e-01 5.371278e-01 7.540873e-01
+## word_score           4.874522e-01    4.220123e-01 4.672908e-01 1.354980e-01
+## ns_score             1.416129e-01    4.549488e-03 2.486885e-01 4.278600e-01
+## BSthought            3.786583e-01    5.895393e-01 5.388024e-01 1.006490e-01
+##                      emo_score  extra_score  agree_score   cons_score
+## BFS_score         1.000000e+00 1.000000e+00 2.970982e-02 7.971260e-06
+## BFSe_score        6.716775e-01 1.000000e+00 1.000000e+00 1.089667e-01
+## BFSp_score        1.000000e+00 1.000000e+00 9.973623e-03 1.790536e-05
+## BPS_score         1.000000e+00 1.000000e+00 1.000000e+00 4.804999e-08
+## LIE_score         1.000000e+00 1.000000e+00 9.918205e-02 7.028780e-06
+## sdtnarc_score     1.000000e+00 6.333443e-33 2.868544e-01 1.000000e+00
+## sdtmach_score     1.000000e+00 1.000000e+00 4.295756e-07 1.462525e-04
+## sdtpsych_score    6.648139e-08 1.000000e+00 2.237880e-07 1.571504e-21
+## narcgrand_score   4.604057e-02 1.205538e-13 3.771269e-06 1.000000e+00
+## narchyper_score   3.967195e-03 4.352741e-07 1.521479e-04 1.259819e-02
+## mach_score        7.755841e-02 1.000000e+00 7.520095e-10 1.792364e-07
+## psycho_score      1.646919e-06 2.091038e-04 1.365650e-04 2.162252e-34
+## psychopri_score   2.314205e-09 1.000000e+00 5.408697e-03 3.847993e-16
+## psychosec_score   1.000000e+00 2.473558e-10 6.481287e-04 1.492398e-45
+## se_score          5.883250e-02 6.562812e-41 1.000000e+00 2.598479e-04
+## hon_score         1.000000e+00 1.000000e+00 5.619234e-06 1.371236e-06
+## emo_score         0.000000e+00 1.000000e+00 1.000000e+00 4.555092e-05
+## extra_score       5.604436e-01 0.000000e+00 1.000000e+00 1.774045e-01
+## agree_score       9.938487e-02 2.104818e-01 0.000000e+00 1.000000e+00
+## cons_score        1.195562e-07 6.138563e-04 5.911707e-01 0.000000e+00
+## open_score        4.281299e-02 7.075518e-02 2.600106e-02 9.263634e-01
+## nclos_score       3.227908e-07 9.636792e-02 3.228526e-08 7.556218e-27
+## ncog_score        4.998674e-02 1.775487e-06 6.077507e-01 1.598839e-06
+## openTS_score      3.639322e-01 1.529742e-01 1.204771e-01 4.468577e-08
+## closeTS_score     2.413912e-04 3.735635e-01 1.312458e-01 5.632893e-09
+## intuitiveTS_score 6.964104e-02 3.404711e-08 7.093519e-01 7.268261e-02
+## effortTS_score    3.953755e-01 1.089584e-03 2.474643e-01 1.023825e-20
+## activeopen_score  4.192582e-04 5.559651e-01 6.442886e-01 5.157375e-11
+## fi_score          6.939192e-01 3.464637e-06 2.418488e-02 4.162576e-01
+## crt_score         2.881169e-02 1.377520e-01 3.445311e-02 5.791775e-02
+## word_score        7.091656e-01 6.043102e-01 7.906908e-01 7.610209e-01
+## ns_score          7.755672e-01 8.457194e-01 7.040921e-01 7.385101e-02
+## BSthought         4.611724e-01 4.585431e-01 5.430496e-01 7.010188e-01
+##                     open_score  nclos_score   ncog_score openTS_score
+## BFS_score         1.000000e+00 1.000000e+00 1.000000e+00 6.119406e-06
+## BFSe_score        1.000000e+00 1.000000e+00 1.000000e+00 1.000000e+00
+## BFSp_score        1.000000e+00 1.000000e+00 1.000000e+00 1.430356e-07
+## BPS_score         6.917414e-02 3.365960e-01 1.333167e-07 1.026061e-10
+## LIE_score         1.000000e+00 1.000000e+00 1.000000e+00 4.280597e-01
+## sdtnarc_score     1.000000e+00 1.000000e+00 3.365960e-01 1.742781e-01
+## sdtmach_score     1.000000e+00 1.000000e+00 1.000000e+00 2.078503e-05
+## sdtpsych_score    1.000000e+00 1.393609e-03 1.000000e+00 4.685535e-05
+## narcgrand_score   1.000000e+00 1.000000e+00 1.000000e+00 1.000000e+00
+## narchyper_score   1.000000e+00 1.000000e+00 1.259819e-02 1.289214e-03
+## mach_score        1.000000e+00 1.000000e+00 1.000000e+00 1.552393e-07
+## psycho_score      1.000000e+00 8.358661e-04 1.207704e-03 2.749258e-09
+## psychopri_score   1.000000e+00 1.000000e+00 3.832097e-02 3.796306e-08
+## psychosec_score   1.000000e+00 1.689160e-09 2.261928e-03 1.681029e-05
+## se_score          1.000000e+00 4.778570e-02 8.583902e-03 1.000000e+00
+## hon_score         1.000000e+00 1.000000e+00 4.901193e-01 6.807547e-01
+## emo_score         1.000000e+00 1.210466e-04 1.000000e+00 1.000000e+00
+## extra_score       1.000000e+00 1.000000e+00 6.409507e-04 1.000000e+00
+## agree_score       1.000000e+00 1.262354e-05 1.000000e+00 1.000000e+00
+## cons_score        1.000000e+00 3.770553e-24 5.803784e-04 1.729339e-05
+## open_score        0.000000e+00 3.065291e-03 2.334678e-15 1.000000e+00
+## nclos_score       8.962840e-06 0.000000e+00 1.000000e+00 1.000000e+00
+## ncog_score        4.956854e-18 3.436706e-02 0.000000e+00 1.000000e+00
+## openTS_score      9.361342e-03 3.096195e-01 4.695308e-03 0.000000e+00
+## closeTS_score     4.746833e-02 7.948972e-01 5.808306e-02 1.706986e-16
+## intuitiveTS_score 6.330382e-01 1.174254e-02 8.854328e-01 2.834561e-26
+## effortTS_score    7.889442e-08 3.163624e-04 1.049363e-30 1.101070e-20
+## activeopen_score  2.076562e-03 5.589374e-04 1.394948e-04 2.351105e-39
+## fi_score          1.718137e-01 3.424319e-04 5.436966e-03 3.647038e-07
+## crt_score         3.418010e-01 8.371238e-01 1.226814e-01 2.800551e-02
+## word_score        1.577613e-01 8.112430e-01 3.652485e-01 5.183172e-02
+## ns_score          5.819535e-01 2.123246e-01 4.683815e-01 1.202561e-02
+## BSthought         9.899404e-02 3.581212e-01 1.307150e-02 6.491526e-01
+##                   closeTS_score intuitiveTS_score effortTS_score
+## BFS_score          1.000000e+00      2.911912e-02   3.515899e-02
+## BFSe_score         1.000000e+00      1.000000e+00   1.000000e+00
+## BFSp_score         7.825872e-02      1.741824e-03   1.026141e-02
+## BPS_score          8.762518e-01      1.949051e-02   4.544627e-11
+## LIE_score          1.000000e+00      1.000000e+00   1.566348e-03
+## sdtnarc_score      2.947694e-02      1.081876e-09   1.000000e+00
+## sdtmach_score      4.731059e-03      6.734550e-04   1.157794e-02
+## sdtpsych_score     3.810184e-09      3.244987e-01   4.000768e-06
+## narcgrand_score    5.903931e-01      4.158544e-02   1.000000e+00
+## narchyper_score    2.053606e-02      1.000000e+00   1.729196e-06
+## mach_score         6.776787e-08      3.358192e-03   4.416020e-07
+## psycho_score       3.731216e-16      1.000000e+00   2.207366e-27
+## psychopri_score    5.262221e-17      5.906419e-01   2.037339e-18
+## psychosec_score    8.985771e-07      1.000000e+00   7.298503e-24
+## se_score           1.000000e+00      8.959268e-02   1.673787e-06
+## hon_score          1.000000e+00      1.000000e+00   1.449283e-01
+## emo_score          7.362430e-02      1.000000e+00   1.000000e+00
+## extra_score        1.000000e+00      1.327837e-05   3.061731e-01
+## agree_score        1.000000e+00      1.000000e+00   1.000000e+00
+## cons_score         2.258790e-06      1.000000e+00   4.955311e-18
+## open_score         1.000000e+00      1.000000e+00   3.029546e-05
+## nclos_score        1.000000e+00      1.000000e+00   9.522507e-02
+## ncog_score         1.000000e+00      1.000000e+00   5.257307e-28
+## openTS_score       7.920413e-14      1.408777e-23   5.318170e-18
+## closeTS_score      0.000000e+00      3.408783e-04   7.567012e-15
+## intuitiveTS_score  9.288236e-07      0.000000e+00   2.308418e-02
+## effortTS_score     1.613435e-17      7.236419e-05   0.000000e+00
+## activeopen_score   3.414615e-16      1.299112e-06   3.527077e-17
+## fi_score           1.960782e-07      4.637400e-32   8.944106e-01
+## crt_score          2.075710e-03      9.358696e-04   6.208232e-04
+## word_score         3.352547e-02      1.464418e-02   4.330176e-03
+## ns_score           4.193306e-03      4.261589e-01   1.041504e-01
+## BSthought          1.860276e-01      3.681493e-01   2.512135e-01
+##                   activeopen_score     fi_score  crt_score  word_score
+## BFS_score             1.071145e-01 3.584283e-01 1.00000000 1.000000000
+## BFSe_score            1.000000e+00 1.000000e+00 1.00000000 1.000000000
+## BFSp_score            1.252984e-02 8.833233e-03 1.00000000 1.000000000
+## BPS_score             1.140127e-12 1.000000e+00 1.00000000 1.000000000
+## LIE_score             1.000000e+00 1.000000e+00 1.00000000 1.000000000
+## sdtnarc_score         1.000000e+00 5.993880e-08 0.33659598 1.000000000
+## sdtmach_score         9.859324e-01 5.130190e-03 1.00000000 1.000000000
+## sdtpsych_score        2.426927e-06 1.000000e+00 1.00000000 1.000000000
+## narcgrand_score       3.086147e-01 6.045176e-04 1.00000000 1.000000000
+## narchyper_score       1.000000e+00 1.000000e+00 1.00000000 1.000000000
+## mach_score            1.415667e-05 4.410248e-03 1.00000000 1.000000000
+## psycho_score          2.155306e-13 1.000000e+00 1.00000000 1.000000000
+## psychopri_score       3.027906e-11 2.760407e-01 1.00000000 1.000000000
+## psychosec_score       1.156800e-08 1.000000e+00 1.00000000 1.000000000
+## se_score              1.000000e+00 5.206160e-04 1.00000000 1.000000000
+## hon_score             5.621392e-01 1.000000e+00 1.00000000 1.000000000
+## emo_score             1.236812e-01 1.000000e+00 1.00000000 1.000000000
+## extra_score           1.000000e+00 1.223017e-03 1.00000000 1.000000000
+## agree_score           1.000000e+00 1.000000e+00 1.00000000 1.000000000
+## cons_score            2.227986e-08 1.000000e+00 1.00000000 1.000000000
+## open_score            5.621392e-01 1.000000e+00 1.00000000 1.000000000
+## nclos_score           1.632097e-01 1.023871e-01 1.00000000 1.000000000
+## ncog_score            4.324339e-02 1.000000e+00 1.00000000 1.000000000
+## openTS_score          1.208468e-36 1.363992e-04 1.00000000 1.000000000
+## closeTS_score         1.570723e-13 7.411755e-05 0.56213917 1.000000000
+## intuitiveTS_score     4.741760e-04 2.337250e-29 0.26672285 1.000000000
+## effortTS_score        1.647145e-14 1.000000e+00 0.17879709 1.000000000
+## activeopen_score      0.000000e+00 1.000000e+00 1.00000000 1.000000000
+## fi_score              1.097182e-01 0.000000e+00 0.56213917 1.000000000
+## crt_score             2.393912e-02 2.074314e-03 0.00000000 1.000000000
+## word_score            1.990830e-02 6.006923e-01 0.09912127 0.000000000
+## ns_score              5.522147e-04 3.783760e-01 0.57215460 0.000391805
+## BSthought             2.106305e-01 4.867194e-01 0.14816545 0.108325202
+##                    ns_score    BSthought
+## BFS_score         1.0000000 1.000000e+00
+## BFSe_score        1.0000000 1.000000e+00
+## BFSp_score        1.0000000 1.000000e+00
+## BPS_score         0.9256435 9.015983e-05
+## LIE_score         1.0000000 1.000000e+00
+## sdtnarc_score     1.0000000 1.000000e+00
+## sdtmach_score     1.0000000 1.000000e+00
+## sdtpsych_score    1.0000000 1.000000e+00
+## narcgrand_score   1.0000000 1.000000e+00
+## narchyper_score   1.0000000 1.000000e+00
+## mach_score        1.0000000 1.000000e+00
+## psycho_score      1.0000000 1.000000e+00
+## psychopri_score   1.0000000 1.000000e+00
+## psychosec_score   1.0000000 1.000000e+00
+## se_score          1.0000000 1.000000e+00
+## hon_score         1.0000000 1.000000e+00
+## emo_score         1.0000000 1.000000e+00
+## extra_score       1.0000000 1.000000e+00
+## agree_score       1.0000000 1.000000e+00
+## cons_score        1.0000000 1.000000e+00
+## open_score        1.0000000 1.000000e+00
+## nclos_score       1.0000000 1.000000e+00
+## ncog_score        1.0000000 1.000000e+00
+## openTS_score      1.0000000 1.000000e+00
+## closeTS_score     1.0000000 1.000000e+00
+## intuitiveTS_score 1.0000000 1.000000e+00
+## effortTS_score    1.0000000 1.000000e+00
+## activeopen_score  0.1617989 1.000000e+00
+## fi_score          1.0000000 1.000000e+00
+## crt_score         1.0000000 1.000000e+00
+## word_score        0.1159743 1.000000e+00
+## ns_score          0.0000000 1.000000e+00
+## BSthought         0.4771619 0.000000e+00
+```
+
+### heat map for correlations
+
+
+``` r
+## I have found how to do heat map for correlation matrix here: https://www.geeksforgeeks.org/how-to-create-correlation-heatmap-in-r/
+## I want to make a heat map because I have almost 30 variables and I think this can be a good way for visualization
+
+#First, I will need to create a correlation matrix
+corr_mat <- round(cor(correlates_bs, use = "pairwise.complete.obs"), 2)
+colnames(correlates_bs) <- gsub("_score", "", colnames(correlates_bs))
+
+#Next, in order for better too look at, I will reorder the matrix by using corr coefficient as distance metric
+dist <- as.dist((1-corr_mat)/2)
+ 
+#Then, hierarchically clustering the dist matrix
+hc <- hclust(dist)
+corr_mat <-corr_mat[hc$order, hc$order]
+ 
+#Also reduce the size of correlation matrix
+melted_corr_mat <- melt(corr_mat)
+
+#Lastly, I can plot the correlation heatmap
+ggplot(data = melted_corr_mat, aes(x=Var1, y=Var2, fill=value)) + 
+  geom_tile() +
+  scale_fill_gradient2(low = "#ffa700", mid = "white", high = "#b53389", midpoint = 0) +
+  theme_minimal() 
+```
+
+![](portfolio4_files/figure-html/heatmap1-1.png)<!-- -->
+
+
+``` r
+## Although the previous heat map is a good visualization, it does not provide any information for the excat number for each correlation value and the correlation between A and B is the same as between B and A, which makes the map redundant. Therefore, I find a more interactive heat map in the link that allows me to check for each variable and only show each correlation once. 
+p_mat <- cor_pmat(correlates_bs)
+##plotting the interactive corr heatmap
+corr_mat <- ggcorrplot(
+  corr_mat, hc.order = TRUE, type = "lower",
+  outline.col = "white",
+  p.mat = p_mat,
+  insig = "blank", ##I added this code just to hide the insignificant ones, so it will not look messy
+  colors = c("#281e5d", "white", "#ff4f00")
+)
+corr_mat <- corr_mat + theme(
+  axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 8),
+  axis.text.y = element_text(size = 8)
+)
+corr_mat <- corr_mat + theme_minimal(base_size = 10)
+ggplotly(corr_mat)
+```
+
+```{=html}
+<div class="plotly html-widget html-fill-item" id="htmlwidget-4adab78982cd315adcea" style="width:1152px;height:768px;"></div>
+<script type="application/json" data-for="htmlwidget-4adab78982cd315adcea">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],"y":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],"z":[[0.57051282051282048,0.5641025641025641,0.42948717948717952,0.51282051282051289,0.4679487179487179,0.33974358974358976,0.42948717948717952,0.49358974358974356,0.35256410256410259,0.33333333333333331,0.41025641025641024,0.40384615384615385,0.3141025641025641,0.20512820512820512,0.22435897435897434,0.19230769230769229,0.5,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.35256410256410259,0.28846153846153844,0.40384615384615385,0.41666666666666669,0.33974358974358976,0.28846153846153844,0.28846153846153844,0.38461538461538458,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,0.71794871794871795,0.40384615384615385,0.60256410256410253,0.40384615384615385,0.55128205128205121,0.6858974358974359,0.40384615384615385,0.42307692307692307,0.46153846153846151,0.46153846153846151,0.22435897435897434,0,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.29487179487179482,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.34615384615384615,0.40384615384615385,0.41666666666666669,0.32051282051282048,0.55769230769230771,0.51282051282051289,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,0.4358974358974359,0.51282051282051289,0.26282051282051283,0.33974358974358976,0.51923076923076927,0.42307692307692307,0.23076923076923075,0.39743589743589741,0.44230769230769224,0.40384615384615385,0.19230769230769229,0.26282051282051283,0.25641025641025644,0.32692307692307693,0.37820512820512819,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.37820512820512819,0.44230769230769224,0.44871794871794868,0.40384615384615385,0.51282051282051289,0.48717948717948717,0.44871794871794868,0.51923076923076927,0.45512820512820507,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,0.77564102564102555,0.40384615384615385,0.49358974358974356,0.6858974358974359,0.5,0.35256410256410259,0.47435897435897434,0.48076923076923073,0.40384615384615385,0.23717948717948717,0.23717948717948717,0.40384615384615385,0.40384615384615385,0.33333333333333331,0.23076923076923075,0.21153846153846154,0.26282051282051283,0.30769230769230765,0.23717948717948717,0.21153846153846154,0.40384615384615385,0.40384615384615385,0.29487179487179482,0.33333333333333331,0.40384615384615385,0.35897435897435898,0.40384615384615385,0.17948717948717949,0.39102564102564102],[null,null,null,null,0.40384615384615385,0.52564102564102566,0.66025641025641024,0.5,0.41666666666666669,0.47435897435897434,0.51282051282051289,0.40384615384615385,0.19871794871794871,0.22435897435897434,0.40384615384615385,0.40384615384615385,0.37179487179487175,0.40384615384615385,0.40384615384615385,0.33333333333333331,0.32692307692307693,0.3141025641025641,0.23076923076923075,0.25641025641025644,0.35256410256410259,0.32692307692307693,0.30128205128205127,0.4358974358974359,0.42307692307692307,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,0.66666666666666663,0.57051282051282048,0.4358974358974359,0.40384615384615385,0.37179487179487175,0.38461538461538458,0.33974358974358976,0.33974358974358976,0.39743589743589741,0.3141025641025641,0.3141025641025641,0.40384615384615385,0.40384615384615385,0.39743589743589741,0.35256410256410259,0.40384615384615385,0.39743589743589741,0.40384615384615385,0.41666666666666669,0.44871794871794868,0.44871794871794868,0.40384615384615385,0.35256410256410259,0.46153846153846151,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,0.73717948717948711,0.5,0.42307692307692307,0.45512820512820507,0.37820512820512819,0.40384615384615385,0.26282051282051283,0.38461538461538458,0.25641025641025644,0.40384615384615385,0.34615384615384615,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.3141025641025641,0.35256410256410259,0.3141025641025641,0.39743589743589741,0.49358974358974356,0.50641025641025639,0.47435897435897434,0.40384615384615385,0.55128205128205121,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,0.51282051282051289,0.36538461538461542,0.51282051282051289,0.45512820512820507,0.14743589743589741,0.089743589743589744,0.22435897435897434,0.40384615384615385,0.40384615384615385,0.35256410256410259,0.40384615384615385,0.27564102564102561,0.40384615384615385,0.26282051282051283,0.27564102564102561,0.21794871794871795,0.40384615384615385,0.39743589743589741,0.45512820512820507,0.44871794871794868,0.58333333333333337,0.50641025641025639,0.40384615384615385,0.17948717948717949,0.40384615384615385],[null,null,null,null,null,null,null,null,0.40384615384615385,0.41666666666666669,0.42948717948717952,0.33333333333333331,0.21153846153846154,0.10897435897435896,0.064102564102564083,0.40384615384615385,0.28205128205128205,0.40384615384615385,0.40384615384615385,0.21153846153846154,0.15384615384615383,0.064102564102564083,0.40384615384615385,0.33333333333333331,0.35897435897435898,0.21794871794871795,0.40384615384615385,0.47435897435897434,0.41025641025641024,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,0.4679487179487179,0.41666666666666669,0.35897435897435898,0.25641025641025644,0.21153846153846154,0.24358974358974358,0.40384615384615385,0.34615384615384615,0.40384615384615385,0.27564102564102561,0.24358974358974358,0.28846153846153844,0.21794871794871795,0.18589743589743588,0.39102564102564102,0.33333333333333331,0.30128205128205127,0.22435897435897434,0.44871794871794868,0.44230769230769224,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,0.42307692307692307,0.30769230769230765,0.36538461538461542,0.35897435897435898,0.34615384615384615,0.40384615384615385,0.40384615384615385,0.33333333333333331,0.40384615384615385,0.35897435897435898,0.41025641025641024,0.37820512820512819,0.34615384615384615,0.40384615384615385,0.30769230769230765,0.30128205128205127,0.34615384615384615,0.38461538461538458,0.35897435897435898,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,0.3141025641025641,0.3141025641025641,0.33974358974358976,0.33333333333333331,0.40384615384615385,0.42307692307692307,0.39743589743589741,0.38461538461538458,0.39102564102564102,0.34615384615384615,0.35256410256410259,0.38461538461538458,0.37820512820512819,0.42948717948717952,0.35256410256410259,0.37179487179487175,0.44230769230769224,0.41025641025641024,0.40384615384615385,0.3141025641025641,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,0.40384615384615385,0.61538461538461531,0.40384615384615385,0.67307692307692313,0.39102564102564102,0.48717948717948717,0.51923076923076927,0.52564102564102566,0.4679487179487179,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.52564102564102566,0.5,0.41025641025641024,0.42948717948717952,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,0.7564102564102565,0.94230769230769229,0.76282051282051277,0.54487179487179482,0.59615384615384615,0.40384615384615385,0.67948717948717952,0.66666666666666663,0.65384615384615385,0.69230769230769229,0.40384615384615385,0.40384615384615385,0.35256410256410259,0.4358974358974359,0.40384615384615385,0.18589743589743588,0.42948717948717952,0.57692307692307687,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.40384615384615385,0.82051282051282048,0.5,0.60256410256410253,0.61538461538461531,0.5641025641025641,0.67948717948717952,0.77564102564102555,0.7564102564102565,0.40384615384615385,0.40384615384615385,0.58974358974358965,0.62179487179487181,0.40384615384615385,0.37820512820512819,0.41025641025641024,0.54487179487179482,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.99358974358974361,0.40384615384615385,0.40384615384615385,0.62820512820512819,0.66666666666666663,0.69230769230769229,0.76923076923076916,0.40384615384615385,0.48076923076923073,0.46153846153846151,0.47435897435897434,0.40384615384615385,0.21153846153846154,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.66025641025641024,0.78205128205128205,0.83333333333333337,0.40384615384615385,0.50641025641025639,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.40384615384615385,0.67948717948717952,0.60256410256410253,0.62820512820512819,0.40384615384615385,0.53205128205128205,0.4358974358974359,0.40384615384615385,0.40384615384615385,0.42307692307692307,0.28205128205128205,0.33974358974358976,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,0.64743589743589747,0.69230769230769229,0.40384615384615385,0.67307692307692313,0.40384615384615385,0.50641025641025639,0.50641025641025639,0.53846153846153844,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.62179487179487181,0.40384615384615385,0.6858974358974359,0.6858974358974359,0.40384615384615385,0.53205128205128205,0.53846153846153844,0.57051282051282048,0.32692307692307693,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.40384615384615385,0.40384615384615385,0.69230769230769229,0.47435897435897434,0.40384615384615385,0.37179487179487175,0.42948717948717952,0.17307692307692307,0.21794871794871795,0.40384615384615385,0.40384615384615385,0.46153846153846151],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.74999999999999989,0.70512820512820518,0.40384615384615385,0.40384615384615385,0.44871794871794868,0.51282051282051289,0.40384615384615385,0.32051282051282048,0.37179487179487175,0.48717948717948717,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.82692307692307687,0.55128205128205121,0.40384615384615385,0.57051282051282048,0.40384615384615385,0.36538461538461542,0.33974358974358976,0.37179487179487175,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.53846153846153844,0.40384615384615385,0.57692307692307687,0.64102564102564097,0.32692307692307693,0.35897435897435898,0.41666666666666669,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.40384615384615385,0.61538461538461531,0.52564102564102566,0.51923076923076927,0.40384615384615385,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.60256410256410253,0.55128205128205121,0.40384615384615385,0.55128205128205121,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.79487179487179482,0.6858974358974359,0.76282051282051277,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.58333333333333337,0.65384615384615385,0.40384615384615385,0.53205128205128205,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.79487179487179482,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.40384615384615385,0.40384615384615385,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.42948717948717952,0.40384615384615385],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.40384615384615385]],"text":[["value:  0.26<br />Var1: cons_score<br />Var2: emo_score","value:  0.25<br />Var1: nclos_score<br />Var2: emo_score","value:  0.04<br />Var1: openTS_score<br />Var2: emo_score","value:  0.17<br />Var1: activeopen_score<br />Var2: emo_score","value:  0.10<br />Var1: open_score<br />Var2: emo_score","value: -0.10<br />Var1: ncog_score<br />Var2: emo_score","value:  0.04<br />Var1: effortTS_score<br />Var2: emo_score","value:  0.14<br />Var1: hon_score<br />Var2: emo_score","value: -0.08<br />Var1: agree_score<br />Var2: emo_score","value: -0.11<br />Var1: crt_score<br />Var2: emo_score","value:  0.01<br />Var1: ns_score<br />Var2: emo_score","value:  0.00<br />Var1: closeTS_score<br />Var2: emo_score","value: -0.14<br />Var1: psychosec_score<br />Var2: emo_score","value: -0.31<br />Var1: sdtpsych_score<br />Var2: emo_score","value: -0.28<br />Var1: psycho_score<br />Var2: emo_score","value: -0.33<br />Var1: psychopri_score<br />Var2: emo_score","value:  0.15<br />Var1: BFSe_score<br />Var2: emo_score","value:  0.00<br />Var1: BFS_score<br />Var2: emo_score","value:  0.00<br />Var1: BFSp_score<br />Var2: emo_score","value:  0.00<br />Var1: narchyper_score<br />Var2: emo_score","value:  0.00<br />Var1: LIE_score<br />Var2: emo_score","value: -0.08<br />Var1: sdtmach_score<br />Var2: emo_score","value: -0.18<br />Var1: mach_score<br />Var2: emo_score","value:  0.00<br />Var1: intuitiveTS_score<br />Var2: emo_score","value:  0.02<br />Var1: fi_score<br />Var2: emo_score","value: -0.10<br />Var1: sdtnarc_score<br />Var2: emo_score","value: -0.18<br />Var1: narcgrand_score<br />Var2: emo_score","value: -0.18<br />Var1: se_score<br />Var2: emo_score","value: -0.03<br />Var1: extra_score<br />Var2: emo_score","value:  0.00<br />Var1: word_score<br />Var2: emo_score","value:  0.00<br />Var1: BPS_score<br />Var2: emo_score","value:  0.00<br />Var1: BSthought<br />Var2: emo_score"],[null,"value:  0.49<br />Var1: nclos_score<br />Var2: cons_score","value:  0.00<br />Var1: openTS_score<br />Var2: cons_score","value:  0.31<br />Var1: activeopen_score<br />Var2: cons_score","value:  0.00<br />Var1: open_score<br />Var2: cons_score","value:  0.23<br />Var1: ncog_score<br />Var2: cons_score","value:  0.44<br />Var1: effortTS_score<br />Var2: cons_score","value:  0.00<br />Var1: hon_score<br />Var2: cons_score","value:  0.03<br />Var1: agree_score<br />Var2: cons_score","value:  0.09<br />Var1: crt_score<br />Var2: cons_score","value:  0.09<br />Var1: ns_score<br />Var2: cons_score","value: -0.28<br />Var1: closeTS_score<br />Var2: cons_score","value: -0.63<br />Var1: psychosec_score<br />Var2: cons_score","value:  0.00<br />Var1: sdtpsych_score<br />Var2: cons_score","value:  0.00<br />Var1: psycho_score<br />Var2: cons_score","value:  0.00<br />Var1: psychopri_score<br />Var2: cons_score","value: -0.17<br />Var1: BFSe_score<br />Var2: cons_score","value:  0.00<br />Var1: BFS_score<br />Var2: cons_score","value:  0.00<br />Var1: BFSp_score<br />Var2: cons_score","value:  0.00<br />Var1: narchyper_score<br />Var2: cons_score","value:  0.00<br />Var1: LIE_score<br />Var2: cons_score","value:  0.00<br />Var1: sdtmach_score<br />Var2: cons_score","value:  0.00<br />Var1: mach_score<br />Var2: cons_score","value: -0.09<br />Var1: intuitiveTS_score<br />Var2: cons_score","value:  0.00<br />Var1: fi_score<br />Var2: cons_score","value:  0.02<br />Var1: sdtnarc_score<br />Var2: cons_score","value: -0.13<br />Var1: narcgrand_score<br />Var2: cons_score","value:  0.24<br />Var1: se_score<br />Var2: cons_score","value:  0.17<br />Var1: extra_score<br />Var2: cons_score","value:  0.00<br />Var1: word_score<br />Var2: cons_score","value:  0.00<br />Var1: BPS_score<br />Var2: cons_score","value:  0.00<br />Var1: BSthought<br />Var2: cons_score"],[null,null,"value:  0.05<br />Var1: openTS_score<br />Var2: nclos_score","value:  0.17<br />Var1: activeopen_score<br />Var2: nclos_score","value: -0.22<br />Var1: open_score<br />Var2: nclos_score","value: -0.10<br />Var1: ncog_score<br />Var2: nclos_score","value:  0.18<br />Var1: effortTS_score<br />Var2: nclos_score","value:  0.03<br />Var1: hon_score<br />Var2: nclos_score","value: -0.27<br />Var1: agree_score<br />Var2: nclos_score","value: -0.01<br />Var1: crt_score<br />Var2: nclos_score","value:  0.06<br />Var1: ns_score<br />Var2: nclos_score","value:  0.00<br />Var1: closeTS_score<br />Var2: nclos_score","value: -0.33<br />Var1: psychosec_score<br />Var2: nclos_score","value: -0.22<br />Var1: sdtpsych_score<br />Var2: nclos_score","value: -0.23<br />Var1: psycho_score<br />Var2: nclos_score","value: -0.12<br />Var1: psychopri_score<br />Var2: nclos_score","value: -0.04<br />Var1: BFSe_score<br />Var2: nclos_score","value:  0.00<br />Var1: BFS_score<br />Var2: nclos_score","value:  0.00<br />Var1: BFSp_score<br />Var2: nclos_score","value:  0.00<br />Var1: narchyper_score<br />Var2: nclos_score","value: -0.04<br />Var1: LIE_score<br />Var2: nclos_score","value:  0.06<br />Var1: sdtmach_score<br />Var2: nclos_score","value:  0.07<br />Var1: mach_score<br />Var2: nclos_score","value:  0.00<br />Var1: intuitiveTS_score<br />Var2: nclos_score","value:  0.17<br />Var1: fi_score<br />Var2: nclos_score","value:  0.13<br />Var1: sdtnarc_score<br />Var2: nclos_score","value:  0.07<br />Var1: narcgrand_score<br />Var2: nclos_score","value:  0.18<br />Var1: se_score<br />Var2: nclos_score","value:  0.08<br />Var1: extra_score<br />Var2: nclos_score","value:  0.00<br />Var1: word_score<br />Var2: nclos_score","value:  0.00<br />Var1: BPS_score<br />Var2: nclos_score","value:  0.00<br />Var1: BSthought<br />Var2: nclos_score"],[null,null,null,"value:  0.58<br />Var1: activeopen_score<br />Var2: openTS_score","value:  0.00<br />Var1: open_score<br />Var2: openTS_score","value:  0.14<br />Var1: ncog_score<br />Var2: openTS_score","value:  0.44<br />Var1: effortTS_score<br />Var2: openTS_score","value:  0.15<br />Var1: hon_score<br />Var2: openTS_score","value: -0.08<br />Var1: agree_score<br />Var2: openTS_score","value:  0.11<br />Var1: crt_score<br />Var2: openTS_score","value:  0.12<br />Var1: ns_score<br />Var2: openTS_score","value:  0.00<br />Var1: closeTS_score<br />Var2: openTS_score","value: -0.26<br />Var1: psychosec_score<br />Var2: openTS_score","value: -0.26<br />Var1: sdtpsych_score<br />Var2: openTS_score","value:  0.00<br />Var1: psycho_score<br />Var2: openTS_score","value:  0.00<br />Var1: psychopri_score<br />Var2: openTS_score","value: -0.11<br />Var1: BFSe_score<br />Var2: openTS_score","value: -0.27<br />Var1: BFS_score<br />Var2: openTS_score","value: -0.30<br />Var1: BFSp_score<br />Var2: openTS_score","value: -0.22<br />Var1: narchyper_score<br />Var2: openTS_score","value: -0.15<br />Var1: LIE_score<br />Var2: openTS_score","value: -0.26<br />Var1: sdtmach_score<br />Var2: openTS_score","value: -0.30<br />Var1: mach_score<br />Var2: openTS_score","value:  0.00<br />Var1: intuitiveTS_score<br />Var2: openTS_score","value:  0.00<br />Var1: fi_score<br />Var2: openTS_score","value: -0.17<br />Var1: sdtnarc_score<br />Var2: openTS_score","value: -0.11<br />Var1: narcgrand_score<br />Var2: openTS_score","value:  0.00<br />Var1: se_score<br />Var2: openTS_score","value: -0.07<br />Var1: extra_score<br />Var2: openTS_score","value:  0.00<br />Var1: word_score<br />Var2: openTS_score","value: -0.35<br />Var1: BPS_score<br />Var2: openTS_score","value: -0.02<br />Var1: BSthought<br />Var2: openTS_score"],[null,null,null,null,"value:  0.00<br />Var1: open_score<br />Var2: activeopen_score","value:  0.19<br />Var1: ncog_score<br />Var2: activeopen_score","value:  0.40<br />Var1: effortTS_score<br />Var2: activeopen_score","value:  0.15<br />Var1: hon_score<br />Var2: activeopen_score","value:  0.02<br />Var1: agree_score<br />Var2: activeopen_score","value:  0.11<br />Var1: crt_score<br />Var2: activeopen_score","value:  0.17<br />Var1: ns_score<br />Var2: activeopen_score","value:  0.00<br />Var1: closeTS_score<br />Var2: activeopen_score","value: -0.32<br />Var1: psychosec_score<br />Var2: activeopen_score","value: -0.28<br />Var1: sdtpsych_score<br />Var2: activeopen_score","value:  0.00<br />Var1: psycho_score<br />Var2: activeopen_score","value:  0.00<br />Var1: psychopri_score<br />Var2: activeopen_score","value: -0.05<br />Var1: BFSe_score<br />Var2: activeopen_score","value:  0.00<br />Var1: BFS_score<br />Var2: activeopen_score","value:  0.00<br />Var1: BFSp_score<br />Var2: activeopen_score","value: -0.11<br />Var1: narchyper_score<br />Var2: activeopen_score","value: -0.12<br />Var1: LIE_score<br />Var2: activeopen_score","value: -0.14<br />Var1: sdtmach_score<br />Var2: activeopen_score","value: -0.27<br />Var1: mach_score<br />Var2: activeopen_score","value: -0.23<br />Var1: intuitiveTS_score<br />Var2: activeopen_score","value: -0.08<br />Var1: fi_score<br />Var2: activeopen_score","value: -0.12<br />Var1: sdtnarc_score<br />Var2: activeopen_score","value: -0.16<br />Var1: narcgrand_score<br />Var2: activeopen_score","value:  0.05<br />Var1: se_score<br />Var2: activeopen_score","value:  0.03<br />Var1: extra_score<br />Var2: activeopen_score","value:  0.00<br />Var1: word_score<br />Var2: activeopen_score","value:  0.00<br />Var1: BPS_score<br />Var2: activeopen_score","value:  0.00<br />Var1: BSthought<br />Var2: activeopen_score"],[null,null,null,null,null,"value:  0.41<br />Var1: ncog_score<br />Var2: open_score","value:  0.26<br />Var1: effortTS_score<br />Var2: open_score","value:  0.05<br />Var1: hon_score<br />Var2: open_score","value:  0.00<br />Var1: agree_score<br />Var2: open_score","value: -0.05<br />Var1: crt_score<br />Var2: open_score","value: -0.03<br />Var1: ns_score<br />Var2: open_score","value: -0.10<br />Var1: closeTS_score<br />Var2: open_score","value: -0.10<br />Var1: psychosec_score<br />Var2: open_score","value: -0.01<br />Var1: sdtpsych_score<br />Var2: open_score","value: -0.14<br />Var1: psycho_score<br />Var2: open_score","value: -0.14<br />Var1: psychopri_score<br />Var2: open_score","value:  0.00<br />Var1: BFSe_score<br />Var2: open_score","value:  0.00<br />Var1: BFS_score<br />Var2: open_score","value: -0.01<br />Var1: BFSp_score<br />Var2: open_score","value: -0.08<br />Var1: narchyper_score<br />Var2: open_score","value:  0.00<br />Var1: LIE_score<br />Var2: open_score","value: -0.01<br />Var1: sdtmach_score<br />Var2: open_score","value:  0.00<br />Var1: mach_score<br />Var2: open_score","value:  0.02<br />Var1: intuitiveTS_score<br />Var2: open_score","value:  0.07<br />Var1: fi_score<br />Var2: open_score","value:  0.07<br />Var1: sdtnarc_score<br />Var2: open_score","value:  0.00<br />Var1: narcgrand_score<br />Var2: open_score","value: -0.08<br />Var1: se_score<br />Var2: open_score","value:  0.09<br />Var1: extra_score<br />Var2: open_score","value:  0.00<br />Var1: word_score<br />Var2: open_score","value:  0.00<br />Var1: BPS_score<br />Var2: open_score","value:  0.00<br />Var1: BSthought<br />Var2: open_score"],[null,null,null,null,null,null,"value:  0.52<br />Var1: effortTS_score<br />Var2: ncog_score","value:  0.15<br />Var1: hon_score<br />Var2: ncog_score","value:  0.03<br />Var1: agree_score<br />Var2: ncog_score","value:  0.08<br />Var1: crt_score<br />Var2: ncog_score","value: -0.04<br />Var1: ns_score<br />Var2: ncog_score","value:  0.00<br />Var1: closeTS_score<br />Var2: ncog_score","value: -0.22<br />Var1: psychosec_score<br />Var2: ncog_score","value: -0.03<br />Var1: sdtpsych_score<br />Var2: ncog_score","value: -0.23<br />Var1: psycho_score<br />Var2: ncog_score","value:  0.00<br />Var1: psychopri_score<br />Var2: ncog_score","value: -0.09<br />Var1: BFSe_score<br />Var2: ncog_score","value:  0.00<br />Var1: BFS_score<br />Var2: ncog_score","value:  0.00<br />Var1: BFSp_score<br />Var2: ncog_score","value:  0.00<br />Var1: narchyper_score<br />Var2: ncog_score","value: -0.14<br />Var1: LIE_score<br />Var2: ncog_score","value: -0.08<br />Var1: sdtmach_score<br />Var2: ncog_score","value: -0.14<br />Var1: mach_score<br />Var2: ncog_score","value: -0.01<br />Var1: intuitiveTS_score<br />Var2: ncog_score","value:  0.14<br />Var1: fi_score<br />Var2: ncog_score","value:  0.16<br />Var1: sdtnarc_score<br />Var2: ncog_score","value:  0.11<br />Var1: narcgrand_score<br />Var2: ncog_score","value:  0.00<br />Var1: se_score<br />Var2: ncog_score","value:  0.23<br />Var1: extra_score<br />Var2: ncog_score","value:  0.00<br />Var1: word_score<br />Var2: ncog_score","value:  0.00<br />Var1: BPS_score<br />Var2: ncog_score","value:  0.00<br />Var1: BSthought<br />Var2: ncog_score"],[null,null,null,null,null,null,null,"value:  0.17<br />Var1: hon_score<br />Var2: effortTS_score","value: -0.06<br />Var1: agree_score<br />Var2: effortTS_score","value:  0.17<br />Var1: crt_score<br />Var2: effortTS_score","value:  0.08<br />Var1: ns_score<br />Var2: effortTS_score","value: -0.40<br />Var1: closeTS_score<br />Var2: effortTS_score","value: -0.49<br />Var1: psychosec_score<br />Var2: effortTS_score","value: -0.28<br />Var1: sdtpsych_score<br />Var2: effortTS_score","value:  0.00<br />Var1: psycho_score<br />Var2: effortTS_score","value:  0.00<br />Var1: psychopri_score<br />Var2: effortTS_score","value: -0.08<br />Var1: BFSe_score<br />Var2: effortTS_score","value:  0.00<br />Var1: BFS_score<br />Var2: effortTS_score","value: -0.20<br />Var1: BFSp_score<br />Var2: effortTS_score","value:  0.00<br />Var1: narchyper_score<br />Var2: effortTS_score","value: -0.22<br />Var1: LIE_score<br />Var2: effortTS_score","value: -0.20<br />Var1: sdtmach_score<br />Var2: effortTS_score","value: -0.29<br />Var1: mach_score<br />Var2: effortTS_score","value:  0.00<br />Var1: intuitiveTS_score<br />Var2: effortTS_score","value: -0.01<br />Var1: fi_score<br />Var2: effortTS_score","value:  0.08<br />Var1: sdtnarc_score<br />Var2: effortTS_score","value:  0.07<br />Var1: narcgrand_score<br />Var2: effortTS_score","value:  0.28<br />Var1: se_score<br />Var2: effortTS_score","value:  0.16<br />Var1: extra_score<br />Var2: effortTS_score","value:  0.00<br />Var1: word_score<br />Var2: effortTS_score","value: -0.35<br />Var1: BPS_score<br />Var2: effortTS_score","value:  0.00<br />Var1: BSthought<br />Var2: effortTS_score"],[null,null,null,null,null,null,null,null,"value:  0.00<br />Var1: agree_score<br />Var2: hon_score","value:  0.02<br />Var1: crt_score<br />Var2: hon_score","value:  0.04<br />Var1: ns_score<br />Var2: hon_score","value: -0.11<br />Var1: closeTS_score<br />Var2: hon_score","value: -0.30<br />Var1: psychosec_score<br />Var2: hon_score","value: -0.46<br />Var1: sdtpsych_score<br />Var2: hon_score","value: -0.53<br />Var1: psycho_score<br />Var2: hon_score","value:  0.00<br />Var1: psychopri_score<br />Var2: hon_score","value: -0.19<br />Var1: BFSe_score<br />Var2: hon_score","value:  0.00<br />Var1: BFS_score<br />Var2: hon_score","value:  0.00<br />Var1: BFSp_score<br />Var2: hon_score","value: -0.30<br />Var1: narchyper_score<br />Var2: hon_score","value: -0.39<br />Var1: LIE_score<br />Var2: hon_score","value: -0.53<br />Var1: sdtmach_score<br />Var2: hon_score","value:  0.00<br />Var1: mach_score<br />Var2: hon_score","value: -0.11<br />Var1: intuitiveTS_score<br />Var2: hon_score","value: -0.07<br />Var1: fi_score<br />Var2: hon_score","value: -0.29<br />Var1: sdtnarc_score<br />Var2: hon_score","value:  0.00<br />Var1: narcgrand_score<br />Var2: hon_score","value:  0.11<br />Var1: se_score<br />Var2: hon_score","value:  0.01<br />Var1: extra_score<br />Var2: hon_score","value:  0.00<br />Var1: word_score<br />Var2: hon_score","value:  0.00<br />Var1: BPS_score<br />Var2: hon_score","value:  0.00<br />Var1: BSthought<br />Var2: hon_score"],[null,null,null,null,null,null,null,null,null,"value:  0.10<br />Var1: crt_score<br />Var2: agree_score","value:  0.02<br />Var1: ns_score<br />Var2: agree_score","value: -0.07<br />Var1: closeTS_score<br />Var2: agree_score","value: -0.23<br />Var1: psychosec_score<br />Var2: agree_score","value: -0.30<br />Var1: sdtpsych_score<br />Var2: agree_score","value: -0.25<br />Var1: psycho_score<br />Var2: agree_score","value:  0.00<br />Var1: psychopri_score<br />Var2: agree_score","value: -0.09<br />Var1: BFSe_score<br />Var2: agree_score","value:  0.00<br />Var1: BFS_score<br />Var2: agree_score","value: -0.20<br />Var1: BFSp_score<br />Var2: agree_score","value: -0.25<br />Var1: narchyper_score<br />Var2: agree_score","value: -0.18<br />Var1: LIE_score<br />Var2: agree_score","value: -0.29<br />Var1: sdtmach_score<br />Var2: agree_score","value: -0.34<br />Var1: mach_score<br />Var2: agree_score","value: -0.02<br />Var1: intuitiveTS_score<br />Var2: agree_score","value: -0.11<br />Var1: fi_score<br />Var2: agree_score","value: -0.16<br />Var1: sdtnarc_score<br />Var2: agree_score","value: -0.28<br />Var1: narcgrand_score<br />Var2: agree_score","value:  0.07<br />Var1: se_score<br />Var2: agree_score","value:  0.06<br />Var1: extra_score<br />Var2: agree_score","value:  0.00<br />Var1: word_score<br />Var2: agree_score","value:  0.00<br />Var1: BPS_score<br />Var2: agree_score","value:  0.00<br />Var1: BSthought<br />Var2: agree_score"],[null,null,null,null,null,null,null,null,null,null,"value:  0.03<br />Var1: ns_score<br />Var2: crt_score","value: -0.15<br />Var1: closeTS_score<br />Var2: crt_score","value: -0.06<br />Var1: psychosec_score<br />Var2: crt_score","value: -0.07<br />Var1: sdtpsych_score<br />Var2: crt_score","value: -0.09<br />Var1: psycho_score<br />Var2: crt_score","value:  0.00<br />Var1: psychopri_score<br />Var2: crt_score","value:  0.00<br />Var1: BFSe_score<br />Var2: crt_score","value: -0.11<br />Var1: BFS_score<br />Var2: crt_score","value:  0.00<br />Var1: BFSp_score<br />Var2: crt_score","value: -0.07<br />Var1: narchyper_score<br />Var2: crt_score","value:  0.01<br />Var1: LIE_score<br />Var2: crt_score","value: -0.04<br />Var1: sdtmach_score<br />Var2: crt_score","value: -0.09<br />Var1: mach_score<br />Var2: crt_score","value:  0.00<br />Var1: intuitiveTS_score<br />Var2: crt_score","value: -0.15<br />Var1: fi_score<br />Var2: crt_score","value: -0.16<br />Var1: sdtnarc_score<br />Var2: crt_score","value: -0.09<br />Var1: narcgrand_score<br />Var2: crt_score","value: -0.03<br />Var1: se_score<br />Var2: crt_score","value: -0.07<br />Var1: extra_score<br />Var2: crt_score","value:  0.00<br />Var1: word_score<br />Var2: crt_score","value:  0.00<br />Var1: BPS_score<br />Var2: crt_score","value:  0.00<br />Var1: BSthought<br />Var2: crt_score"],[null,null,null,null,null,null,null,null,null,null,null,"value: -0.14<br />Var1: closeTS_score<br />Var2: ns_score","value: -0.14<br />Var1: psychosec_score<br />Var2: ns_score","value: -0.10<br />Var1: sdtpsych_score<br />Var2: ns_score","value: -0.11<br />Var1: psycho_score<br />Var2: ns_score","value:  0.00<br />Var1: psychopri_score<br />Var2: ns_score","value:  0.03<br />Var1: BFSe_score<br />Var2: ns_score","value: -0.01<br />Var1: BFS_score<br />Var2: ns_score","value: -0.03<br />Var1: BFSp_score<br />Var2: ns_score","value: -0.02<br />Var1: narchyper_score<br />Var2: ns_score","value: -0.09<br />Var1: LIE_score<br />Var2: ns_score","value: -0.08<br />Var1: sdtmach_score<br />Var2: ns_score","value: -0.03<br />Var1: mach_score<br />Var2: ns_score","value: -0.04<br />Var1: intuitiveTS_score<br />Var2: ns_score","value:  0.04<br />Var1: fi_score<br />Var2: ns_score","value: -0.08<br />Var1: sdtnarc_score<br />Var2: ns_score","value: -0.05<br />Var1: narcgrand_score<br />Var2: ns_score","value:  0.06<br />Var1: se_score<br />Var2: ns_score","value:  0.01<br />Var1: extra_score<br />Var2: ns_score","value:  0.00<br />Var1: word_score<br />Var2: ns_score","value: -0.14<br />Var1: BPS_score<br />Var2: ns_score","value:  0.00<br />Var1: BSthought<br />Var2: ns_score"],[null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.00<br />Var1: psychosec_score<br />Var2: closeTS_score","value:  0.33<br />Var1: sdtpsych_score<br />Var2: closeTS_score","value:  0.00<br />Var1: psycho_score<br />Var2: closeTS_score","value:  0.42<br />Var1: psychopri_score<br />Var2: closeTS_score","value: -0.02<br />Var1: BFSe_score<br />Var2: closeTS_score","value:  0.13<br />Var1: BFS_score<br />Var2: closeTS_score","value:  0.18<br />Var1: BFSp_score<br />Var2: closeTS_score","value:  0.19<br />Var1: narchyper_score<br />Var2: closeTS_score","value:  0.10<br />Var1: LIE_score<br />Var2: closeTS_score","value:  0.00<br />Var1: sdtmach_score<br />Var2: closeTS_score","value:  0.00<br />Var1: mach_score<br />Var2: closeTS_score","value:  0.00<br />Var1: intuitiveTS_score<br />Var2: closeTS_score","value:  0.00<br />Var1: fi_score<br />Var2: closeTS_score","value:  0.19<br />Var1: sdtnarc_score<br />Var2: closeTS_score","value:  0.15<br />Var1: narcgrand_score<br />Var2: closeTS_score","value:  0.01<br />Var1: se_score<br />Var2: closeTS_score","value:  0.04<br />Var1: extra_score<br />Var2: closeTS_score","value:  0.00<br />Var1: word_score<br />Var2: closeTS_score","value:  0.00<br />Var1: BPS_score<br />Var2: closeTS_score","value:  0.00<br />Var1: BSthought<br />Var2: closeTS_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.55<br />Var1: sdtpsych_score<br />Var2: psychosec_score","value:  0.84<br />Var1: psycho_score<br />Var2: psychosec_score","value:  0.56<br />Var1: psychopri_score<br />Var2: psychosec_score","value:  0.22<br />Var1: BFSe_score<br />Var2: psychosec_score","value:  0.30<br />Var1: BFS_score<br />Var2: psychosec_score","value:  0.00<br />Var1: BFSp_score<br />Var2: psychosec_score","value:  0.43<br />Var1: narchyper_score<br />Var2: psychosec_score","value:  0.41<br />Var1: LIE_score<br />Var2: psychosec_score","value:  0.39<br />Var1: sdtmach_score<br />Var2: psychosec_score","value:  0.45<br />Var1: mach_score<br />Var2: psychosec_score","value:  0.00<br />Var1: intuitiveTS_score<br />Var2: psychosec_score","value:  0.00<br />Var1: fi_score<br />Var2: psychosec_score","value: -0.08<br />Var1: sdtnarc_score<br />Var2: psychosec_score","value:  0.05<br />Var1: narcgrand_score<br />Var2: psychosec_score","value:  0.00<br />Var1: se_score<br />Var2: psychosec_score","value: -0.34<br />Var1: extra_score<br />Var2: psychosec_score","value:  0.04<br />Var1: word_score<br />Var2: psychosec_score","value:  0.27<br />Var1: BPS_score<br />Var2: psychosec_score","value:  0.00<br />Var1: BSthought<br />Var2: psychosec_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.00<br />Var1: psycho_score<br />Var2: sdtpsych_score","value:  0.65<br />Var1: psychopri_score<br />Var2: sdtpsych_score","value:  0.15<br />Var1: BFSe_score<br />Var2: sdtpsych_score","value:  0.31<br />Var1: BFS_score<br />Var2: sdtpsych_score","value:  0.33<br />Var1: BFSp_score<br />Var2: sdtpsych_score","value:  0.25<br />Var1: narchyper_score<br />Var2: sdtpsych_score","value:  0.43<br />Var1: LIE_score<br />Var2: sdtpsych_score","value:  0.58<br />Var1: sdtmach_score<br />Var2: sdtpsych_score","value:  0.55<br />Var1: mach_score<br />Var2: sdtpsych_score","value:  0.00<br />Var1: intuitiveTS_score<br />Var2: sdtpsych_score","value:  0.00<br />Var1: fi_score<br />Var2: sdtpsych_score","value:  0.29<br />Var1: sdtnarc_score<br />Var2: sdtpsych_score","value:  0.34<br />Var1: narcgrand_score<br />Var2: sdtpsych_score","value:  0.00<br />Var1: se_score<br />Var2: sdtpsych_score","value: -0.04<br />Var1: extra_score<br />Var2: sdtpsych_score","value:  0.01<br />Var1: word_score<br />Var2: sdtpsych_score","value:  0.22<br />Var1: BPS_score<br />Var2: sdtpsych_score","value:  0.00<br />Var1: BSthought<br />Var2: sdtpsych_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.92<br />Var1: psychopri_score<br />Var2: psycho_score","value:  0.00<br />Var1: BFSe_score<br />Var2: psycho_score","value:  0.00<br />Var1: BFS_score<br />Var2: psycho_score","value:  0.35<br />Var1: BFSp_score<br />Var2: psycho_score","value:  0.41<br />Var1: narchyper_score<br />Var2: psycho_score","value:  0.45<br />Var1: LIE_score<br />Var2: psycho_score","value:  0.57<br />Var1: sdtmach_score<br />Var2: psycho_score","value:  0.00<br />Var1: mach_score<br />Var2: psycho_score","value:  0.12<br />Var1: intuitiveTS_score<br />Var2: psycho_score","value:  0.09<br />Var1: fi_score<br />Var2: psycho_score","value:  0.11<br />Var1: sdtnarc_score<br />Var2: psycho_score","value:  0.00<br />Var1: narcgrand_score<br />Var2: psycho_score","value: -0.30<br />Var1: se_score<br />Var2: psycho_score","value:  0.00<br />Var1: extra_score<br />Var2: psycho_score","value:  0.00<br />Var1: word_score<br />Var2: psycho_score","value:  0.00<br />Var1: BPS_score<br />Var2: psycho_score","value:  0.00<br />Var1: BSthought<br />Var2: psycho_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.00<br />Var1: BFSe_score<br />Var2: psychopri_score","value:  0.00<br />Var1: BFS_score<br />Var2: psychopri_score","value:  0.00<br />Var1: BFSp_score<br />Var2: psychopri_score","value:  0.00<br />Var1: narchyper_score<br />Var2: psychopri_score","value:  0.40<br />Var1: LIE_score<br />Var2: psychopri_score","value:  0.59<br />Var1: sdtmach_score<br />Var2: psychopri_score","value:  0.67<br />Var1: mach_score<br />Var2: psychopri_score","value:  0.00<br />Var1: intuitiveTS_score<br />Var2: psychopri_score","value:  0.16<br />Var1: fi_score<br />Var2: psychopri_score","value:  0.00<br />Var1: sdtnarc_score<br />Var2: psychopri_score","value:  0.00<br />Var1: narcgrand_score<br />Var2: psychopri_score","value:  0.00<br />Var1: se_score<br />Var2: psychopri_score","value:  0.00<br />Var1: extra_score<br />Var2: psychopri_score","value:  0.00<br />Var1: word_score<br />Var2: psychopri_score","value:  0.00<br />Var1: BPS_score<br />Var2: psychopri_score","value:  0.00<br />Var1: BSthought<br />Var2: psychopri_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.00<br />Var1: BFS_score<br />Var2: BFSe_score","value:  0.43<br />Var1: BFSp_score<br />Var2: BFSe_score","value:  0.31<br />Var1: narchyper_score<br />Var2: BFSe_score","value:  0.35<br />Var1: LIE_score<br />Var2: BFSe_score","value:  0.00<br />Var1: sdtmach_score<br />Var2: BFSe_score","value:  0.20<br />Var1: mach_score<br />Var2: BFSe_score","value:  0.05<br />Var1: intuitiveTS_score<br />Var2: BFSe_score","value:  0.00<br />Var1: fi_score<br />Var2: BFSe_score","value:  0.00<br />Var1: sdtnarc_score<br />Var2: BFSe_score","value:  0.03<br />Var1: narcgrand_score<br />Var2: BFSe_score","value: -0.19<br />Var1: se_score<br />Var2: BFSe_score","value: -0.10<br />Var1: extra_score<br />Var2: BFSe_score","value:  0.00<br />Var1: word_score<br />Var2: BFSe_score","value:  0.00<br />Var1: BPS_score<br />Var2: BFSe_score","value:  0.00<br />Var1: BSthought<br />Var2: BFSe_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.93<br />Var1: BFSp_score<br />Var2: BFS_score","value:  0.38<br />Var1: narchyper_score<br />Var2: BFS_score","value:  0.45<br />Var1: LIE_score<br />Var2: BFS_score","value:  0.00<br />Var1: sdtmach_score<br />Var2: BFS_score","value:  0.42<br />Var1: mach_score<br />Var2: BFS_score","value:  0.00<br />Var1: intuitiveTS_score<br />Var2: BFS_score","value:  0.16<br />Var1: fi_score<br />Var2: BFS_score","value:  0.16<br />Var1: sdtnarc_score<br />Var2: BFS_score","value:  0.21<br />Var1: narcgrand_score<br />Var2: BFS_score","value:  0.00<br />Var1: se_score<br />Var2: BFS_score","value:  0.00<br />Var1: extra_score<br />Var2: BFS_score","value:  0.00<br />Var1: word_score<br />Var2: BFS_score","value:  0.00<br />Var1: BPS_score<br />Var2: BFS_score","value:  0.00<br />Var1: BSthought<br />Var2: BFS_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.34<br />Var1: narchyper_score<br />Var2: BFSp_score","value:  0.00<br />Var1: LIE_score<br />Var2: BFSp_score","value:  0.44<br />Var1: sdtmach_score<br />Var2: BFSp_score","value:  0.44<br />Var1: mach_score<br />Var2: BFSp_score","value:  0.00<br />Var1: intuitiveTS_score<br />Var2: BFSp_score","value:  0.20<br />Var1: fi_score<br />Var2: BFSp_score","value:  0.21<br />Var1: sdtnarc_score<br />Var2: BFSp_score","value:  0.26<br />Var1: narcgrand_score<br />Var2: BFSp_score","value: -0.12<br />Var1: se_score<br />Var2: BFSp_score","value:  0.00<br />Var1: extra_score<br />Var2: BFSp_score","value:  0.00<br />Var1: word_score<br />Var2: BFSp_score","value:  0.00<br />Var1: BPS_score<br />Var2: BFSp_score","value:  0.00<br />Var1: BSthought<br />Var2: BFSp_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.00<br />Var1: LIE_score<br />Var2: narchyper_score","value:  0.00<br />Var1: sdtmach_score<br />Var2: narchyper_score","value:  0.45<br />Var1: mach_score<br />Var2: narchyper_score","value:  0.11<br />Var1: intuitiveTS_score<br />Var2: narchyper_score","value:  0.00<br />Var1: fi_score<br />Var2: narchyper_score","value: -0.05<br />Var1: sdtnarc_score<br />Var2: narchyper_score","value:  0.04<br />Var1: narcgrand_score<br />Var2: narchyper_score","value: -0.36<br />Var1: se_score<br />Var2: narchyper_score","value: -0.29<br />Var1: extra_score<br />Var2: narchyper_score","value:  0.00<br />Var1: word_score<br />Var2: narchyper_score","value:  0.00<br />Var1: BPS_score<br />Var2: narchyper_score","value:  0.09<br />Var1: BSthought<br />Var2: narchyper_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.54<br />Var1: sdtmach_score<br />Var2: LIE_score","value:  0.47<br />Var1: mach_score<br />Var2: LIE_score","value:  0.00<br />Var1: intuitiveTS_score<br />Var2: LIE_score","value:  0.00<br />Var1: fi_score<br />Var2: LIE_score","value:  0.07<br />Var1: sdtnarc_score<br />Var2: LIE_score","value:  0.17<br />Var1: narcgrand_score<br />Var2: LIE_score","value:  0.00<br />Var1: se_score<br />Var2: LIE_score","value: -0.13<br />Var1: extra_score<br />Var2: LIE_score","value: -0.05<br />Var1: word_score<br />Var2: LIE_score","value:  0.13<br />Var1: BPS_score<br />Var2: LIE_score","value:  0.00<br />Var1: BSthought<br />Var2: LIE_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.66<br />Var1: mach_score<br />Var2: sdtmach_score","value:  0.23<br />Var1: intuitiveTS_score<br />Var2: sdtmach_score","value:  0.00<br />Var1: fi_score<br />Var2: sdtmach_score","value:  0.26<br />Var1: sdtnarc_score<br />Var2: sdtmach_score","value:  0.00<br />Var1: narcgrand_score<br />Var2: sdtmach_score","value: -0.06<br />Var1: se_score<br />Var2: sdtmach_score","value: -0.10<br />Var1: extra_score<br />Var2: sdtmach_score","value: -0.05<br />Var1: word_score<br />Var2: sdtmach_score","value:  0.00<br />Var1: BPS_score<br />Var2: sdtmach_score","value:  0.00<br />Var1: BSthought<br />Var2: sdtmach_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.21<br />Var1: intuitiveTS_score<br />Var2: mach_score","value:  0.00<br />Var1: fi_score<br />Var2: mach_score","value:  0.27<br />Var1: sdtnarc_score<br />Var2: mach_score","value:  0.37<br />Var1: narcgrand_score<br />Var2: mach_score","value: -0.12<br />Var1: se_score<br />Var2: mach_score","value: -0.07<br />Var1: extra_score<br />Var2: mach_score","value:  0.02<br />Var1: word_score<br />Var2: mach_score","value:  0.00<br />Var1: BPS_score<br />Var2: mach_score","value:  0.00<br />Var1: BSthought<br />Var2: mach_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.00<br />Var1: fi_score<br />Var2: intuitiveTS_score","value:  0.33<br />Var1: sdtnarc_score<br />Var2: intuitiveTS_score","value:  0.19<br />Var1: narcgrand_score<br />Var2: intuitiveTS_score","value:  0.18<br />Var1: se_score<br />Var2: intuitiveTS_score","value:  0.00<br />Var1: extra_score<br />Var2: intuitiveTS_score","value:  0.00<br />Var1: word_score<br />Var2: intuitiveTS_score","value:  0.00<br />Var1: BPS_score<br />Var2: intuitiveTS_score","value:  0.00<br />Var1: BSthought<br />Var2: intuitiveTS_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.31<br />Var1: sdtnarc_score<br />Var2: fi_score","value:  0.23<br />Var1: narcgrand_score<br />Var2: fi_score","value:  0.00<br />Var1: se_score<br />Var2: fi_score","value:  0.23<br />Var1: extra_score<br />Var2: fi_score","value:  0.00<br />Var1: word_score<br />Var2: fi_score","value:  0.00<br />Var1: BPS_score<br />Var2: fi_score","value:  0.00<br />Var1: BSthought<br />Var2: fi_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.61<br />Var1: narcgrand_score<br />Var2: sdtnarc_score","value:  0.44<br />Var1: se_score<br />Var2: sdtnarc_score","value:  0.56<br />Var1: extra_score<br />Var2: sdtnarc_score","value:  0.00<br />Var1: word_score<br />Var2: sdtnarc_score","value:  0.00<br />Var1: BPS_score<br />Var2: sdtnarc_score","value:  0.00<br />Var1: BSthought<br />Var2: sdtnarc_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.28<br />Var1: se_score<br />Var2: narcgrand_score","value:  0.39<br />Var1: extra_score<br />Var2: narcgrand_score","value:  0.00<br />Var1: word_score<br />Var2: narcgrand_score","value:  0.20<br />Var1: BPS_score<br />Var2: narcgrand_score","value:  0.00<br />Var1: BSthought<br />Var2: narcgrand_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.61<br />Var1: extra_score<br />Var2: se_score","value:  0.00<br />Var1: word_score<br />Var2: se_score","value:  0.00<br />Var1: BPS_score<br />Var2: se_score","value:  0.00<br />Var1: BSthought<br />Var2: se_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.00<br />Var1: word_score<br />Var2: extra_score","value:  0.00<br />Var1: BPS_score<br />Var2: extra_score","value:  0.00<br />Var1: BSthought<br />Var2: extra_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.04<br />Var1: BPS_score<br />Var2: word_score","value:  0.00<br />Var1: BSthought<br />Var2: word_score"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"value:  0.00<br />Var1: BSthought<br />Var2: BPS_score"]],"colorscale":[[0,"#766997"],[0.064102564102564083,"#8B7FA7"],[0.089743589743589744,"#9488AD"],[0.10897435897435896,"#9A8FB2"],[0.14743589743589741,"#A79DBC"],[0.15384615384615383,"#A9A0BD"],[0.17307692307692307,"#B0A7C2"],[0.17948717948717949,"#B2A9C4"],[0.18589743589743588,"#B4ABC6"],[0.19230769230769229,"#B6AEC7"],[0.19871794871794871,"#B8B0C9"],[0.20512820512820512,"#BAB2CB"],[0.21153846153846154,"#BDB5CC"],[0.21794871794871795,"#BFB7CE"],[0.22435897435897434,"#C1BAD0"],[0.23076923076923075,"#C3BCD1"],[0.23717948717948717,"#C5BED3"],[0.24358974358974358,"#C7C1D5"],[0.25641025641025644,"#CCC6D8"],[0.26282051282051283,"#CEC8DA"],[0.27564102564102561,"#D2CDDD"],[0.28205128205128205,"#D5D0DF"],[0.28846153846153844,"#D7D2E0"],[0.29487179487179482,"#D9D4E2"],[0.30128205128205127,"#DBD7E4"],[0.30769230769230765,"#DDD9E5"],[0.3141025641025641,"#E0DCE7"],[0.32051282051282048,"#E2DEE9"],[0.32692307692307693,"#E4E1EB"],[0.33333333333333331,"#E6E3EC"],[0.33974358974358976,"#E9E6EE"],[0.34615384615384615,"#EBE8F0"],[0.35256410256410259,"#EDEBF1"],[0.35897435897435898,"#EFEDF3"],[0.36538461538461542,"#F1F0F5"],[0.37179487179487175,"#F4F2F6"],[0.37820512820512819,"#F6F5F8"],[0.38461538461538458,"#F8F7FA"],[0.39102564102564102,"#FAFAFC"],[0.39743589743589741,"#FDFCFD"],[0.40384615384615385,"#FFFFFF"],[0.41025641025641024,"#FFFDFC"],[0.41666666666666669,"#FFFCFA"],[0.42307692307692307,"#FFFAF7"],[0.42948717948717952,"#FFF8F5"],[0.4358974358974359,"#FFF7F2"],[0.44230769230769224,"#FFF5F0"],[0.44871794871794868,"#FFF3ED"],[0.45512820512820507,"#FFF2EB"],[0.46153846153846151,"#FFF0E9"],[0.4679487179487179,"#FFEFE6"],[0.47435897435897434,"#FFEDE4"],[0.48076923076923073,"#FFEBE1"],[0.48717948717948717,"#FFEADF"],[0.49358974358974356,"#FFE8DC"],[0.5,"#FFE6DA"],[0.50641025641025639,"#FFE5D7"],[0.51282051282051289,"#FFE3D5"],[0.51923076923076927,"#FFE1D2"],[0.52564102564102566,"#FFE0D0"],[0.53205128205128205,"#FFDECD"],[0.53846153846153844,"#FFDCCB"],[0.54487179487179482,"#FFDBC9"],[0.55128205128205121,"#FFD9C6"],[0.55769230769230771,"#FFD8C4"],[0.5641025641025641,"#FFD6C1"],[0.57051282051282048,"#FFD4BF"],[0.57692307692307687,"#FFD3BC"],[0.58333333333333337,"#FFD1BA"],[0.58974358974358965,"#FFCFB8"],[0.59615384615384615,"#FFCEB5"],[0.60256410256410253,"#FFCCB3"],[0.61538461538461531,"#FFC9AE"],[0.62179487179487181,"#FFC7AC"],[0.62820512820512819,"#FFC5A9"],[0.64102564102564097,"#FFC2A4"],[0.64743589743589747,"#FFC0A2"],[0.65384615384615385,"#FFBFA0"],[0.66025641025641024,"#FFBD9D"],[0.66666666666666663,"#FFBB9B"],[0.67307692307692313,"#FFBA99"],[0.67948717948717952,"#FFB896"],[0.6858974358974359,"#FFB694"],[0.69230769230769229,"#FFB592"],[0.70512820512820518,"#FFB18D"],[0.71794871794871795,"#FFAE88"],[0.73717948717948711,"#FFA981"],[0.74999999999999989,"#FFA57C"],[0.7564102564102565,"#FFA47A"],[0.76282051282051277,"#FFA278"],[0.76923076923076916,"#FFA075"],[0.77564102564102555,"#FF9F73"],[0.78205128205128205,"#FF9D71"],[0.79487179487179482,"#FF9A6C"],[0.82051282051282048,"#FF9363"],[0.82692307692307687,"#FF9161"],[0.83333333333333337,"#FF8F5E"],[0.94230769230769229,"#FF7036"],[0.99358974358974361,"#FF6021"],[1,"#FF5E1D"]],"type":"heatmap","showscale":false,"autocolorscale":false,"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1],"y":[1],"name":"ac67199090f33aa2425d0f6fa4cc5c75","type":"scatter","mode":"markers","opacity":0,"hoverinfo":"skip","showlegend":false,"marker":{"color":[0,1],"colorscale":[[0,"#281E5D"],[0.0033444816053511683,"#2A1F5E"],[0.0066889632107023367,"#2B215F"],[0.010033444816053505,"#2D2260"],[0.013377926421404673,"#2E2361"],[0.016722408026755842,"#302462"],[0.02006688963210701,"#312663"],[0.023411371237458178,"#332764"],[0.026755852842809347,"#342865"],[0.030100334448160515,"#352966"],[0.033444816053511683,"#372B67"],[0.036789297658862852,"#382C68"],[0.04013377926421402,"#3A2D69"],[0.043478260869565188,"#3B2F6A"],[0.046822742474916357,"#3D306B"],[0.050167224080267581,"#3E316C"],[0.053511705685618749,"#40336D"],[0.056856187290969917,"#41346E"],[0.060200668896321086,"#42356F"],[0.063545150501672254,"#443770"],[0.066889632107023422,"#453871"],[0.070234113712374591,"#473973"],[0.073578595317725759,"#483B74"],[0.076923076923076927,"#493C75"],[0.080267558528428096,"#4B3D76"],[0.083612040133779264,"#4C3F77"],[0.086956521739130432,"#4E4078"],[0.090301003344481601,"#4F4179"],[0.093645484949832769,"#50437A"],[0.096989966555183937,"#52447B"],[0.10033444816053511,"#53457C"],[0.10367892976588627,"#55477D"],[0.10702341137123744,"#56487E"],[0.11036789297658861,"#574A7F"],[0.11371237458193978,"#594B80"],[0.11705685618729095,"#5A4C81"],[0.12040133779264217,"#5B4E82"],[0.12374581939799334,"#5D4F83"],[0.12709030100334451,"#5E5084"],[0.13043478260869568,"#605285"],[0.13377926421404684,"#615386"],[0.13712374581939801,"#625587"],[0.14046822742474918,"#645688"],[0.14381270903010035,"#65588A"],[0.14715719063545152,"#67598B"],[0.15050167224080269,"#685A8C"],[0.15384615384615385,"#695C8D"],[0.15719063545150502,"#6B5D8E"],[0.16053511705685619,"#6C5F8F"],[0.16387959866220736,"#6E6090"],[0.16722408026755853,"#6F6291"],[0.1705685618729097,"#706392"],[0.17391304347826086,"#726493"],[0.17725752508361203,"#736694"],[0.1806020066889632,"#756795"],[0.18394648829431437,"#766996"],[0.18729096989966554,"#776A97"],[0.19063545150501671,"#796C98"],[0.19397993311036787,"#7A6D99"],[0.19732441471571904,"#7C6F9B"],[0.20066889632107021,"#7D709C"],[0.20401337792642138,"#7E729D"],[0.20735785953177255,"#80739E"],[0.21070234113712372,"#81759F"],[0.21404682274247488,"#8376A0"],[0.21739130434782605,"#8478A1"],[0.22073578595317722,"#8579A2"],[0.22408026755852839,"#877BA3"],[0.22742474916387956,"#887CA4"],[0.23076923076923073,"#8A7EA5"],[0.23411371237458189,"#8B7FA6"],[0.23745819397993312,"#8C81A7"],[0.24080267558528429,"#8E82A9"],[0.24414715719063546,"#8F84AA"],[0.24749163879598662,"#9185AB"],[0.25083612040133779,"#9287AC"],[0.25418060200668896,"#9388AD"],[0.25752508361204013,"#958AAE"],[0.2608695652173913,"#968BAF"],[0.26421404682274247,"#988DB0"],[0.26755852842809363,"#998EB1"],[0.2709030100334448,"#9B90B2"],[0.27424749163879597,"#9C91B3"],[0.27759197324414714,"#9D93B4"],[0.28093645484949831,"#9F94B6"],[0.28428093645484948,"#A096B7"],[0.28762541806020064,"#A297B8"],[0.29096989966555181,"#A399B9"],[0.29431438127090298,"#A59BBA"],[0.29765886287625415,"#A69CBB"],[0.30100334448160537,"#A79EBC"],[0.30434782608695654,"#A99FBD"],[0.30769230769230771,"#AAA1BE"],[0.31103678929765888,"#ACA2BF"],[0.31438127090301005,"#ADA4C1"],[0.31772575250836121,"#AFA6C2"],[0.32107023411371238,"#B0A7C3"],[0.32441471571906355,"#B1A9C4"],[0.32775919732441472,"#B3AAC5"],[0.33110367892976589,"#B4ACC6"],[0.33444816053511706,"#B6ADC7"],[0.33779264214046822,"#B7AFC8"],[0.34113712374581939,"#B9B1C9"],[0.34448160535117056,"#BAB2CB"],[0.34782608695652173,"#BCB4CC"],[0.3511705685618729,"#BDB5CD"],[0.35451505016722407,"#BEB7CE"],[0.35785953177257523,"#C0B9CF"],[0.3612040133779264,"#C1BAD0"],[0.36454849498327757,"#C3BCD1"],[0.36789297658862874,"#C4BDD2"],[0.37123745819397991,"#C6BFD3"],[0.37458193979933108,"#C7C1D5"],[0.37792642140468224,"#C9C2D6"],[0.38127090301003341,"#CAC4D7"],[0.38461538461538458,"#CCC6D8"],[0.38795986622073581,"#CDC7D9"],[0.39130434782608697,"#CFC9DA"],[0.39464882943143814,"#D0CADB"],[0.39799331103678931,"#D1CCDC"],[0.40133779264214048,"#D3CEDD"],[0.40468227424749165,"#D4CFDF"],[0.40802675585284282,"#D6D1E0"],[0.41137123745819398,"#D7D3E1"],[0.41471571906354515,"#D9D4E2"],[0.41806020066889632,"#DAD6E3"],[0.42140468227424749,"#DCD8E4"],[0.42474916387959866,"#DDD9E5"],[0.42809364548494983,"#DFDBE7"],[0.43143812709030099,"#E0DDE8"],[0.43478260869565216,"#E2DEE9"],[0.43812709030100333,"#E3E0EA"],[0.4414715719063545,"#E5E2EB"],[0.44481605351170567,"#E6E3EC"],[0.44816053511705684,"#E8E5ED"],[0.451505016722408,"#E9E7EE"],[0.45484949832775917,"#EBE8F0"],[0.45819397993311034,"#ECEAF1"],[0.46153846153846151,"#EEECF2"],[0.46488294314381268,"#EFEDF3"],[0.46822742474916385,"#F1EFF4"],[0.47157190635451507,"#F2F1F5"],[0.47491638795986624,"#F4F2F6"],[0.47826086956521741,"#F5F4F8"],[0.48160535117056857,"#F7F6F9"],[0.48494983277591974,"#F8F7FA"],[0.48829431438127091,"#FAF9FB"],[0.49163879598662208,"#FBFBFC"],[0.49498327759197325,"#FDFCFD"],[0.49832775919732442,"#FEFEFE"],[0.50167224080267558,"#FFFEFE"],[0.50501672240802675,"#FFFDFC"],[0.50836120401337792,"#FFFCFB"],[0.51170568561872909,"#FFFBF9"],[0.51505016722408026,"#FFFAF7"],[0.51839464882943143,"#FFF9F6"],[0.52173913043478259,"#FFF8F4"],[0.52508361204013376,"#FFF7F2"],[0.52842809364548493,"#FFF6F1"],[0.5317725752508361,"#FFF5EF"],[0.53511705685618727,"#FFF3ED"],[0.53846153846153844,"#FFF2EC"],[0.5418060200668896,"#FFF1EA"],[0.54515050167224077,"#FFF0E8"],[0.54849498327759194,"#FFEFE7"],[0.55183946488294311,"#FFEEE5"],[0.55518394648829428,"#FFEDE3"],[0.55852842809364545,"#FFECE2"],[0.56187290969899661,"#FFEBE0"],[0.56521739130434778,"#FFEADE"],[0.56856187290969895,"#FFE8DD"],[0.57190635451505012,"#FFE7DB"],[0.57525083612040129,"#FFE6DA"],[0.57859531772575246,"#FFE5D8"],[0.58193979933110362,"#FFE4D6"],[0.58528428093645479,"#FFE3D5"],[0.58862876254180596,"#FFE2D3"],[0.59197324414715713,"#FFE1D1"],[0.5953177257525083,"#FFE0D0"],[0.59866220735785947,"#FFDFCE"],[0.60200668896321075,"#FFDDCC"],[0.60535117056856191,"#FFDCCB"],[0.60869565217391308,"#FFDBC9"],[0.61204013377926425,"#FFDAC8"],[0.61538461538461542,"#FFD9C6"],[0.61872909698996659,"#FFD8C4"],[0.62207357859531776,"#FFD7C3"],[0.62541806020066892,"#FFD6C1"],[0.62876254180602009,"#FFD5BF"],[0.63210702341137126,"#FFD4BE"],[0.63545150501672243,"#FFD2BC"],[0.6387959866220736,"#FFD1BB"],[0.64214046822742477,"#FFD0B9"],[0.64548494983277593,"#FFCFB7"],[0.6488294314381271,"#FFCEB6"],[0.65217391304347827,"#FFCDB4"],[0.65551839464882944,"#FFCCB3"],[0.65886287625418061,"#FFCBB1"],[0.66220735785953178,"#FFCAAF"],[0.66555183946488294,"#FFC8AE"],[0.66889632107023411,"#FFC7AC"],[0.67224080267558528,"#FFC6AB"],[0.67558528428093645,"#FFC5A9"],[0.67892976588628762,"#FFC4A7"],[0.68227424749163879,"#FFC3A6"],[0.68561872909698995,"#FFC2A4"],[0.68896321070234112,"#FFC1A3"],[0.69230769230769229,"#FFC0A1"],[0.69565217391304346,"#FFBE9F"],[0.69899665551839463,"#FFBD9E"],[0.7023411371237458,"#FFBC9C"],[0.70568561872909696,"#FFBB9B"],[0.70903010033444813,"#FFBA99"],[0.7123745819397993,"#FFB997"],[0.71571906354515047,"#FFB896"],[0.71906354515050164,"#FFB794"],[0.72240802675585281,"#FFB693"],[0.72575250836120397,"#FFB491"],[0.72909698996655514,"#FFB390"],[0.73244147157190631,"#FFB28E"],[0.73578595317725748,"#FFB18C"],[0.73913043478260865,"#FFB08B"],[0.74247491638795982,"#FFAF89"],[0.74581939799331098,"#FFAE88"],[0.74916387959866215,"#FFAD86"],[0.75250836120401332,"#FFAB85"],[0.75585284280936449,"#FFAA83"],[0.75919732441471566,"#FFA981"],[0.76254180602006683,"#FFA880"],[0.76588628762541799,"#FFA77E"],[0.76923076923076916,"#FFA67D"],[0.77257525083612044,"#FFA57B"],[0.77591973244147161,"#FFA37A"],[0.77926421404682278,"#FFA278"],[0.78260869565217395,"#FFA177"],[0.78595317725752512,"#FFA075"],[0.78929765886287628,"#FF9F73"],[0.79264214046822745,"#FF9E72"],[0.79598662207357862,"#FF9D70"],[0.79933110367892979,"#FF9B6F"],[0.80267558528428096,"#FF9A6D"],[0.80602006688963213,"#FF996C"],[0.80936454849498329,"#FF986A"],[0.81270903010033446,"#FF9769"],[0.81605351170568563,"#FF9667"],[0.8193979933110368,"#FF9566"],[0.82274247491638797,"#FF9364"],[0.82608695652173914,"#FF9262"],[0.8294314381270903,"#FF9161"],[0.83277591973244147,"#FF905F"],[0.83612040133779264,"#FF8F5E"],[0.83946488294314381,"#FF8E5C"],[0.84280936454849498,"#FF8C5B"],[0.84615384615384615,"#FF8B59"],[0.84949832775919731,"#FF8A58"],[0.85284280936454848,"#FF8956"],[0.85618729096989965,"#FF8854"],[0.85953177257525082,"#FF8653"],[0.86287625418060199,"#FF8551"],[0.86622073578595316,"#FF8450"],[0.86956521739130432,"#FF834E"],[0.87290969899665549,"#FF824D"],[0.87625418060200666,"#FF804B"],[0.87959866220735783,"#FF7F49"],[0.882943143812709,"#FF7E48"],[0.88628762541806017,"#FF7D46"],[0.88963210702341133,"#FF7B45"],[0.8929765886287625,"#FF7A43"],[0.89632107023411367,"#FF7941"],[0.89966555183946484,"#FF7840"],[0.90301003344481601,"#FF773E"],[0.90635451505016718,"#FF753D"],[0.90969899665551834,"#FF743B"],[0.91304347826086951,"#FF7339"],[0.91638795986622068,"#FF7238"],[0.91973244147157185,"#FF7036"],[0.92307692307692302,"#FF6F34"],[0.92642140468227419,"#FF6E33"],[0.92976588628762535,"#FF6C31"],[0.93311036789297652,"#FF6B2F"],[0.93645484949832769,"#FF6A2E"],[0.93979933110367886,"#FF682C"],[0.94314381270903014,"#FF672A"],[0.94648829431438131,"#FF6628"],[0.94983277591973247,"#FF6426"],[0.95317725752508364,"#FF6324"],[0.95652173913043481,"#FF6223"],[0.95986622073578598,"#FF6021"],[0.96321070234113715,"#FF5F1F"],[0.96655518394648832,"#FF5E1C"],[0.96989966555183948,"#FF5C1A"],[0.97324414715719065,"#FF5B18"],[0.97658862876254182,"#FF5916"],[0.97993311036789299,"#FF5813"],[0.98327759197324416,"#FF5611"],[0.98662207357859533,"#FF550E"],[0.98996655518394649,"#FF540A"],[0.99331103678929766,"#FF5207"],[0.99665551839464883,"#FF5103"],[1,"#FF4F00"]],"colorbar":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"thickness":23.039999999999996,"title":"Corr","titlefont":{"color":"rgba(0,0,0,1)","family":"","size":13.283520132835205},"tickmode":"array","ticktext":["-1.0","-0.5","0.0","0.5","1.0"],"tickvals":[0.0016666666666666668,0.2508333333333333,0.49999999999999994,0.74916666666666665,0.99833333333333329],"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":10.62681610626816},"ticklen":2,"len":0.5}},"xaxis":"x","yaxis":"y","frame":null}],"layout":{"margin":{"t":25.962640099626398,"r":6.6417600664176026,"b":37.193856371938566,"l":113.57409713574097},"font":{"color":"rgba(0,0,0,1)","family":"","size":13.283520132835205},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,32.600000000000001],"tickmode":"array","ticktext":["cons_score","nclos_score","openTS_score","activeopen_score","open_score","ncog_score","effortTS_score","hon_score","agree_score","crt_score","ns_score","closeTS_score","psychosec_score","sdtpsych_score","psycho_score","psychopri_score","BFSe_score","BFS_score","BFSp_score","narchyper_score","LIE_score","sdtmach_score","mach_score","intuitiveTS_score","fi_score","sdtnarc_score","narcgrand_score","se_score","extra_score","word_score","BPS_score","BSthought"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],"categoryorder":"array","categoryarray":["cons_score","nclos_score","openTS_score","activeopen_score","open_score","ncog_score","effortTS_score","hon_score","agree_score","crt_score","ns_score","closeTS_score","psychosec_score","sdtpsych_score","psycho_score","psychopri_score","BFSe_score","BFS_score","BFSp_score","narchyper_score","LIE_score","sdtmach_score","mach_score","intuitiveTS_score","fi_score","sdtnarc_score","narcgrand_score","se_score","extra_score","word_score","BPS_score","BSthought"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.3208800332088013,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":10.62681610626816},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.60379636967432737,"zeroline":false,"anchor":"y","title":{"text":"Var1","font":{"color":"rgba(0,0,0,1)","family":"","size":13.283520132835205}},"scaleanchor":"y","scaleratio":1,"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,32.600000000000001],"tickmode":"array","ticktext":["emo_score","cons_score","nclos_score","openTS_score","activeopen_score","open_score","ncog_score","effortTS_score","hon_score","agree_score","crt_score","ns_score","closeTS_score","psychosec_score","sdtpsych_score","psycho_score","psychopri_score","BFSe_score","BFS_score","BFSp_score","narchyper_score","LIE_score","sdtmach_score","mach_score","intuitiveTS_score","fi_score","sdtnarc_score","narcgrand_score","se_score","extra_score","word_score","BPS_score"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],"categoryorder":"array","categoryarray":["emo_score","cons_score","nclos_score","openTS_score","activeopen_score","open_score","ncog_score","effortTS_score","hon_score","agree_score","crt_score","ns_score","closeTS_score","psychosec_score","sdtpsych_score","psycho_score","psychopri_score","BFSe_score","BFS_score","BFSp_score","narchyper_score","LIE_score","sdtmach_score","mach_score","intuitiveTS_score","fi_score","sdtnarc_score","narcgrand_score","se_score","extra_score","word_score","BPS_score"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.3208800332088013,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":10.62681610626816},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.60379636967432737,"zeroline":false,"anchor":"x","title":{"text":"Var2","font":{"color":"rgba(0,0,0,1)","family":"","size":13.283520132835205}},"scaleanchor":"x","scaleratio":1,"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":10.62681610626816},"title":{"text":"Corr","font":{"color":"rgba(0,0,0,1)","family":"","size":13.283520132835205}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"15b0e38b1fc21":{"fill":{},"x":{},"y":{},"type":"heatmap"}},"cur_data":"15b0e38b1fc21","visdat":{"15b0e38b1fc21":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+```
+
+This looks pretty good! If you put your mouse on one of the color block (the correlation value), you will be able to see what two variables are correlated and what is the correlation value. It is really easy to see which has high correlation as well!
+
+## Step 3: Hoteling test for the three types of BS measurements and the variables
+
+
+``` r
+## I also need to test the difference between two correlations that share one variable (Narcissism)
+# Variables: r.jk = cor(BFS, Narc), r.jh = cor(BPS, Narc), r.kh = cor(BFS, BPS)
+r_jk <- cor(Thesis_scale$BFS_score, Thesis_scale$narcgrand_score, use = "complete.obs")
+r_jh <- cor(Thesis_scale$BPS_score, Thesis_scale$narcgrand_score, use = "complete.obs")
+r_kh <- cor(Thesis_scale$BFS_score, Thesis_scale$BPS_score, use = "complete.obs")
+n <- nrow(Thesis_scale)
+
+# Then I need to run cocor for overlapping correlations
+resultnarcgrand <- cocor.dep.groups.overlap(r.jk = r_jk, r.jh = r_jh, r.kh = r_kh, n = n)
+resultnarcgrand@ hotelling1940
+```
+
+```
+## $distribution
+## [1] "t"
+## 
+## $df
+## [1] 414
+## 
+## $statistic
+## [1] 0.1144691
+## 
+## $p.value
+## [1] 0.9089215
+```
+
+``` r
+# See the results
+print(resultnarcgrand)
+```
+
+```
+## 
+##   Results of a comparison of two overlapping correlations based on dependent groups
+## 
+## Comparison between r.jk = 0.2068 and r.jh = 0.2
+## Difference: r.jk - r.jh = 0.0067
+## Related correlation: r.kh = 0.2312
+## Group size: n = 417
+## Null hypothesis: r.jk is equal to r.jh
+## Alternative hypothesis: r.jk is not equal to r.jh (two-sided)
+## Alpha: 0.05
+## 
+## pearson1898: Pearson and Filon's z (1898)
+##   z = 0.1143, p-value = 0.9090
+##   Null hypothesis retained
+## 
+## hotelling1940: Hotelling's t (1940)
+##   t = 0.1145, df = 414, p-value = 0.9089
+##   Null hypothesis retained
+## 
+## williams1959: Williams' t (1959)
+##   t = 0.1139, df = 414, p-value = 0.9094
+##   Null hypothesis retained
+## 
+## olkin1967: Olkin's z (1967)
+##   z = 0.1143, p-value = 0.9090
+##   Null hypothesis retained
+## 
+## dunn1969: Dunn and Clark's z (1969)
+##   z = 0.1139, p-value = 0.9093
+##   Null hypothesis retained
+## 
+## hendrickson1970: Hendrickson, Stanley, and Hills' (1970) modification of Williams' t (1959)
+##   t = 0.1145, df = 414, p-value = 0.9089
+##   Null hypothesis retained
+## 
+## steiger1980: Steiger's (1980) modification of Dunn and Clark's z (1969) using average correlations
+##   z = 0.1139, p-value = 0.9093
+##   Null hypothesis retained
+## 
+## meng1992: Meng, Rosenthal, and Rubin's z (1992)
+##   z = 0.1139, p-value = 0.9093
+##   Null hypothesis retained
+##   95% confidence interval for r.jk - r.jh: -0.1140 0.1280
+##   Null hypothesis retained (Interval includes 0)
+## 
+## hittner2003: Hittner, May, and Silver's (2003) modification of Dunn and Clark's z (1969) using a backtransformed average Fisher's (1921) Z procedure
+##   z = 0.1139, p-value = 0.9093
+##   Null hypothesis retained
+## 
+## zou2007: Zou's (2007) confidence interval
+##   95% confidence interval for r.jk - r.jh: -0.1090 0.1224
+##   Null hypothesis retained (Interval includes 0)
+```
+
+``` r
+##After this worked and I knwo what I want from the output, I decided to create a function for calculating the hoteling tests for all the variables. 
+##List of variable names you want to compare against BFS and BPS
+target_vars <- c("BFS_score", "BFSe_score", "BFSp_score", "BPS_score", "LIE_score", "sdtnarc_score", "sdtmach_score", "sdtpsych_score", "narcgrand_score", "narchyper_score", "mach_score", "psycho_score", "psychopri_score", "psychosec_score", "se_score", "hon_score", "emo_score", "extra_score", "agree_score", "cons_score", "open_score", "nclos_score", "ncog_score", "openTS_score", "closeTS_score", "intuitiveTS_score", "effortTS_score", "activeopen_score", "fi_score", "crt_score", "word_score", "ns_score")
+
+##create a function since there are too many variables to be put manually
+compare_correlates <- function(var_name, x_name, y_name, Thesis_scale) {
+  r_xy1 <- cor(Thesis_scale[[x_name]], Thesis_scale[[var_name]], use = "pairwise.complete.obs")
+  r_xy2 <- cor(Thesis_scale[[y_name]], Thesis_scale[[var_name]], use = "pairwise.complete.obs")
+  r_x1x2 <- cor(Thesis_scale[[x_name]], Thesis_scale[[y_name]], use = "pairwise.complete.obs")
+  n <- nrow(Thesis_scale)
+  result <- cocor.dep.groups.overlap(r.jk = r_xy1, r.jh = r_xy2, r.kh = r_x1x2, n = n)
+  tibble(
+    variable = var_name,
+    r_pred1 = r_xy1,
+    r_pred2 = r_xy2,
+    r_variable = r_x1x2,
+    p_Hotelling = tryCatch(result@hotelling1940$p.value, error = function(e) NA),
+    p_Steiger = tryCatch(result@steiger1980$p.value, error = function(e) NA),
+    conclusion = ifelse(!is.na(result@hotelling1940$p.value) && result@hotelling1940$p.value < 0.05, "Different", "Not Different"),
+    hotelingt = result@ hotelling1940$statistic
+  )
+}
+
+##Run for all 28 variables
+# 1. BFS vs BPS
+results_BFS_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFS_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh)): NaNs produced
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh)): NaNs produced
+```
+
+```
+## Warning in sqrt(2 - 2 * covariance): NaNs produced
+```
+
+``` r
+# 2. BFS vs BSthought
+results_BFS_BSthought <- map_dfr(target_vars, compare_correlates, x_name = "BFS_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+
+# 3. BPS vs BSthought
+results_BPS_BSthought <- map_dfr(target_vars, compare_correlates, x_name = "BPS_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh)): NaNs produced
+```
+
+``` r
+# 4. BFSe vs BPS
+results_BFSe_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFSe_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh)): NaNs produced
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh)): NaNs produced
+```
+
+```
+## Warning in sqrt(2 - 2 * covariance): NaNs produced
+```
+
+``` r
+# 5. BFSp vs BPS
+results_BFSp_BPS <- map_dfr(target_vars, compare_correlates, x_name = "BFSp_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+
+# 6. BFSe vs BSthought
+results_BFSe_BSthought <- map_dfr(target_vars, compare_correlates, x_name = "BFSe_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+
+# 7. BFSp vs BSthought
+results_BFSp_BSthought <- map_dfr(target_vars, compare_correlates, x_name = "BFSp_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh)): NaNs produced
+```
+
+``` r
+##View the results in a table
+print(results_BFS_BPS)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable        r_pred1 r_pred2 r_variable p_Hotelling   p_Steiger conclusion
+##    <chr>             <dbl>   <dbl>      <dbl>       <dbl>       <dbl> <chr>     
+##  1 BFS_score         1      0.231       0.231   NaN           0       Not Diffe…
+##  2 BFSe_score        0.724  0.0868      0.231     0           0       Different 
+##  3 BFSp_score        0.933  0.258       0.231     0           0       Different 
+##  4 BPS_score         0.231  1           0.231   NaN           0       Not Diffe…
+##  5 LIE_score         0.448  0.127       0.231     7.75e-9     1.41e-8 Different 
+##  6 sdtnarc_score     0.162  0.0888      0.231     2.25e-1     2.25e-1 Not Diffe…
+##  7 sdtmach_score     0.426  0.161       0.231     2.10e-6     3.03e-6 Different 
+##  8 sdtpsych_score    0.309  0.216       0.231     1.03e-1     1.07e-1 Not Diffe…
+##  9 narcgrand_score   0.207  0.200       0.231     9.09e-1     9.09e-1 Not Diffe…
+## 10 narchyper_score   0.379  0.111       0.231     2.89e-6     3.82e-6 Different 
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+``` r
+print(results_BFS_BSthought)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable        r_pred1   r_pred2 r_variable p_Hotelling p_Steiger conclusion
+##    <chr>             <dbl>     <dbl>      <dbl>       <dbl>     <dbl> <chr>     
+##  1 BFS_score         1      0.0223       0.0223    0         0        Different 
+##  2 BFSe_score        0.724 -0.0411       0.0223    0         0        Different 
+##  3 BFSp_score        0.933  0.0510       0.0223    0         0        Different 
+##  4 BPS_score         0.231  0.251        0.0223    7.57e- 1  7.61e- 1 Not Diffe…
+##  5 LIE_score         0.448 -0.0169       0.0223    2.43e-13  7.04e-13 Different 
+##  6 sdtnarc_score     0.162  0.0283       0.0223    4.96e- 2  5.01e- 2 Different 
+##  7 sdtmach_score     0.426  0.0661       0.0223    1.36e- 8  2.59e- 8 Different 
+##  8 sdtpsych_score    0.309  0.000179     0.0223    3.13e- 6  3.85e- 6 Different 
+##  9 narcgrand_score   0.207  0.0110       0.0223    3.78e- 3  3.92e- 3 Different 
+## 10 narchyper_score   0.379  0.0853       0.0223    4.96e- 6  7.05e- 6 Different 
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+``` r
+print(results_BPS_BSthought)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable        r_pred1   r_pred2 r_variable p_Hotelling p_Steiger conclusion
+##    <chr>             <dbl>     <dbl>      <dbl>       <dbl>     <dbl> <chr>     
+##  1 BFS_score        0.231   0.0223        0.251    0.000397  0.000423 Different 
+##  2 BFSe_score       0.0868 -0.0411        0.251    0.0329    0.0331   Different 
+##  3 BFSp_score       0.258   0.0510        0.251    0.000419  0.000452 Different 
+##  4 BPS_score        1       0.251         0.251  NaN         0        Not Diffe…
+##  5 LIE_score        0.127  -0.0169        0.251    0.0162    0.0164   Different 
+##  6 sdtnarc_score    0.0888  0.0283        0.251    0.313     0.313    Not Diffe…
+##  7 sdtmach_score    0.161   0.0661        0.251    0.110     0.111    Not Diffe…
+##  8 sdtpsych_score   0.216   0.000179      0.251    0.000269  0.000287 Different 
+##  9 narcgrand_score  0.200   0.0110        0.251    0.00142   0.00148  Different 
+## 10 narchyper_score  0.111   0.0853        0.251    0.665     0.666    Not Diffe…
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+``` r
+print(results_BFSe_BPS)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable         r_pred1 r_pred2 r_variable p_Hotelling p_Steiger conclusion 
+##    <chr>              <dbl>   <dbl>      <dbl>       <dbl>     <dbl> <chr>      
+##  1 BFS_score        0.724    0.231      0.0868    0         0        Different  
+##  2 BFSe_score       1        0.0868     0.0868  NaN         0        Not Differ…
+##  3 BFSp_score       0.427    0.258      0.0868    0.00394   0.00506  Different  
+##  4 BPS_score        0.0868   1          0.0868  NaN         0        Not Differ…
+##  5 LIE_score        0.354    0.127      0.0868    0.000278  0.000337 Different  
+##  6 sdtnarc_score   -0.00130  0.0888     0.0868    0.174     0.174    Not Differ…
+##  7 sdtmach_score    0.229    0.161      0.0868    0.286     0.289    Not Differ…
+##  8 sdtpsych_score   0.149    0.216      0.0868    0.300     0.303    Not Differ…
+##  9 narcgrand_score  0.0255   0.200      0.0868    0.00759   0.00780  Different  
+## 10 narchyper_score  0.308    0.111      0.0868    0.00189   0.00211  Different  
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+``` r
+print(results_BFSp_BPS)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable        r_pred1 r_pred2 r_variable p_Hotelling   p_Steiger conclusion
+##    <chr>             <dbl>   <dbl>      <dbl>       <dbl>       <dbl> <chr>     
+##  1 BFS_score         0.933  0.231       0.258    0            0       Different 
+##  2 BFSe_score        0.427  0.0868      0.258    8.87e-10     1.65e-9 Different 
+##  3 BFSp_score        1      0.258       0.258    0            0       Different 
+##  4 BPS_score         0.258  1           0.258    0            0       Different 
+##  5 LIE_score         0.403  0.127       0.258    7.20e- 7     1.02e-6 Different 
+##  6 sdtnarc_score     0.213  0.0888      0.258    3.45e- 2     3.51e-2 Different 
+##  7 sdtmach_score     0.438  0.161       0.258    3.83e- 7     5.88e-7 Different 
+##  8 sdtpsych_score    0.327  0.216       0.258    4.66e- 2     4.87e-2 Different 
+##  9 narcgrand_score   0.258  0.200       0.258    3.13e- 1     3.16e-1 Not Diffe…
+## 10 narchyper_score   0.336  0.111       0.258    7.85e- 5     9.14e-5 Different 
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+``` r
+print(results_BFSe_BSthought)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable         r_pred1  r_pred2 r_variable p_Hotelling p_Steiger conclusion
+##    <chr>              <dbl>    <dbl>      <dbl>       <dbl>     <dbl> <chr>     
+##  1 BFS_score        0.724    2.23e-2    -0.0411     0         0       Different 
+##  2 BFSe_score       1       -4.11e-2    -0.0411     0         0       Different 
+##  3 BFSp_score       0.427    5.10e-2    -0.0411     8.87e-9   1.81e-8 Different 
+##  4 BPS_score        0.0868   2.51e-1    -0.0411     1.65e-2   1.75e-2 Different 
+##  5 LIE_score        0.354   -1.69e-2    -0.0411     4.27e-8   6.25e-8 Different 
+##  6 sdtnarc_score   -0.00130  2.83e-2    -0.0411     6.77e-1   6.76e-1 Not Diffe…
+##  7 sdtmach_score    0.229    6.61e-2    -0.0411     1.81e-2   1.89e-2 Different 
+##  8 sdtpsych_score   0.149    1.79e-4    -0.0411     3.45e-2   3.48e-2 Different 
+##  9 narcgrand_score  0.0255   1.10e-2    -0.0411     8.38e-1   8.38e-1 Not Diffe…
+## 10 narchyper_score  0.308    8.53e-2    -0.0411     9.91e-4   1.15e-3 Different 
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+``` r
+print(results_BFSp_BSthought)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable        r_pred1   r_pred2 r_variable p_Hotelling p_Steiger conclusion
+##    <chr>             <dbl>     <dbl>      <dbl>       <dbl>     <dbl> <chr>     
+##  1 BFS_score         0.933  0.0223       0.0510    0         0        Different 
+##  2 BFSe_score        0.427 -0.0411       0.0510    1.37e-13  3.68e-13 Different 
+##  3 BFSp_score        1      0.0510       0.0510  NaN         0        Not Diffe…
+##  4 BPS_score         0.258  0.251        0.0510    9.19e- 1  9.20e- 1 Not Diffe…
+##  5 LIE_score         0.403 -0.0169       0.0510    4.23e-11  8.48e-11 Different 
+##  6 sdtnarc_score     0.213  0.0283       0.0510    5.52e- 3  5.72e- 3 Different 
+##  7 sdtmach_score     0.438  0.0661       0.0510    2.12e- 9  4.37e- 9 Different 
+##  8 sdtpsych_score    0.327  0.000179     0.0510    4.80e- 7  6.28e- 7 Different 
+##  9 narcgrand_score   0.258  0.0110       0.0510    1.83e- 4  2.01e- 4 Different 
+## 10 narchyper_score   0.336  0.0853       0.0510    9.49e- 5  1.15e- 4 Different 
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+
+``` r
+##Test the function first:
+partial_corr1 <- pcor.test(Thesis_scale$BFS_score, Thesis_scale$narcgrand_score, Thesis_scale$LIE_score, method = "pearson")
+partial_corr2 <- pcor.test(Thesis_scale$BPS_score, Thesis_scale$narcgrand_score, Thesis_scale$LIE_score, method = "pearson")
+partial_corr3 <- pcor.test(Thesis_scale$BFS_score, Thesis_scale$BPS_score, Thesis_scale$LIE_score, method = "pearson")
+
+# Extract the partial correlations
+r_jk <- partial_corr1$estimate
+r_jh <- partial_corr2$estimate
+r_kh <- partial_corr3$estimate
+
+# Sample size (n)
+n <- nrow(Thesis_scale)
+
+# Perform the Hotelling's test using cocor
+resultnarcgrand <- cocor.dep.groups.overlap(r.jk = r_jk, r.jh = r_jh, r.kh = r_kh, n = n)
+
+# Display the results
+print(resultnarcgrand)
+```
+
+```
+## 
+##   Results of a comparison of two overlapping correlations based on dependent groups
+## 
+## Comparison between r.jk = 0.1498 and r.jh = 0.1829
+## Difference: r.jk - r.jh = -0.0331
+## Related correlation: r.kh = 0.1965
+## Group size: n = 417
+## Null hypothesis: r.jk is equal to r.jh
+## Alternative hypothesis: r.jk is not equal to r.jh (two-sided)
+## Alpha: 0.05
+## 
+## pearson1898: Pearson and Filon's z (1898)
+##   z = -0.5435, p-value = 0.5868
+##   Null hypothesis retained
+## 
+## hotelling1940: Hotelling's t (1940)
+##   t = -0.5437, df = 414, p-value = 0.5869
+##   Null hypothesis retained
+## 
+## williams1959: Williams' t (1959)
+##   t = -0.5416, df = 414, p-value = 0.5884
+##   Null hypothesis retained
+## 
+## olkin1967: Olkin's z (1967)
+##   z = -0.5435, p-value = 0.5868
+##   Null hypothesis retained
+## 
+## dunn1969: Dunn and Clark's z (1969)
+##   z = -0.5415, p-value = 0.5882
+##   Null hypothesis retained
+## 
+## hendrickson1970: Hendrickson, Stanley, and Hills' (1970) modification of Williams' t (1959)
+##   t = -0.5437, df = 414, p-value = 0.5869
+##   Null hypothesis retained
+## 
+## steiger1980: Steiger's (1980) modification of Dunn and Clark's z (1969) using average correlations
+##   z = -0.5414, p-value = 0.5882
+##   Null hypothesis retained
+## 
+## meng1992: Meng, Rosenthal, and Rubin's z (1992)
+##   z = -0.5414, p-value = 0.5882
+##   Null hypothesis retained
+##   95% confidence interval for r.jk - r.jh: -0.1571 0.0891
+##   Null hypothesis retained (Interval includes 0)
+## 
+## hittner2003: Hittner, May, and Silver's (2003) modification of Dunn and Clark's z (1969) using a backtransformed average Fisher's (1921) Z procedure
+##   z = -0.5414, p-value = 0.5882
+##   Null hypothesis retained
+## 
+## zou2007: Zou's (2007) confidence interval
+##   95% confidence interval for r.jk - r.jh: -0.1523 0.0865
+##   Null hypothesis retained (Interval includes 0)
+```
+
+``` r
+##Now I know it works fine, I can create another function for partial correlation
+compare_partial_correlates <- function(var_name, x_name, y_name, control_vars, Thesis_scale) {
+  Thesis_scale_filtered <- Thesis_scale %>%
+    dplyr::select(all_of(c(var_name, x_name, y_name, "LIE_score"))) %>%
+    na.omit()
+  
+#Calculate partial correlations, controlling for the lying tendency
+  partial_corr1 <- pcor.test(Thesis_scale_filtered[[x_name]], Thesis_scale_filtered[[var_name]], Thesis_scale_filtered[["LIE_score"]], method = "pearson")
+  partial_corr2 <- pcor.test(Thesis_scale_filtered[[y_name]], Thesis_scale_filtered[[var_name]], Thesis_scale_filtered[["LIE_score"]], method = "pearson")
+  partial_corr3 <- pcor.test(Thesis_scale_filtered[[x_name]], Thesis_scale_filtered[[y_name]], Thesis_scale_filtered[["LIE_score"]], method = "pearson")
+ 
+##Getting the partial correlation estimates  
+  r_jk <- as.numeric(partial_corr1$estimate)
+  r_jh <- as.numeric(partial_corr2$estimate)
+  r_kh <- as.numeric(partial_corr3$estimate)
+  n <- nrow(Thesis_scale_filtered)
+# Run the cocor function for comparison
+  result <- tryCatch({
+    cocor.dep.groups.overlap(r.jk = r_jk, r.jh = r_jh, r.kh = r_kh, n = n)
+  }, error = function(e) NULL)
+# Handle case where result is NULL (i.e., error occurred)
+  if (is.null(result)) {
+    return(tibble(
+      variable = var_name,
+      r_pred1 = r_jk,
+      r_pred2 = r_jh,
+      r_variable = r_kh,
+      p_Hotelling = NA,
+      p_Steiger = NA,
+      conclusion = "Error in Test",
+      hotelingt = NA
+    ))
+  }
+# tibble  
+  tibble(
+    variable = var_name,
+    r_pred1 = r_jk,
+    r_pred2 = r_jh,
+    r_variable = r_kh,
+    p_Hotelling = tryCatch(result@hotelling1940$p.value, error = function(e) NA),
+    p_Steiger = tryCatch(result@steiger1980$p.value, error = function(e) NA),
+    conclusion = ifelse(!is.na(result@hotelling1940$p.value) && result@hotelling1940$p.value < 0.05, "Different", "Not Different"),
+    hotelingt = tryCatch(result@hotelling1940$statistic, error = function(e) NA)
+  )}
+
+# 1. BFS vs BPS
+results_BFS_BPS_partial <- map_dfr(target_vars, compare_partial_correlates, 
+                                   x_name = "BFS_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt((n - 2 - gp)/(1 - pcor^2)): NaNs produced
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh)): NaNs produced
+```
+
+```
+## Warning in sqrt(((n - 1) * (1 + r.kh))/(2 * ((n - 1)/(n - 3)) * R(r.jk, : NaNs
+## produced
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh) + (((r.jk - r.jh)^2 * (1 - r.kh)^3)/(4
+## * : NaNs produced
+```
+
+```
+## Warning in sqrt(2 - 2 * covariance): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt((n - 2 - gp)/(1 - pcor^2)): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt((n - 2 - gp)/(1 - pcor^2)): NaNs produced
+```
+
+``` r
+# 2. BFS vs BSthought
+results_BFS_BSthought_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BFS_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+## Warning in pcor(xyz, method = method): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt((n - 2 - gp)/(1 - pcor^2)): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+``` r
+# 3. BPS vs BSthought
+results_BPS_BSthought_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BPS_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh)): NaNs produced
+```
+
+```
+## Warning in sqrt(((n - 1) * (1 + r.kh))/(2 * ((n - 1)/(n - 3)) * R(r.jk, : NaNs
+## produced
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh) + (((r.jk - r.jh)^2 * (1 - r.kh)^3)/(4
+## * : NaNs produced
+```
+
+```
+## Warning in sqrt(2 - 2 * covariance): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt((n - 2 - gp)/(1 - pcor^2)): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+``` r
+# 4. BFSe vs BPS
+results_BFSe_BPS_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BFSe_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt((n - 2 - gp)/(1 - pcor^2)): NaNs produced
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh)): NaNs produced
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh) + (((r.jk - r.jh)^2 * (1 - r.kh)^3)/(4
+## * : NaNs produced
+```
+
+```
+## Warning in sqrt(2 - 2 * covariance): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt((n - 2 - gp)/(1 - pcor^2)): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt((n - 2 - gp)/(1 - pcor^2)): NaNs produced
+```
+
+``` r
+# 5. BFSp vs BPS
+results_BFSp_BPS_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BFSp_score", y_name = "BPS_score", Thesis_scale = Thesis_scale)
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh)): NaNs produced
+```
+
+```
+## Warning in sqrt(((n - 1) * (1 + r.kh))/(2 * ((n - 1)/(n - 3)) * R(r.jk, : NaNs
+## produced
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh) + (((r.jk - r.jh)^2 * (1 - r.kh)^3)/(4
+## * : NaNs produced
+```
+
+```
+## Warning in sqrt(2 - 2 * covariance): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt((n - 2 - gp)/(1 - pcor^2)): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt((n - 2 - gp)/(1 - pcor^2)): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt((n - 2 - gp)/(1 - pcor^2)): NaNs produced
+```
+
+``` r
+# 6. BFSe vs BSthought
+results_BFSe_BSthought_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BFSe_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+## Warning in pcor(xyz, method = method): NaNs produced
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh)): NaNs produced
+```
+
+```
+## Warning in sqrt(2 - 2 * covariance): NaNs produced
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh) + (((r.jk - r.jh)^2 * (1 - r.kh)^3)/(4
+## * : NaNs produced
+```
+
+```
+## Warning in sqrt(2 - 2 * covariance): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+``` r
+# 7. BFSp vs BSthought
+results_BFSp_BSthought_partial <- map_dfr(target_vars, compare_partial_correlates, x_name = "BFSp_score", y_name = "BSthought", Thesis_scale = Thesis_scale)
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+```
+## Warning in sqrt((n - 2 - gp)/(1 - pcor^2)): NaNs produced
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh)): NaNs produced
+```
+
+```
+## Warning in sqrt(2 * R(r.jk, r.jh, r.kh) + (((r.jk - r.jh)^2 * (1 - r.kh)^3)/(4
+## * : NaNs produced
+```
+
+```
+## Warning in sqrt(2 - 2 * covariance): NaNs produced
+```
+
+```
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+## Warning in pcor(xyz, method = method): The inverse of variance-covariance
+## matrix is calculated using Moore-Penrose generalized matrix invers due to its
+## determinant of zero.
+```
+
+``` r
+##View the results in a table
+print(results_BFS_BPS_partial)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable        r_pred1 r_pred2 r_variable p_Hotelling   p_Steiger conclusion
+##    <chr>             <dbl>   <dbl>      <dbl>       <dbl>       <dbl> <chr>     
+##  1 BFS_score        -1      0.197       0.197   NaN           0       Not Diffe…
+##  2 BFSe_score        0.677  0.0452      0.197     0           0       Different 
+##  3 BFSp_score        0.919  0.227       0.197     0           0       Different 
+##  4 BPS_score         0.197 -1.00        0.197    NA          NA       Error in …
+##  5 LIE_score         0.448  0.127       0.197     1.55e-8     2.80e-8 Different 
+##  6 sdtnarc_score     0.148  0.0811      0.194     2.79e-1     2.79e-1 Not Diffe…
+##  7 sdtmach_score     0.244  0.111       0.197     2.78e-2     2.86e-2 Different 
+##  8 sdtpsych_score    0.142  0.180       0.197     5.36e-1     5.37e-1 Not Diffe…
+##  9 narcgrand_score   0.150  0.183       0.197     5.87e-1     5.88e-1 Not Diffe…
+## 10 narchyper_score   0.247  0.0673      0.197     3.04e-3     3.19e-3 Different 
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+``` r
+print(results_BFS_BSthought_partial)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable        r_pred1  r_pred2 r_variable p_Hotelling p_Steiger conclusion 
+##    <chr>             <dbl>    <dbl>      <dbl>       <dbl>     <dbl> <chr>      
+##  1 BFS_score        -1      0.0336      0.0336   NA        NA        Error in T…
+##  2 BFSe_score        0.671 -0.0376      0.0336    0         0        Different  
+##  3 BFSp_score        0.918  0.0633      0.0336    0         0        Different  
+##  4 BPS_score         0.200  0.255       0.0336    3.95e- 1  4.01e- 1 Not Differ…
+##  5 LIE_score         0.452 -0.0169      0.0336    1.37e-13  4.15e-13 Different  
+##  6 sdtnarc_score     0.150  0.0296      0.0405    7.53e- 2  7.58e- 2 Not Differ…
+##  7 sdtmach_score     0.242  0.0888      0.0336    2.17e- 2  2.26e- 2 Different  
+##  8 sdtpsych_score    0.159  0.00828     0.0336    2.68e- 2  2.71e- 2 Different  
+##  9 narcgrand_score   0.150  0.0142      0.0336    4.70e- 2  4.74e- 2 Different  
+## 10 narchyper_score   0.246  0.0994      0.0336    2.73e- 2  2.84e- 2 Different  
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+``` r
+print(results_BPS_BSthought_partial)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable        r_pred1  r_pred2 r_variable p_Hotelling p_Steiger conclusion 
+##    <chr>             <dbl>    <dbl>      <dbl>       <dbl>     <dbl> <chr>      
+##  1 BFS_score        0.200   0.0336       0.255     0.00517   0.00531 Different  
+##  2 BFSe_score       0.0440 -0.0376       0.255     0.176     0.176   Not Differ…
+##  3 BFSp_score       0.231   0.0633       0.255     0.00440   0.00457 Different  
+##  4 BPS_score       -1       0.255        0.255   NaN         0       Not Differ…
+##  5 LIE_score        0.124  -0.0169       0.255     0.0190    0.0192  Different  
+##  6 sdtnarc_score    0.0791  0.0296       0.263     0.409     0.409   Not Differ…
+##  7 sdtmach_score    0.108   0.0888       0.255     0.744     0.744   Not Differ…
+##  8 sdtpsych_score   0.183   0.00828      0.255     0.00341   0.00351 Different  
+##  9 narcgrand_score  0.187   0.0142       0.255     0.00375   0.00385 Different  
+## 10 narchyper_score  0.0698  0.0994       0.255     0.623     0.623   Not Differ…
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+``` r
+print(results_BFSe_BPS_partial)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable         r_pred1 r_pred2 r_variable p_Hotelling p_Steiger conclusion 
+##    <chr>              <dbl>   <dbl>      <dbl>       <dbl>     <dbl> <chr>      
+##  1 BFS_score        0.677    0.197      0.0452    0         0        Different  
+##  2 BFSe_score      -1        0.0452     0.0452  NaN         0        Not Differ…
+##  3 BFSp_score       0.332    0.227      0.0452    0.0952    0.102    Not Differ…
+##  4 BPS_score        0.0452  -1.00       0.0452   NA        NA        Error in T…
+##  5 LIE_score        0.354    0.127      0.0452    0.000368  0.000451 Different  
+##  6 sdtnarc_score   -0.0267   0.0811     0.0421    0.113     0.113    Not Differ…
+##  7 sdtmach_score    0.0485   0.111      0.0452    0.357     0.357    Not Differ…
+##  8 sdtpsych_score  -0.00577  0.180      0.0452    0.00577   0.00590  Different  
+##  9 narcgrand_score -0.0363   0.183      0.0452    0.00110   0.00114  Different  
+## 10 narchyper_score  0.197    0.0673     0.0452    0.0515    0.0525   Not Differ…
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+``` r
+print(results_BFSp_BPS_partial)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable        r_pred1 r_pred2 r_variable   p_Hotelling p_Steiger conclusion
+##    <chr>             <dbl>   <dbl>      <dbl>         <dbl>     <dbl> <chr>     
+##  1 BFS_score         0.919  0.197       0.227   0             0       Different 
+##  2 BFSe_score        0.332  0.0452      0.227   0.000000948   1.22e-6 Different 
+##  3 BFSp_score       -1      0.227       0.227 NaN             0       Not Diffe…
+##  4 BPS_score         0.227 -1.00        0.227  NA            NA       Error in …
+##  5 LIE_score         0.403  0.127       0.227   0.00000116    1.63e-6 Different 
+##  6 sdtnarc_score     0.204  0.0811      0.226   0.0413        4.19e-2 Different 
+##  7 sdtmach_score     0.286  0.111       0.227   0.00281       3.00e-3 Different 
+##  8 sdtpsych_score    0.185  0.180       0.227   0.932         9.32e-1 Not Diffe…
+##  9 narcgrand_score   0.211  0.183       0.227   0.630         6.32e-1 Not Diffe…
+## 10 narchyper_score   0.212  0.0673      0.227   0.0158        1.62e-2 Different 
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+``` r
+print(results_BFSe_BSthought_partial)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable         r_pred1  r_pred2 r_variable p_Hotelling p_Steiger conclusion
+##    <chr>              <dbl>    <dbl>      <dbl>       <dbl>     <dbl> <chr>     
+##  1 BFS_score        0.671    0.0336     -0.0376     0         0       Different 
+##  2 BFSe_score      -1       -0.0376     -0.0376   NaN         0       Not Diffe…
+##  3 BFSp_score       0.323    0.0633     -0.0376     1.33e-4   1.62e-4 Different 
+##  4 BPS_score        0.0440   0.255      -0.0376     2.27e-3   2.44e-3 Different 
+##  5 LIE_score        0.357   -0.0169     -0.0376     3.52e-8   5.22e-8 Different 
+##  6 sdtnarc_score   -0.0270   0.0296     -0.0300     4.26e-1   4.26e-1 Not Diffe…
+##  7 sdtmach_score    0.0430   0.0888     -0.0376     5.19e-1   5.19e-1 Not Diffe…
+##  8 sdtpsych_score   0.00822  0.00828    -0.0376     9.99e-1   9.99e-1 Not Diffe…
+##  9 narcgrand_score -0.0389   0.0142     -0.0376     4.56e-1   4.56e-1 Not Diffe…
+## 10 narchyper_score  0.196    0.0994     -0.0376     1.67e-1   1.70e-1 Not Diffe…
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+``` r
+print(results_BFSp_BSthought_partial)
+```
+
+```
+## # A tibble: 32 × 8
+##    variable        r_pred1  r_pred2 r_variable p_Hotelling p_Steiger conclusion 
+##    <chr>             <dbl>    <dbl>      <dbl>       <dbl>     <dbl> <chr>      
+##  1 BFS_score         0.918  0.0336      0.0633    0         0        Different  
+##  2 BFSe_score        0.323 -0.0376      0.0633    3.31e- 8  4.54e- 8 Different  
+##  3 BFSp_score       -1      0.0633      0.0633  NaN         0        Not Differ…
+##  4 BPS_score         0.231  0.255       0.0633    7.09e- 1  7.12e- 1 Not Differ…
+##  5 LIE_score         0.405 -0.0169      0.0633    3.03e-11  6.20e-11 Different  
+##  6 sdtnarc_score     0.206  0.0296      0.0676    7.87e- 3  8.11e- 3 Different  
+##  7 sdtmach_score     0.286  0.0888      0.0633    2.45e- 3  2.68e- 3 Different  
+##  8 sdtpsych_score    0.199  0.00828     0.0633    4.34e- 3  4.48e- 3 Different  
+##  9 narcgrand_score   0.212  0.0142      0.0633    2.99e- 3  3.11e- 3 Different  
+## 10 narchyper_score   0.211  0.0994      0.0633    9.19e- 2  9.36e- 2 Not Differ…
+## # ℹ 22 more rows
+## # ℹ 1 more variable: hotelingt <dbl>
+```
+
+
+
+``` r
+saveRDS(Thesis_scale, file = "Thesis_scale.rds")
+write_sav(Thesis_scale, "Thesis_scale.sav")
+```
+

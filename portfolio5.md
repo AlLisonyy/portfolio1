@@ -1,386 +1,16 @@
-<!DOCTYPE html>
+---
+title: "Thesis data Visualization Analyses"
+output: 
+  html_document:
+    keep_md: true
+---
 
-<html>
+For this portfolio, I will continue to use the dataset from my thesis study. This portfolio will focus on creating visualization for my main statistical analysis. I would like to compare how each individual differences is differently or similarly correlated with one of the three bullshitting measures. Additionally, I applied the EFA and CFA just to see how Bullshitting Frequency scale and Bullshitting Propensity scale has loaded on either one or more factors.
 
-<head>
 
-<meta charset="utf-8" />
-<meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-
-<meta name="author" content="Allison Li" />
-
-
-<title>Thesis data Visualization Analyses</title>
-
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
-<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<style>h1 {font-size: 34px;}
-       h1.title {font-size: 38px;}
-       h2 {font-size: 30px;}
-       h3 {font-size: 24px;}
-       h4 {font-size: 18px;}
-       h5 {font-size: 16px;}
-       h6 {font-size: 12px;}
-       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-
-<style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
-
-<style type="text/css">code{white-space: pre;}</style>
-<script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
-  }
-}
-</script>
-
-
-
-
-
-
-
-
-
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-img {
-  max-width:100%;
-}
-.tabbed-pane {
-  padding-top: 12px;
-}
-.html-widget {
-  margin-bottom: 20px;
-}
-button.code-folding-btn:focus {
-  outline: none;
-}
-summary {
-  display: list-item;
-}
-details > summary > p:only-child {
-  display: inline;
-}
-pre code {
-  padding: 0;
-}
-</style>
-
-
-<style type="text/css">
-.dropdown-submenu {
-  position: relative;
-}
-.dropdown-submenu>.dropdown-menu {
-  top: 0;
-  left: 100%;
-  margin-top: -6px;
-  margin-left: -1px;
-  border-radius: 0 6px 6px 6px;
-}
-.dropdown-submenu:hover>.dropdown-menu {
-  display: block;
-}
-.dropdown-submenu>a:after {
-  display: block;
-  content: " ";
-  float: right;
-  width: 0;
-  height: 0;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 5px 0 5px 5px;
-  border-left-color: #cccccc;
-  margin-top: 5px;
-  margin-right: -10px;
-}
-.dropdown-submenu:hover>a:after {
-  border-left-color: #adb5bd;
-}
-.dropdown-submenu.pull-left {
-  float: none;
-}
-.dropdown-submenu.pull-left>.dropdown-menu {
-  left: -100%;
-  margin-left: 10px;
-  border-radius: 6px 0 6px 6px;
-}
-</style>
-
-<script type="text/javascript">
-// manage active state of menu based on current page
-$(document).ready(function () {
-  // active menu anchor
-  href = window.location.pathname
-  href = href.substr(href.lastIndexOf('/') + 1)
-  if (href === "")
-    href = "index.html";
-  var menuAnchor = $('a[href="' + href + '"]');
-
-  // mark the anchor link active (and if it's in a dropdown, also mark that active)
-  var dropdown = menuAnchor.closest('li.dropdown');
-  if (window.bootstrap) { // Bootstrap 4+
-    menuAnchor.addClass('active');
-    dropdown.find('> .dropdown-toggle').addClass('active');
-  } else { // Bootstrap 3
-    menuAnchor.parent().addClass('active');
-    dropdown.addClass('active');
-  }
-
-  // Navbar adjustments
-  var navHeight = $(".navbar").first().height() + 15;
-  var style = document.createElement('style');
-  var pt = "padding-top: " + navHeight + "px; ";
-  var mt = "margin-top: -" + navHeight + "px; ";
-  var css = "";
-  // offset scroll position for anchor links (for fixed navbar)
-  for (var i = 1; i <= 6; i++) {
-    css += ".section h" + i + "{ " + pt + mt + "}\n";
-  }
-  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
-  document.head.appendChild(style);
-});
-</script>
-
-<!-- tabsets -->
-
-<style type="text/css">
-.tabset-dropdown > .nav-tabs {
-  display: inline-table;
-  max-height: 500px;
-  min-height: 44px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "\e259";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "\e258";
-  font-family: 'Glyphicons Halflings';
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs > li.active {
-  display: block;
-}
-
-.tabset-dropdown > .nav-tabs > li > a,
-.tabset-dropdown > .nav-tabs > li > a:focus,
-.tabset-dropdown > .nav-tabs > li > a:hover {
-  border: none;
-  display: inline-block;
-  border-radius: 4px;
-  background-color: transparent;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
-  display: block;
-  float: none;
-}
-
-.tabset-dropdown > .nav-tabs > li {
-  display: none;
-}
-</style>
-
-<!-- code folding -->
-
-
-
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-
-</style>
-
-
-
-</head>
-
-<body>
-
-
-<div class="container-fluid main-container">
-
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
-
-
-
-
-<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="index.html">Portfolio</a>
-    </div>
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li>
-  <a href="index.html">Home</a>
-</li>
-<li>
-  <a href="about.html">About</a>
-</li>
-<li>
-  <a href="portfolio1.html">Portfolio 1</a>
-</li>
-<li>
-  <a href="portfolio2.html">Portfolio 2</a>
-</li>
-<li>
-  <a href="portfolio3.html">Portfolio 3</a>
-</li>
-<li>
-  <a href="portfolio4.html">Portfolio 4</a>
-</li>
-<li>
-  <a href="portfolio5.html">Portfolio 5</a>
-</li>
-<li>
-  <a href="portfolio6.html">Portfolio 6</a>
-</li>
-<li>
-  <a href="portfolio7.html">Portfolio 7</a>
-</li>
-<li>
-  <a href="portfolio8.html">Portfolio 8</a>
-</li>
-<li>
-  <a href="portfolio9.html">Portfolio 9</a>
-</li>
-<li>
-  <a href="portfolio10.html">Portfolio 10</a>
-</li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div><!--/.container -->
-</div><!--/.navbar -->
-
-<div id="header">
-
-
-
-<h1 class="title toc-ignore">Thesis data Visualization Analyses</h1>
-<h4 class="author">Allison Li</h4>
-
-</div>
-
-
-<p>For this portfolio, I will continue to use the dataset from my thesis
-study. This portfolio will focus on creating visualization for my main
-statistical analysis. I would like to compare how each individual
-differences is differently or similarly correlated with one of the three
-bullshitting measures. Additionally, I applied the EFA and CFA just to
-see how Bullshitting Frequency scale and Bullshitting Propensity scale
-has loaded on either one or more factors.</p>
-<pre class="r"><code>library(ggsignif)
+``` r
+library(ggsignif)
 library(tibble)
 library(ggplot2)
 library(psych)
@@ -389,15 +19,18 @@ library(tidyverse)
 library(ppcor)
 
 
-Thesis_scale &lt;- readRDS(&quot;Thesis_scale.rds&quot;)</code></pre>
-<div id="graphs-for-the-partial-correlations-when-controling-for-lying"
-class="section level2">
-<h2>Graphs for the partial correlations when controling for lying</h2>
-<pre class="r"><code># Sample data: Replace these values with your actual correlation values
+Thesis_scale <- readRDS("Thesis_scale.rds")
+```
 
-dark &lt;- data.frame(
-  Trait = rep(c(&quot;MACH-short&quot;, &quot;NARC-short&quot;, &quot;PSYC-short&quot;, &quot;MPI&quot;, &quot;HSNS&quot;, &quot;NPI&quot;, &quot;LSRP&quot;, &quot;LSRP-prim&quot;,&quot;LSRP-sec&quot;), each = 3),
-  Measures = rep(c(&quot;BFS&quot;, &quot;BPS&quot;, &quot;Thought Task&quot;), times = 9),
+## Graphs for the partial correlations when controling for lying
+
+
+``` r
+# Sample data: Replace these values with your actual correlation values
+
+dark <- data.frame(
+  Trait = rep(c("MACH-short", "NARC-short", "PSYC-short", "MPI", "HSNS", "NPI", "LSRP", "LSRP-prim","LSRP-sec"), each = 3),
+  Measures = rep(c("BFS", "BPS", "Thought Task"), times = 9),
   Correlation = c(0.24, 0.11, 0.09,     # Machiavellianism correlations
                   0.15, 0.08, 0.01,     # Narcissism correlations
                   0.14, 0.18, 0.01,     # Psychopathy correlations
@@ -410,38 +43,44 @@ dark &lt;- data.frame(
                   )     
   )
 
-dark$Trait &lt;- factor(dark$Trait, levels = c(
-  &quot;MACH-short&quot;, &quot;MPI&quot;, &quot;NARC-short&quot;, &quot;HSNS&quot;, &quot;NPI&quot;, &quot;PSYC-short&quot;, &quot;LSRP&quot;, &quot;LSRP-prim&quot;,&quot;LSRP-sec&quot;
+dark$Trait <- factor(dark$Trait, levels = c(
+  "MACH-short", "MPI", "NARC-short", "HSNS", "NPI", "PSYC-short", "LSRP", "LSRP-prim","LSRP-sec"
 ))
 
-plot &lt;- ggplot(dark, aes(x = Trait, y = Correlation, fill = Measures)) +
-  geom_bar(stat = &quot;identity&quot;, position = position_dodge(width = 0.85), width = 0.8) +
-  scale_fill_manual(values = c(&quot;BFS&quot; = &quot;#1f77b4&quot;, &quot;BPS&quot; = &quot;#ff7f0e&quot;, &quot;Thought Task&quot; = &quot;#2ca02c&quot;)) +
+plot <- ggplot(dark, aes(x = Trait, y = Correlation, fill = Measures)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.85), width = 0.8) +
+  scale_fill_manual(values = c("BFS" = "#1f77b4", "BPS" = "#ff7f0e", "Thought Task" = "#2ca02c")) +
   theme_classic(base_size = 12) + # Set the base font size to 12
   theme(
-    text = element_text(family = &quot;Times New Roman&quot;), # Use Times New Roman for all text
-    plot.title = element_text(size = 12, face = &quot;bold&quot;, hjust = 0.5),
-    axis.title = element_text(size = 12, face = &quot;bold&quot;, hjust = 0.5),
+    text = element_text(family = "Times New Roman"), # Use Times New Roman for all text
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
     axis.text = element_text(size = 12),
     legend.title = element_text(size = 12),
     legend.text = element_text(size = 12)
   ) +
   labs(
-    title = &quot; &quot;,
-    x = &quot;Dark Triad Traits&quot;,
-    y = &quot;Partial Correlation (r)&quot;,
-    fill = &quot;Measures&quot;
+    title = " ",
+    x = "Dark Triad Traits",
+    y = "Partial Correlation (r)",
+    fill = "Measures"
   ) +
   scale_y_continuous(limits = c(0, 0.40), expand = c(0, 0))
 
 
 # Display the plot
-print(plot)</code></pre>
-<p><img src="portfolio5_files/figure-html/bar%20graph%20for%20dark%20traid-1.png" width="672" /></p>
-<pre class="r"><code>#Sample data: Replace these values with your actual correlation values
-hexaco &lt;- data.frame(
-  othertrait = rep(c(&quot;HON&quot;, &quot;EMO&quot;, &quot;EXTRA&quot;, &quot;AGRE&quot;, &quot;CONS&quot;, &quot;OPEN&quot;, &quot;NCOG&quot;, &quot;NCLS&quot;), each = 3),
-  Measures = rep(c(&quot;BFS&quot;, &quot;BPS&quot;, &quot;Thought Task&quot;), times = 8),
+print(plot)
+```
+
+![](portfolio5_files/figure-html/bar graph for dark traid-1.png)<!-- -->
+
+
+
+``` r
+#Sample data: Replace these values with your actual correlation values
+hexaco <- data.frame(
+  othertrait = rep(c("HON", "EMO", "EXTRA", "AGRE", "CONS", "OPEN", "NCOG", "NCLS"), each = 3),
+  Measures = rep(c("BFS", "BPS", "Thought Task"), times = 8),
   Correlation = c(-.24, -.16, -.10,   
                   .10, -.08, .04,     
                   .01, .07, .03,     
@@ -452,72 +91,84 @@ hexaco &lt;- data.frame(
                   .04, -.15, -.05)          
   )
 
-hexaco$othertrait &lt;- factor(hexaco$othertrait, levels = c(
-  &quot;HON&quot;, &quot;EMO&quot;, &quot;EXTRA&quot;, &quot;AGRE&quot;, &quot;CONS&quot;, &quot;OPEN&quot;, &quot;NCOG&quot;, &quot;NCLS&quot;
+hexaco$othertrait <- factor(hexaco$othertrait, levels = c(
+  "HON", "EMO", "EXTRA", "AGRE", "CONS", "OPEN", "NCOG", "NCLS"
 ))
 
-plot &lt;- ggplot(hexaco, aes(x = othertrait, y = Correlation, fill = Measures)) +
-  geom_bar(stat = &quot;identity&quot;, position = position_dodge(width = 0.85), width = 0.8) +
-  scale_fill_manual(values = c(&quot;BFS&quot; = &quot;#1f77b4&quot;, &quot;BPS&quot; = &quot;#ff7f0e&quot;, &quot;Thought Task&quot; = &quot;#2ca02c&quot;)) +
+plot <- ggplot(hexaco, aes(x = othertrait, y = Correlation, fill = Measures)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.85), width = 0.8) +
+  scale_fill_manual(values = c("BFS" = "#1f77b4", "BPS" = "#ff7f0e", "Thought Task" = "#2ca02c")) +
   theme_classic(base_size = 12) + # Set the base font size to 12
   theme(
-    text = element_text(family = &quot;Times New Roman&quot;), # Use Times New Roman for all text
-    plot.title = element_text(size = 12, face = &quot;bold&quot;, hjust = 0.5),
-    axis.title = element_text(size = 12, face = &quot;bold&quot;, hjust = 0.5),
+    text = element_text(family = "Times New Roman"), # Use Times New Roman for all text
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
     axis.text = element_text(size = 12),
     legend.title = element_text(size = 12),
     legend.text = element_text(size = 12)
   ) +
   labs(
-    title = &quot; &quot;,
-    x = &quot;Other Personality Traits&quot;,
-    y = &quot;Partial Correlation (r)&quot;,
-    fill = &quot;Measures&quot;
+    title = " ",
+    x = "Other Personality Traits",
+    y = "Partial Correlation (r)",
+    fill = "Measures"
   ) +
   scale_y_continuous(limits = c(-.40, 0.40), expand = c(0, 0))
 
 
 # Display the plot
-print(plot)</code></pre>
-<p><img src="portfolio5_files/figure-html/Other%20personality%20traits-1.png" width="672" /></p>
-<pre class="r"><code>cogability &lt;- data.frame(
-  cogab = rep(c(&quot;WORD&quot;, &quot;NS&quot;, &quot;CRT&quot;), each = 3),
-  Measures = rep(c(&quot;BFS&quot;, &quot;BPS&quot;, &quot;Thought Task&quot;), times = 3),
+print(plot)
+```
+
+![](portfolio5_files/figure-html/Other personality traits-1.png)<!-- -->
+
+
+
+``` r
+cogability <- data.frame(
+  cogab = rep(c("WORD", "NS", "CRT"), each = 3),
+  Measures = rep(c("BFS", "BPS", "Thought Task"), times = 3),
   Correlation = c(-.00, -.12, .01,   
                   -.10, -.07, -.06,     
                   -.11, -.08, -.07)          
   )
 
-cogability$cogab &lt;- factor(cogability$cogab, levels = c(
-  &quot;WORD&quot;, &quot;NS&quot;, &quot;CRT&quot;
+cogability$cogab <- factor(cogability$cogab, levels = c(
+  "WORD", "NS", "CRT"
 ))
 
-plot_cog &lt;- ggplot(cogability, aes(x = cogab, y = Correlation, fill = Measures)) +
-  geom_bar(stat = &quot;identity&quot;, position = position_dodge(width = 0.85), width = 0.8) +
-  scale_fill_manual(values = c(&quot;BFS&quot; = &quot;#1f77b4&quot;, &quot;BPS&quot; = &quot;#ff7f0e&quot;, &quot;Thought Task&quot; = &quot;#2ca02c&quot;)) +
+plot_cog <- ggplot(cogability, aes(x = cogab, y = Correlation, fill = Measures)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.85), width = 0.8) +
+  scale_fill_manual(values = c("BFS" = "#1f77b4", "BPS" = "#ff7f0e", "Thought Task" = "#2ca02c")) +
   theme_classic(base_size = 12) + # Set the base font size to 12
   theme(
-    text = element_text(family = &quot;Times New Roman&quot;), # Use Times New Roman for all text
-    plot.title = element_text(size = 12, face = &quot;bold&quot;, hjust = 0.5),
-    axis.title = element_text(size = 12, face = &quot;bold&quot;, hjust = 0.5),
+    text = element_text(family = "Times New Roman"), # Use Times New Roman for all text
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
     axis.text = element_text(size = 12),
     legend.title = element_text(size = 12),
     legend.text = element_text(size = 12)
   ) +
   labs(
-    title = &quot; &quot;,
-    x = &quot;Cognitive Ability&quot;,
-    y = &quot;Partial Correlation (r)&quot;,
-    fill = &quot;Measures&quot;
+    title = " ",
+    x = "Cognitive Ability",
+    y = "Partial Correlation (r)",
+    fill = "Measures"
   ) +
   scale_y_continuous(limits = c(-.40, 0.10), expand = c(0, 0))
 
 # Display the plot
-print(plot_cog)</code></pre>
-<p><img src="portfolio5_files/figure-html/Cognitive%20Ability-1.png" width="672" /></p>
-<pre class="r"><code>thinkstyles &lt;- data.frame(
-  thinkst = rep(c(&quot;ACT&quot;, &quot;PIT&quot;, &quot;PET&quot;, &quot;CMT&quot;, &quot;AOT&quot;, &quot;FI&quot;), each = 3),
-  Measures = rep(c(&quot;BFS&quot;, &quot;BPS&quot;, &quot;Thought Task&quot;), times = 6),
+print(plot_cog)
+```
+
+![](portfolio5_files/figure-html/Cognitive Ability-1.png)<!-- -->
+
+
+
+``` r
+thinkstyles <- data.frame(
+  thinkst = rep(c("ACT", "PIT", "PET", "CMT", "AOT", "FI"), each = 3),
+  Measures = rep(c("BFS", "BPS", "Thought Task"), times = 6),
   Correlation = c(-.14, -.37, -.06, 
                   .16, .18, -.04,
                   -.10, -.34, -.06,     
@@ -526,87 +177,111 @@ print(plot_cog)</code></pre>
                   .14, .00, -.03)          
   )
 
-thinkstyles$thinkst &lt;- factor(thinkstyles$thinkst, levels = c(
-  &quot;ACT&quot;, &quot;PIT&quot;, &quot;PET&quot;, &quot;CMT&quot;, &quot;AOT&quot;, &quot;FI&quot;
+thinkstyles$thinkst <- factor(thinkstyles$thinkst, levels = c(
+  "ACT", "PIT", "PET", "CMT", "AOT", "FI"
 ))
 
-plot_style &lt;- ggplot(thinkstyles, aes(x = thinkst, y = Correlation, fill = Measures)) +
-  geom_bar(stat = &quot;identity&quot;, position = position_dodge(width = 0.85), width = 0.8) +
-  scale_fill_manual(values = c(&quot;BFS&quot; = &quot;#1f77b4&quot;, &quot;BPS&quot; = &quot;#ff7f0e&quot;, &quot;Thought Task&quot; = &quot;#2ca02c&quot;)) +
+plot_style <- ggplot(thinkstyles, aes(x = thinkst, y = Correlation, fill = Measures)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.85), width = 0.8) +
+  scale_fill_manual(values = c("BFS" = "#1f77b4", "BPS" = "#ff7f0e", "Thought Task" = "#2ca02c")) +
   theme_classic(base_size = 12) + # Set the base font size to 12
   theme(
-    text = element_text(family = &quot;Times New Roman&quot;), # Use Times New Roman for all text
-    plot.title = element_text(size = 12, face = &quot;bold&quot;, hjust = 0.5),
-    axis.title = element_text(size = 12, face = &quot;bold&quot;, hjust = 0.5),
+    text = element_text(family = "Times New Roman"), # Use Times New Roman for all text
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
     axis.text = element_text(size = 12),
     legend.title = element_text(size = 12),
     legend.text = element_text(size = 12)
   ) +
   labs(
-    title = &quot; &quot;,
-    x = &quot;Thinking Styles&quot;,
-    y = &quot;Partial Correlation (r)&quot;,
-    fill = &quot;Measures&quot;
+    title = " ",
+    x = "Thinking Styles",
+    y = "Partial Correlation (r)",
+    fill = "Measures"
   ) +
   scale_y_continuous(limits = c(-.40, 0.40), expand = c(0, 0))
 
 # Display the plot
-print(plot_style)</code></pre>
-<p><img src="portfolio5_files/figure-html/thinking%20styles-1.png" width="672" /></p>
-<pre class="r"><code>selfesteem &lt;- data.frame(
-  selfes = rep(c(&quot;SE&quot;), each = 5),
-  Measures = rep(c(&quot;BFSe&quot;, &quot;BFSp&quot;, &quot;BFS&quot;, &quot;BPS&quot;, &quot;Thought Task&quot;), times = 1),
+print(plot_style)
+```
+
+![](portfolio5_files/figure-html/thinking styles-1.png)<!-- -->
+
+
+
+``` r
+selfesteem <- data.frame(
+  selfes = rep(c("SE"), each = 5),
+  Measures = rep(c("BFSe", "BFSp", "BFS", "BPS", "Thought Task"), times = 1),
   Correlation = c(-.12, -.04, -.08, -.00, -.03)          
   )
 
-plot_style &lt;- ggplot(selfesteem, aes(x = selfes, y = Correlation, fill = Measures)) +
-  geom_bar(stat = &quot;identity&quot;, position = position_dodge(width = 0.85), width = 0.8) +
-  scale_fill_manual(values = c(&quot;BFS&quot; = &quot;#1f77b4&quot;, &quot;BPS&quot; = &quot;#ff7f0e&quot;, &quot;Thought Task&quot; = &quot;#2ca02c&quot;, &quot;BFSe&quot; = &quot;#FEDF05&quot;, &quot;BFSp&quot; = &quot;#9966cc&quot;)) +
+plot_style <- ggplot(selfesteem, aes(x = selfes, y = Correlation, fill = Measures)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.85), width = 0.8) +
+  scale_fill_manual(values = c("BFS" = "#1f77b4", "BPS" = "#ff7f0e", "Thought Task" = "#2ca02c", "BFSe" = "#FEDF05", "BFSp" = "#9966cc")) +
   theme_classic(base_size = 12) + # Set the base font size to 12
   theme(
-    text = element_text(family = &quot;Times New Roman&quot;), # Use Times New Roman for all text
-    plot.title = element_text(size = 12, face = &quot;bold&quot;, hjust = 0.5),
-    axis.title = element_text(size = 12, face = &quot;bold&quot;, hjust = 0.5),
+    text = element_text(family = "Times New Roman"), # Use Times New Roman for all text
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
     axis.text = element_text(size = 12),
     legend.title = element_text(size = 12),
     legend.text = element_text(size = 12)
   ) +
   labs(
-    title = &quot; &quot;,
-    x = &quot;Self-Esteem&quot;,
-    y = &quot;Partial Correlation (r)&quot;,
-    fill = &quot;Measures&quot;
+    title = " ",
+    x = "Self-Esteem",
+    y = "Partial Correlation (r)",
+    fill = "Measures"
   ) +
   scale_y_continuous(limits = c(-.40, 0.20), expand = c(0, 0))
 
 # Display the plot
-print(plot_style)</code></pre>
-<p><img src="portfolio5_files/figure-html/self-esteem-1.png" width="672" /></p>
-</div>
-<div id="efa-and-cfa-for-the-scales-of-bullshitting-propensity"
-class="section level2">
-<h2>EFA and CFA for the scales of bullshitting propensity</h2>
-<pre class="r"><code>##install.packages(&quot;lavaan&quot;)
-##install.packages(&quot;semPlot&quot;)
+print(plot_style)
+```
+
+![](portfolio5_files/figure-html/self-esteem-1.png)<!-- -->
+
+## EFA and CFA for the scales of bullshitting propensity
+
+
+``` r
+##install.packages("lavaan")
+##install.packages("semPlot")
 
 ## I wanted to see if these two scales might be measuring the same underlying construct first. 
-library(lavaan)</code></pre>
-<pre><code>## This is lavaan 0.6-19
-## lavaan is FREE software! Please report any bugs.</code></pre>
-<pre><code>## 
-## Attaching package: &#39;lavaan&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:psych&#39;:
+library(lavaan)
+```
+
+```
+## This is lavaan 0.6-19
+## lavaan is FREE software! Please report any bugs.
+```
+
+```
 ## 
-##     cor2cov</code></pre>
-<pre class="r"><code>library(semPlot)
+## Attaching package: 'lavaan'
+```
 
-one_factor_model &lt;- &#39;
+```
+## The following object is masked from 'package:psych':
+## 
+##     cor2cov
+```
+
+``` r
+library(semPlot)
+
+one_factor_model <- '
     General_Factor =~ BFS_1 + BFS_2 + BFS_3 + BFS_4 + BFS_5 + BFS_6 + BFS_7 + BFS_8 + BFS_9 + BFS_10 + BFS_11 + BFS_12 + BPS_1 + BPS_2 + BPS_3 + BPS_4 + BPS_5 + BPS_6 + BPS_7 + BPS_8 + BPS_9 + BPS_10 + BPS_11 + BPS_12
-&#39;
+'
 
-one_factor_fit &lt;- cfa(one_factor_model, data = Thesis_scale)
-summary(one_factor_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
-<pre><code>## lavaan 0.6-19 ended normally after 26 iterations
+one_factor_fit <- cfa(one_factor_model, data = Thesis_scale)
+summary(one_factor_fit, fit.measures = TRUE, standardized = TRUE)
+```
+
+```
+## lavaan 0.6-19 ended normally after 26 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -646,8 +321,8 @@ summary(one_factor_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##   RMSEA                                          0.101
 ##   90 Percent confidence interval - lower         0.096
 ##   90 Percent confidence interval - upper         0.106
-##   P-value H_0: RMSEA &lt;= 0.050                    0.000
-##   P-value H_0: RMSEA &gt;= 0.080                    1.000
+##   P-value H_0: RMSEA <= 0.050                    0.000
+##   P-value H_0: RMSEA >= 0.080                    1.000
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -660,7 +335,7 @@ summary(one_factor_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                     Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##                     Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
 ##   General_Factor =~                                                      
 ##     BFS_1              1.000                               0.698    0.746
 ##     BFS_2              0.976    0.068   14.359    0.000    0.681    0.727
@@ -688,7 +363,7 @@ summary(one_factor_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##     BPS_12             0.231    0.074    3.128    0.002    0.161    0.163
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##                    Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
 ##    .BFS_1             0.388    0.032   11.989    0.000    0.388    0.444
 ##    .BFS_2             0.413    0.034   12.242    0.000    0.413    0.471
 ##    .BFS_3             0.627    0.047   13.438    0.000    0.627    0.663
@@ -713,15 +388,21 @@ summary(one_factor_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##    .BPS_10            0.940    0.066   14.332    0.000    0.940    0.955
 ##    .BPS_11            0.966    0.067   14.365    0.000    0.966    0.971
 ##    .BPS_12            0.955    0.066   14.370    0.000    0.955    0.973
-##     General_Factor    0.487    0.057    8.498    0.000    1.000    1.000</code></pre>
-<pre class="r"><code>two_factor_model &lt;- &#39;
+##     General_Factor    0.487    0.057    8.498    0.000    1.000    1.000
+```
+
+``` r
+two_factor_model <- '
     BFS_Factor =~ BFS_1 + BFS_2 + BFS_3 + BFS_4 + BFS_5 + BFS_6 + BFS_7 + BFS_8 + BFS_9 + BFS_10 + BFS_11 + BFS_12
     BPS_Factor =~ BPS_1 + BPS_2 + BPS_3 + BPS_4 + BPS_5 + BPS_6 + BPS_7 + BPS_8 + BPS_9 + BPS_10 + BPS_11 + BPS_12
-&#39;
+'
 
-two_factor_fit &lt;- cfa(two_factor_model, data = Thesis_scale)
-summary(two_factor_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
-<pre><code>## lavaan 0.6-19 ended normally after 41 iterations
+two_factor_fit <- cfa(two_factor_model, data = Thesis_scale)
+summary(two_factor_fit, fit.measures = TRUE, standardized = TRUE)
+```
+
+```
+## lavaan 0.6-19 ended normally after 41 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -761,8 +442,8 @@ summary(two_factor_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##   RMSEA                                          0.075
 ##   90 Percent confidence interval - lower         0.070
 ##   90 Percent confidence interval - upper         0.081
-##   P-value H_0: RMSEA &lt;= 0.050                    0.000
-##   P-value H_0: RMSEA &gt;= 0.080                    0.083
+##   P-value H_0: RMSEA <= 0.050                    0.000
+##   P-value H_0: RMSEA >= 0.080                    0.083
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -775,7 +456,7 @@ summary(two_factor_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##                    Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
 ##   BFS_Factor =~                                                         
 ##     BFS_1             1.000                               0.721    0.771
 ##     BFS_2             0.954    0.064   14.945    0.000    0.688    0.734
@@ -804,12 +485,12 @@ summary(two_factor_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##     BPS_12            1.153    0.197    5.860    0.000    0.458    0.463
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##                    Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
 ##   BFS_Factor ~~                                                         
 ##     BPS_Factor        0.079    0.020    3.851    0.000    0.274    0.274
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##                    Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
 ##    .BFS_1             0.355    0.031   11.508    0.000    0.355    0.406
 ##    .BFS_2             0.404    0.033   12.094    0.000    0.404    0.461
 ##    .BFS_3             0.653    0.048   13.533    0.000    0.653    0.690
@@ -835,45 +516,74 @@ summary(two_factor_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##    .BPS_11            0.664    0.054   12.340    0.000    0.664    0.668
 ##    .BPS_12            0.771    0.058   13.286    0.000    0.771    0.786
 ##     BFS_Factor        0.520    0.059    8.891    0.000    1.000    1.000
-##     BPS_Factor        0.158    0.043    3.690    0.000    1.000    1.000</code></pre>
-<pre class="r"><code>#Compare models:
-compare_models &lt;- anova(one_factor_fit, two_factor_fit)
-print(compare_models)</code></pre>
-<pre><code>## 
+##     BPS_Factor        0.158    0.043    3.690    0.000    1.000    1.000
+```
+
+``` r
+#Compare models:
+compare_models <- anova(one_factor_fit, two_factor_fit)
+print(compare_models)
+```
+
+```
+## 
 ## Chi-Squared Difference Test
 ## 
-##                 Df   AIC   BIC   Chisq Chisq diff  RMSEA Df diff Pr(&gt;Chisq)    
+##                 Df   AIC   BIC   Chisq Chisq diff  RMSEA Df diff Pr(>Chisq)    
 ## two_factor_fit 251 24927 25124  842.17                                         
-## one_factor_fit 252 25404 25598 1321.28     479.11 1.0721       1  &lt; 2.2e-16 ***
+## one_factor_fit 252 25404 25598 1321.28     479.11 1.0721       1  < 2.2e-16 ***
 ## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<pre class="r"><code>semPaths(one_factor_fit, what = &quot;std&quot;, layout = &quot;tree&quot;, edge.label.cex = 1.2, title = FALSE)</code></pre>
-<p><img src="portfolio5_files/figure-html/bfs%20and%20bps-1.png" width="672" /></p>
-<pre class="r"><code>semPaths(two_factor_fit, what = &quot;std&quot;, layout = &quot;tree&quot;, edge.label.cex = 1.2, title = FALSE)</code></pre>
-<p><img src="portfolio5_files/figure-html/bfs%20and%20bps-2.png" width="672" />
-Based on the graphs, it is very appearant that they did not load on the
-same construct. Therefore, these two scales are measuring different
-aspects/dimensions of bullshitting propensity.</p>
-<pre class="r"><code>#install.packages(&quot;psych&quot;)
-#install.packages(&quot;GPArotation&quot;)
-library(psych)
-library(GPArotation)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;GPArotation&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:psych&#39;:
-## 
-##     equamax, varimin</code></pre>
-<pre class="r"><code>bfs_it &lt;- paste0(&quot;BFS_&quot;, 1:12)
-bps_it &lt;- paste0(&quot;BPS_&quot;, 1:12)
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
 
-all_items &lt;- c(bfs_it, bps_it)
+``` r
+semPaths(one_factor_fit, what = "std", layout = "tree", edge.label.cex = 1.2, title = FALSE)
+```
+
+![](portfolio5_files/figure-html/bfs and bps-1.png)<!-- -->
+
+``` r
+semPaths(two_factor_fit, what = "std", layout = "tree", edge.label.cex = 1.2, title = FALSE)
+```
+
+![](portfolio5_files/figure-html/bfs and bps-2.png)<!-- -->
+Based on the graphs, it is very appearant that they did not load on the same construct. Therefore, these two scales are measuring different aspects/dimensions of bullshitting propensity. 
+
+
+
+``` r
+#install.packages("psych")
+#install.packages("GPArotation")
+library(psych)
+library(GPArotation)
+```
+
+```
+## 
+## Attaching package: 'GPArotation'
+```
+
+```
+## The following objects are masked from 'package:psych':
+## 
+##     equamax, varimin
+```
+
+``` r
+bfs_it <- paste0("BFS_", 1:12)
+bps_it <- paste0("BPS_", 1:12)
+
+all_items <- c(bfs_it, bps_it)
 
 # Select the relevant columns from your dataset
-efa_data &lt;- Thesis_scale[, all_items]
+efa_data <- Thesis_scale[, all_items]
 
 # Check if the data is suitable for EFA (KMO and Bartlett’s test)
-KMO(efa_data)  # Should be &gt; 0.60 for a good EFA</code></pre>
-<pre><code>## Kaiser-Meyer-Olkin factor adequacy
+KMO(efa_data)  # Should be > 0.60 for a good EFA
+```
+
+```
+## Kaiser-Meyer-Olkin factor adequacy
 ## Call: KMO(r = efa_data)
 ## Overall MSA =  0.86
 ## MSA for each item = 
@@ -882,48 +592,92 @@ KMO(efa_data)  # Should be &gt; 0.60 for a good EFA</code></pre>
 ## BFS_12  BPS_1  BPS_2  BPS_3  BPS_4  BPS_5  BPS_6  BPS_7  BPS_8  BPS_9 BPS_10 
 ##   0.70   0.78   0.85   0.79   0.88   0.77   0.78   0.88   0.74   0.82   0.81 
 ## BPS_11 BPS_12 
-##   0.79   0.86</code></pre>
-<pre class="r"><code>cortest.bartlett(efa_data)  # Should be significant (p &lt; .05)</code></pre>
-<pre><code>## R was not square, finding R from data</code></pre>
-<pre><code>## $chisq
+##   0.79   0.86
+```
+
+``` r
+cortest.bartlett(efa_data)  # Should be significant (p < .05)
+```
+
+```
+## R was not square, finding R from data
+```
+
+```
+## $chisq
 ## [1] 2749.899
 ## 
 ## $p.value
 ## [1] 0
 ## 
 ## $df
-## [1] 276</code></pre>
-<pre class="r"><code>bartlett_result &lt;- cortest.bartlett(efa_data)</code></pre>
-<pre><code>## R was not square, finding R from data</code></pre>
-<pre class="r"><code>print(bartlett_result)  # Should be significant (p &lt; .05)</code></pre>
-<pre><code>## $chisq
+## [1] 276
+```
+
+``` r
+bartlett_result <- cortest.bartlett(efa_data)
+```
+
+```
+## R was not square, finding R from data
+```
+
+``` r
+print(bartlett_result)  # Should be significant (p < .05)
+```
+
+```
+## $chisq
 ## [1] 2749.899
 ## 
 ## $p.value
 ## [1] 0
 ## 
 ## $df
-## [1] 276</code></pre>
-<pre class="r"><code># Principal Component Analysis (PCA) to determine number of factors
-pca_results &lt;- principal(efa_data, nfactors = ncol(efa_data), rotate = &quot;none&quot;)
-print(pca_results$values)</code></pre>
-<pre><code>##  [1] 5.2657975 3.0720370 1.6210113 1.4803167 1.1141150 0.9546027 0.9063497
+## [1] 276
+```
+
+``` r
+# Principal Component Analysis (PCA) to determine number of factors
+pca_results <- principal(efa_data, nfactors = ncol(efa_data), rotate = "none")
+print(pca_results$values)
+```
+
+```
+##  [1] 5.2657975 3.0720370 1.6210113 1.4803167 1.1141150 0.9546027 0.9063497
 ##  [8] 0.8261247 0.7856581 0.7402925 0.6907570 0.6797220 0.6520235 0.6118307
 ## [15] 0.5843091 0.5726149 0.5370765 0.5067016 0.4837601 0.4622848 0.4256431
-## [22] 0.3587285 0.3491600 0.3190828</code></pre>
-<pre class="r"><code># Scree Plot
-scree(efa_data)</code></pre>
-<p><img src="portfolio5_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<pre class="r"><code>fa.parallel(efa_data, fa = &quot;fa&quot;, n.iter = 100)</code></pre>
-<p><img src="portfolio5_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
-<pre><code>## Parallel analysis suggests that the number of factors =  4  and the number of components =  NA</code></pre>
-<pre class="r"><code># Run EFA for 2 Factors
-efa_2factor &lt;- fa(efa_data, nfactors = 3, rotate = &quot;oblimin&quot;, fm = &quot;ml&quot;)
+## [22] 0.3587285 0.3491600 0.3190828
+```
+
+``` r
+# Scree Plot
+scree(efa_data)
+```
+
+![](portfolio5_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+``` r
+fa.parallel(efa_data, fa = "fa", n.iter = 100)
+```
+
+![](portfolio5_files/figure-html/unnamed-chunk-2-2.png)<!-- -->
+
+```
+## Parallel analysis suggests that the number of factors =  4  and the number of components =  NA
+```
+
+``` r
+# Run EFA for 2 Factors
+efa_2factor <- fa(efa_data, nfactors = 3, rotate = "oblimin", fm = "ml")
 
 # Print results
-print(efa_2factor)</code></pre>
-<pre><code>## Factor Analysis using method =  ml
-## Call: fa(r = efa_data, nfactors = 3, rotate = &quot;oblimin&quot;, fm = &quot;ml&quot;)
+print(efa_2factor)
+```
+
+```
+## Factor Analysis using method =  ml
+## Call: fa(r = efa_data, nfactors = 3, rotate = "oblimin", fm = "ml")
 ## Standardized loadings (pattern matrix) based upon correlation matrix
 ##          ML1   ML2   ML3    h2   u2 com
 ## BFS_1   0.77 -0.06  0.04 0.597 0.40 1.0
@@ -973,8 +727,8 @@ print(efa_2factor)</code></pre>
 ## The root mean square of the residuals (RMSR) is  0.05 
 ## The df corrected root mean square of the residuals is  0.05 
 ## 
-## The harmonic n.obs is  417 with the empirical chi square  502.02  with prob &lt;  1.6e-26 
-## The total n.obs was  417  with Likelihood Chi Square =  451.18  with prob &lt;  3.3e-20 
+## The harmonic n.obs is  417 with the empirical chi square  502.02  with prob <  1.6e-26 
+## The total n.obs was  417  with Likelihood Chi Square =  451.18  with prob <  3.3e-20 
 ## 
 ## Tucker Lewis Index of factoring reliability =  0.868
 ## RMSEA index =  0.053  and the 90 % confidence intervals are  0.047 0.06
@@ -984,20 +738,31 @@ print(efa_2factor)</code></pre>
 ##                                                    ML1  ML2  ML3
 ## Correlation of (regression) scores with factors   0.94 0.89 0.88
 ## Multiple R square of scores with factors          0.88 0.79 0.78
-## Minimum correlation of possible factor scores     0.76 0.57 0.55</code></pre>
-<pre class="r"><code># Visualize factor loadings
-fa.diagram(efa_2factor)</code></pre>
-<p><img src="portfolio5_files/figure-html/unnamed-chunk-2-3.png" width="672" /></p>
-<pre class="r"><code>## I wanted to test if the BFS is actually measuring two different forms of bs 
-bfs_model &lt;- &#39;
+## Minimum correlation of possible factor scores     0.76 0.57 0.55
+```
+
+``` r
+# Visualize factor loadings
+fa.diagram(efa_2factor)
+```
+
+![](portfolio5_files/figure-html/unnamed-chunk-2-3.png)<!-- -->
+
+
+``` r
+## I wanted to test if the BFS is actually measuring two different forms of bs 
+bfs_model <- '
   BFS_Factor =~ BFS_1 + BFS_2 + BFS_3 + BFS_4 + BFS_5 + BFS_6 + 
                 BFS_7 + BFS_8 + BFS_9 + BFS_10 + BFS_11 + BFS_12
-&#39;
+'
 
 # Fit the model
-bfs_fit &lt;- cfa(bfs_model, data = Thesis_scale)
-summary(bfs_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
-<pre><code>## lavaan 0.6-19 ended normally after 19 iterations
+bfs_fit <- cfa(bfs_model, data = Thesis_scale)
+summary(bfs_fit, fit.measures = TRUE, standardized = TRUE)
+```
+
+```
+## lavaan 0.6-19 ended normally after 19 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -1037,8 +802,8 @@ summary(bfs_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##   RMSEA                                          0.121
 ##   90 Percent confidence interval - lower         0.110
 ##   90 Percent confidence interval - upper         0.133
-##   P-value H_0: RMSEA &lt;= 0.050                    0.000
-##   P-value H_0: RMSEA &gt;= 0.080                    1.000
+##   P-value H_0: RMSEA <= 0.050                    0.000
+##   P-value H_0: RMSEA >= 0.080                    1.000
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -1051,7 +816,7 @@ summary(bfs_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##                    Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
 ##   BFS_Factor =~                                                         
 ##     BFS_1             1.000                               0.724    0.774
 ##     BFS_2             0.948    0.063   14.945    0.000    0.686    0.733
@@ -1067,7 +832,7 @@ summary(bfs_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##     BFS_12            0.431    0.069    6.259    0.000    0.312    0.323
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##                    Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
 ##    .BFS_1             0.352    0.031   11.436    0.000    0.352    0.402
 ##    .BFS_2             0.406    0.034   12.098    0.000    0.406    0.463
 ##    .BFS_3             0.661    0.049   13.561    0.000    0.661    0.698
@@ -1080,20 +845,31 @@ summary(bfs_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##    .BFS_10            0.679    0.049   13.897    0.000    0.679    0.791
 ##    .BFS_11            0.670    0.048   13.978    0.000    0.670    0.817
 ##    .BFS_12            0.834    0.059   14.191    0.000    0.834    0.896
-##     BFS_Factor        0.524    0.059    8.930    0.000    1.000    1.000</code></pre>
-<pre class="r"><code># Visualize the model
-semPaths(bfs_fit, what = &quot;std&quot;, layout = &quot;tree&quot;, edge.label.cex = 1.2)</code></pre>
-<p><img src="portfolio5_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<pre class="r"><code>##Specify a single-factor model for BPS
-bps_model &lt;- &#39;
+##     BFS_Factor        0.524    0.059    8.930    0.000    1.000    1.000
+```
+
+``` r
+# Visualize the model
+semPaths(bfs_fit, what = "std", layout = "tree", edge.label.cex = 1.2)
+```
+
+![](portfolio5_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
+
+``` r
+##Specify a single-factor model for BPS
+bps_model <- '
   BPS_Factor =~ BPS_1 + BPS_2 + BPS_3 + BPS_4 + BPS_5 + BPS_6 + 
                 BPS_7 + BPS_8 + BPS_9 + BPS_10
-&#39;
+'
 
 # Fit the model
-bps_fit &lt;- cfa(bps_model, data = Thesis_scale)
-summary(bps_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
-<pre><code>## lavaan 0.6-19 ended normally after 35 iterations
+bps_fit <- cfa(bps_model, data = Thesis_scale)
+summary(bps_fit, fit.measures = TRUE, standardized = TRUE)
+```
+
+```
+## lavaan 0.6-19 ended normally after 35 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -1133,8 +909,8 @@ summary(bps_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##   RMSEA                                          0.087
 ##   90 Percent confidence interval - lower         0.072
 ##   90 Percent confidence interval - upper         0.102
-##   P-value H_0: RMSEA &lt;= 0.050                    0.000
-##   P-value H_0: RMSEA &gt;= 0.080                    0.790
+##   P-value H_0: RMSEA <= 0.050                    0.000
+##   P-value H_0: RMSEA >= 0.080                    0.790
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -1147,7 +923,7 @@ summary(bps_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##                    Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
 ##   BPS_Factor =~                                                         
 ##     BPS_1             1.000                               0.379    0.376
 ##     BPS_2             1.158    0.197    5.871    0.000    0.439    0.566
@@ -1161,7 +937,7 @@ summary(bps_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##     BPS_10            1.120    0.214    5.232    0.000    0.425    0.428
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##                    Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
 ##    .BPS_1             0.871    0.064   13.511    0.000    0.871    0.858
 ##    .BPS_2             0.410    0.035   11.810    0.000    0.410    0.680
 ##    .BPS_3             0.806    0.064   12.659    0.000    0.806    0.759
@@ -1172,23 +948,34 @@ summary(bps_fit, fit.measures = TRUE, standardized = TRUE)</code></pre>
 ##    .BPS_8             0.848    0.060   14.094    0.000    0.848    0.944
 ##    .BPS_9             0.464    0.039   11.769    0.000    0.464    0.677
 ##    .BPS_10            0.804    0.061   13.183    0.000    0.804    0.817
-##     BPS_Factor        0.144    0.043    3.378    0.001    1.000    1.000</code></pre>
-<pre class="r"><code># Visualize the model
-semPaths(bps_fit, what = &quot;std&quot;, layout = &quot;tree&quot;, edge.label.cex = 1.2)</code></pre>
-<p><img src="portfolio5_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>## For this one, I was playing a bit to explore whether BFS and Lying scales might load on the same factors or different ones, since this is briefly mentioned in one of the Littrell&#39;s paper on developing BFS. 
+##     BPS_Factor        0.144    0.043    3.378    0.001    1.000    1.000
+```
 
-bfs_it &lt;- paste0(&quot;BFS_&quot;, 1:12)
-lie_it &lt;- paste0(&quot;lies&quot;, 1:14)
+``` r
+# Visualize the model
+semPaths(bps_fit, what = "std", layout = "tree", edge.label.cex = 1.2)
+```
 
-all_items_liebfs &lt;- c(bfs_it, lie_it)
+![](portfolio5_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+
+``` r
+## For this one, I was playing a bit to explore whether BFS and Lying scales might load on the same factors or different ones, since this is briefly mentioned in one of the Littrell's paper on developing BFS. 
+
+bfs_it <- paste0("BFS_", 1:12)
+lie_it <- paste0("lies", 1:14)
+
+all_items_liebfs <- c(bfs_it, lie_it)
 
 # Select the relevant columns from your dataset
-efa_data_liebfs &lt;- Thesis_scale[, all_items_liebfs]
+efa_data_liebfs <- Thesis_scale[, all_items_liebfs]
 
 # Check if the data is suitable for EFA (KMO and Bartlett’s test)
-KMO(efa_data_liebfs)  # Should be &gt; 0.60 for a good EFA</code></pre>
-<pre><code>## Kaiser-Meyer-Olkin factor adequacy
+KMO(efa_data_liebfs)  # Should be > 0.60 for a good EFA
+```
+
+```
+## Kaiser-Meyer-Olkin factor adequacy
 ## Call: KMO(r = efa_data_liebfs)
 ## Overall MSA =  0.91
 ## MSA for each item = 
@@ -1197,49 +984,93 @@ KMO(efa_data_liebfs)  # Should be &gt; 0.60 for a good EFA</code></pre>
 ## BFS_12  lies1  lies2  lies3  lies4  lies5  lies6  lies7  lies8  lies9 lies10 
 ##   0.75   0.90   0.92   0.89   0.90   0.91   0.91   0.95   0.94   0.94   0.94 
 ## lies11 lies12 lies13 lies14 
-##   0.94   0.94   0.90   0.90</code></pre>
-<pre class="r"><code>cortest.bartlett(efa_data_liebfs)  # Should be significant (p &lt; .05)</code></pre>
-<pre><code>## R was not square, finding R from data</code></pre>
-<pre><code>## $chisq
+##   0.94   0.94   0.90   0.90
+```
+
+``` r
+cortest.bartlett(efa_data_liebfs)  # Should be significant (p < .05)
+```
+
+```
+## R was not square, finding R from data
+```
+
+```
+## $chisq
 ## [1] 5716.46
 ## 
 ## $p.value
 ## [1] 0
 ## 
 ## $df
-## [1] 325</code></pre>
-<pre class="r"><code>liebfs_result &lt;- cortest.bartlett(efa_data_liebfs)</code></pre>
-<pre><code>## R was not square, finding R from data</code></pre>
-<pre class="r"><code>print(liebfs_result)  # Should be significant (p &lt; .05)</code></pre>
-<pre><code>## $chisq
+## [1] 325
+```
+
+``` r
+liebfs_result <- cortest.bartlett(efa_data_liebfs)
+```
+
+```
+## R was not square, finding R from data
+```
+
+``` r
+print(liebfs_result)  # Should be significant (p < .05)
+```
+
+```
+## $chisq
 ## [1] 5716.46
 ## 
 ## $p.value
 ## [1] 0
 ## 
 ## $df
-## [1] 325</code></pre>
-<pre class="r"><code># Principal Component Analysis (PCA) to determine number of factors
-pcalie_results &lt;- principal(efa_data_liebfs, nfactors = ncol(efa_data_liebfs), rotate = &quot;none&quot;)
-print(pcalie_results$values)</code></pre>
-<pre><code>##  [1] 8.2516037 3.1509367 2.7860167 1.4626827 0.9298645 0.8264611 0.8067435
+## [1] 325
+```
+
+``` r
+# Principal Component Analysis (PCA) to determine number of factors
+pcalie_results <- principal(efa_data_liebfs, nfactors = ncol(efa_data_liebfs), rotate = "none")
+print(pcalie_results$values)
+```
+
+```
+##  [1] 8.2516037 3.1509367 2.7860167 1.4626827 0.9298645 0.8264611 0.8067435
 ##  [8] 0.7387092 0.6220555 0.5826082 0.5792080 0.5123732 0.4915368 0.4737758
 ## [15] 0.4361179 0.4264503 0.3910516 0.3670614 0.3526810 0.3356417 0.3309381
-## [22] 0.2599490 0.2463674 0.2311009 0.2145889 0.1934763</code></pre>
-<pre class="r"><code># Scree Plot (to visualize eigenvalues)
-scree(efa_data_liebfs)</code></pre>
-<p><img src="portfolio5_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<pre class="r"><code># Parallel Analysis (more reliable than scree plot alone)
-fa.parallel(efa_data_liebfs, fa = &quot;fa&quot;, n.iter = 100)</code></pre>
-<p><img src="portfolio5_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
-<pre><code>## Parallel analysis suggests that the number of factors =  4  and the number of components =  NA</code></pre>
-<pre class="r"><code># Run EFA for 3 Factors
-efa_2factorlie &lt;- fa(efa_data_liebfs, nfactors = 3, rotate = &quot;oblimin&quot;, fm = &quot;ml&quot;)
+## [22] 0.2599490 0.2463674 0.2311009 0.2145889 0.1934763
+```
+
+``` r
+# Scree Plot (to visualize eigenvalues)
+scree(efa_data_liebfs)
+```
+
+![](portfolio5_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+# Parallel Analysis (more reliable than scree plot alone)
+fa.parallel(efa_data_liebfs, fa = "fa", n.iter = 100)
+```
+
+![](portfolio5_files/figure-html/unnamed-chunk-5-2.png)<!-- -->
+
+```
+## Parallel analysis suggests that the number of factors =  4  and the number of components =  NA
+```
+
+``` r
+# Run EFA for 3 Factors
+efa_2factorlie <- fa(efa_data_liebfs, nfactors = 3, rotate = "oblimin", fm = "ml")
 
 # Print results
-print(efa_2factorlie)</code></pre>
-<pre><code>## Factor Analysis using method =  ml
-## Call: fa(r = efa_data_liebfs, nfactors = 3, rotate = &quot;oblimin&quot;, fm = &quot;ml&quot;)
+print(efa_2factorlie)
+```
+
+```
+## Factor Analysis using method =  ml
+## Call: fa(r = efa_data_liebfs, nfactors = 3, rotate = "oblimin", fm = "ml")
 ## Standardized loadings (pattern matrix) based upon correlation matrix
 ##          ML1   ML3   ML2   h2   u2 com
 ## BFS_1  -0.01  0.78  0.00 0.60 0.40 1.0
@@ -1291,8 +1122,8 @@ print(efa_2factorlie)</code></pre>
 ## The root mean square of the residuals (RMSR) is  0.05 
 ## The df corrected root mean square of the residuals is  0.05 
 ## 
-## The harmonic n.obs is  416 with the empirical chi square  612.01  with prob &lt;  2.4e-32 
-## The total n.obs was  417  with Likelihood Chi Square =  805.62  with prob &lt;  1.2e-59 
+## The harmonic n.obs is  416 with the empirical chi square  612.01  with prob <  2.4e-32 
+## The total n.obs was  417  with Likelihood Chi Square =  805.62  with prob <  1.2e-59 
 ## 
 ## Tucker Lewis Index of factoring reliability =  0.865
 ## RMSEA index =  0.073  and the 90 % confidence intervals are  0.067 0.079
@@ -1302,17 +1133,27 @@ print(efa_2factorlie)</code></pre>
 ##                                                    ML1  ML3  ML2
 ## Correlation of (regression) scores with factors   0.97 0.94 0.95
 ## Multiple R square of scores with factors          0.93 0.88 0.90
-## Minimum correlation of possible factor scores     0.87 0.76 0.80</code></pre>
-<pre class="r"><code># Visualize factor loadings
-fa.diagram(efa_2factorlie)</code></pre>
-<p><img src="portfolio5_files/figure-html/unnamed-chunk-5-3.png" width="672" /></p>
-<pre class="r"><code># Run EFA for 4 Factors
-efa_2factorlie &lt;- fa(efa_data_liebfs, nfactors = 4, rotate = &quot;oblimin&quot;, fm = &quot;ml&quot;)
+## Minimum correlation of possible factor scores     0.87 0.76 0.80
+```
+
+``` r
+# Visualize factor loadings
+fa.diagram(efa_2factorlie)
+```
+
+![](portfolio5_files/figure-html/unnamed-chunk-5-3.png)<!-- -->
+
+``` r
+# Run EFA for 4 Factors
+efa_2factorlie <- fa(efa_data_liebfs, nfactors = 4, rotate = "oblimin", fm = "ml")
 
 # Print results
-print(efa_2factorlie)</code></pre>
-<pre><code>## Factor Analysis using method =  ml
-## Call: fa(r = efa_data_liebfs, nfactors = 4, rotate = &quot;oblimin&quot;, fm = &quot;ml&quot;)
+print(efa_2factorlie)
+```
+
+```
+## Factor Analysis using method =  ml
+## Call: fa(r = efa_data_liebfs, nfactors = 4, rotate = "oblimin", fm = "ml")
 ## Standardized loadings (pattern matrix) based upon correlation matrix
 ##          ML1   ML2   ML3   ML4   h2   u2 com
 ## BFS_1  -0.03  0.02  0.77  0.03 0.61 0.39 1.0
@@ -1365,8 +1206,8 @@ print(efa_2factorlie)</code></pre>
 ## The root mean square of the residuals (RMSR) is  0.03 
 ## The df corrected root mean square of the residuals is  0.04 
 ## 
-## The harmonic n.obs is  416 with the empirical chi square  275.45  with prob &lt;  0.015 
-## The total n.obs was  417  with Likelihood Chi Square =  567.74  with prob &lt;  3.9e-31 
+## The harmonic n.obs is  416 with the empirical chi square  275.45  with prob <  0.015 
+## The total n.obs was  417  with Likelihood Chi Square =  567.74  with prob <  3.9e-31 
 ## 
 ## Tucker Lewis Index of factoring reliability =  0.909
 ## RMSEA index =  0.06  and the 90 % confidence intervals are  0.054 0.066
@@ -1376,87 +1217,14 @@ print(efa_2factorlie)</code></pre>
 ##                                                    ML1  ML2  ML3  ML4
 ## Correlation of (regression) scores with factors   0.97 0.95 0.94 0.88
 ## Multiple R square of scores with factors          0.93 0.90 0.88 0.78
-## Minimum correlation of possible factor scores     0.87 0.80 0.76 0.55</code></pre>
-<pre class="r"><code># Visualize factor loadings
-fa.diagram(efa_2factorlie)</code></pre>
-<p><img src="portfolio5_files/figure-html/unnamed-chunk-5-4.png" width="672" /></p>
-</div>
+## Minimum correlation of possible factor scores     0.87 0.80 0.76 0.55
+```
+
+``` r
+# Visualize factor loadings
+fa.diagram(efa_2factorlie)
+```
+
+![](portfolio5_files/figure-html/unnamed-chunk-5-4.png)<!-- -->
 
 
-
-</div>
-</div>
-
-</div>
-
-<script>
-
-// add bootstrap table styles to pandoc tables
-function bootstrapStylePandocTables() {
-  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
-}
-$(document).ready(function () {
-  bootstrapStylePandocTables();
-});
-
-
-</script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open');
-  });
-});
-</script>
-
-<!-- code folding -->
-
-<script>
-$(document).ready(function ()  {
-
-    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
-    $('.unlisted.unnumbered').addClass('toc-ignore')
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3,h4",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
-
-</body>
-</html>
