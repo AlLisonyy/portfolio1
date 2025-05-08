@@ -27,9 +27,8 @@ library(lubridate)
 library(tidyverse)
 
 
-tuesdata <- tidytuesdayR::tt_load('2024-06-25')
+lgbtq_movies <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2024/2024-06-25/lgbtq_movies.csv')
 
-lgbtq_movies <- tuesdata$lgbtq_movies
 ```
 
 ##Step 1

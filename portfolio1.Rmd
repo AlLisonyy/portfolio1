@@ -7,6 +7,8 @@ output:
     keep_md: true
 ---
 
+Data from https://github.com/rfordatascience/tidytuesday/blob/main/data/2023/2023-10-10/readme.md
+
 ```{r load-packages, message=FALSE}
 ##install.packages("tidytuesdayR")
 ##install.packages(c("sf", "tigris", "ggplot2", "ggmap"))
@@ -17,8 +19,8 @@ library(tidyverse)
 library(sf)
 library(tigris)
 
-tuesdata <- tidytuesdayR::tt_load('2023-10-10')
-haunted_places <- tuesdata$haunted_places
+haunted_places <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2023/2023-10-10/haunted_places.csv')
+
 ```
 
 I get the haunted houses dataset from the Tidy Tuesday Github (https://github.com/rfordatascience/tidytuesday/blob/main/data/2023/2023-10-10/readme.md). My research question in general is to see where are the haunted houses in the US! 
